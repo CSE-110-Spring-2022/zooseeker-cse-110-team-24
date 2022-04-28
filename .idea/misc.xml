@@ -3,11 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../Library/Android/sdk/platforms/android-32/data/res/layout/simple_dropdown_item_1line.xml" value="0.2953125" />
+        <entry key="app/src/main/res/drawable/node_item_background.xml" value="0.17083333333333334" />
         <entry key="app/src/main/res/drawable/selector.xml" value="0.18385416666666668" />
         <entry key="app/src/main/res/layout/activity_direction.xml" value="0.2234375" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.16770833333333332" />
         <entry key="app/src/main/res/layout/activity_planner.xml" value="0.15364583333333334" />
-        <entry key="app/src/main/res/layout/activity_search.xml" value="0.15364583333333334" />
+        <entry key="app/src/main/res/layout/activity_search.xml" value="0.17063159144092285" />
+        <entry key="app/src/main/res/layout/node_item.xml" value="0.335" />
         <entry key="app/src/main/res/menu/menu.xml" value="0.16770833333333332" />
       </map>
     </option>

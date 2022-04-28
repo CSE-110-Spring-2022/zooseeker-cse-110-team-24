@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
 
+
+    <AutoCompleteTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="search here"
+        android:layout_alignParentTop="true"
+        android:id="@+id/searchBar"
+        android:maxLines="1"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
