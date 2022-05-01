@@ -1,0 +1,34 @@
+[
+  {
+    "id": "fake1",
+    "kind": "exhibit",
+    "name": "Dragon",
+    "tags": [
+      "suspicious",
+      "rare"
+    ]
+  },
+  {
+    "id": "entrance_exit_gate",
+    "kind": "gate",
+    "name": "Entrance and Exit Gate",
+    "tags": [
+      "enter",
+      "leave",
+      "start",
+      "begin",
+      "entrance",
+      "exit"
+    ]
+  },
+
+  {
+    "id": "fake2",
+    "kind": "exhibit",
+    "name": "Pikachu",
+    "tags": [
+      "electricity",
+      "pika pika"
+    ]
+  }
+]

@@ -7,30 +7,33 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHolder> {
 
-    private Context context;
-    private List<ZooData.Node> exhibits;
-    private OnDeleteListener onDeleteListener;
+//    private Context context;
+    private List<ZooData.Node> exhibits = new ArrayList<ZooData.Node>();
+//    private OnDeleteListener onDeleteListener;
 
-    public interface OnDeleteListener{
-        public void performOnDelete(int position);
-    }
+//    public interface OnDeleteListener{
+//        public void performOnDelete(int position);
+//    }
 
-    public PlannerAdapter(Context context, OnDeleteListener onDeleteListener, List<ZooData.Node> exhibits) {
-        this.exhibits = exhibits;
-        this.context = context;
-        this.onDeleteListener = onDeleteListener;
-    }
+//    public PlannerAdapter(Context context) {
+////        this.exhibits = exhibits;
+//        this.context = context;
+//        this.onDeleteListener = onDeleteListener;
+//    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.planner_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.planner_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -42,6 +45,12 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
     @Override
     public int getItemCount() {
         return exhibits.size();
+    }
+
+    public void populatePlanner(List<ZooData.Node> exhibits){
+        this.exhibits.clear();
+        this.exhibits.addAll(exhibits);
+        notifyDataSetChanged();
     }
 
 //    public PlannerAdapter(@NonNull Context context, ) {
@@ -69,9 +78,9 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
             tvName.setText(exhibit.name);
             tvDist.setText("100ft");
             // TODO: delete
-            tvDelete.setOnClickListener( v -> {
-                onDeleteListener.performOnDelete(getAdapterPosition());
-            });
+//            tvDelete.setOnClickListener( v -> {
+//                onDeleteListener.performOnDelete(getAdapterPosition());
+//            });
         }
 
     }

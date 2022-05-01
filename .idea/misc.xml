@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.1890625" />
         <entry key="../../Library/Android/sdk/platforms/android-32/data/res/layout/simple_dropdown_item_1line.xml" value="0.2953125" />
+        <entry key="app/src/main/res/drawable-anydpi/ic_search.xml" value="0.18697916666666667" />
         <entry key="app/src/main/res/drawable/node_item_background.xml" value="0.17083333333333334" />
         <entry key="app/src/main/res/drawable/selector.xml" value="0.18385416666666668" />
         <entry key="app/src/main/res/layout/activity_direction.xml" value="0.2234375" />

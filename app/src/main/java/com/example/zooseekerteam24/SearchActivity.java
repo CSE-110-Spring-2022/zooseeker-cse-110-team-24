@@ -2,6 +2,7 @@ package com.example.zooseekerteam24;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -30,18 +32,19 @@ public class SearchActivity extends AppCompatActivity {
     private SearchResultAdapter adapter;
 
 
-    SearchResultAdapter.OnAddListener onAddListener = new SearchResultAdapter.OnAddListener() {
-        @Override
-        public void performOnAdd(int position) {
-            ZooData.Node exhibitToAdd = exhibits.get(position);
-            exhibitToAdd.added = true;
-            adapter.notifyDataSetChanged();
-            Log.d("testadd", "ready to add: " + exhibitToAdd.name);
-//            Intent i = new Intent(getApplicationContext(), PlannerActivity.class);
-//            i.putExtra(KEY_EXHIBIT, exhibits.get(position));
-//            startActivity(i);
-        }
-    };
+
+//    SearchResultAdapter.OnAddListener onAddListener = new SearchResultAdapter.OnAddListener() {
+//        @Override
+//        public void performOnAdd(int position) {
+//            ZooData.Node exhibitToAdd = exhibits.get(position);
+//            exhibitToAdd.added = true;
+//            adapter.notifyDataSetChanged();
+//            Log.d("testadd", "ready to add: " + exhibitToAdd.name);
+////            Intent i = new Intent(getApplicationContext(), PlannerActivity.class);
+////            i.putExtra(KEY_EXHIBIT, exhibits.get(position));
+////            startActivity(i);
+//        }
+//    };
 //    private static final String[] COUNTRIES = new String[] {
 //            "Belgium", "France", "Italy", "Germany", "Spain", "FryRepublic"
 //    };
@@ -58,8 +61,12 @@ public class SearchActivity extends AppCompatActivity {
 //        indexedExhibits.forEach((id, node) -> Log.d(TAG, node.toString()));
 
 
-        adapter = new SearchResultAdapter(this, onAddListener, exhibits);
+        adapter = new SearchResultAdapter(this, exhibits);
 //        ArrayAdapter<Node> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, indexedExhibits);
+        PlannerViewModel plannerViewModel = new ViewModelProvider(this)
+                .get(PlannerViewModel.class);
+        adapter.setOnAddBtnClickedHandler(plannerViewModel::addExhibit);
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

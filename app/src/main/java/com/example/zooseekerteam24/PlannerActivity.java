@@ -1,6 +1,7 @@
 package com.example.zooseekerteam24;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,24 +13,28 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class PlannerActivity extends AppCompatActivity {
 
     private static final String TAG = "PlannerActivity";
     private BottomNavigationView btmNavi;
-    private ArrayList<ZooData.Node> exhibits = new ArrayList<>();
+    private List<ZooData.Node> exhibits = Collections.emptyList();
     private RecyclerView rvPlanner;
     private PlannerAdapter adapter;
+//    private PlannerViewModel plannerViewModel;
 
-    private PlannerAdapter.OnDeleteListener onDeleteListener = new PlannerAdapter.OnDeleteListener(){
-
-        @Override
-        public void performOnDelete(int position) {
-            Log.d(TAG, "deleted: " + exhibits.get(position).name);
-            exhibits.remove(position);
-            adapter.notifyItemRemoved(position);
-        }
-    };
+//    private PlannerAdapter.OnDeleteListener onDeleteListener = new PlannerAdapter.OnDeleteListener(){
+//
+//        @Override
+//        public void performOnDelete(int position) {
+//
+//            Log.d(TAG, "deleted: " + exhibits.get(position).name);
+//            exhibits.remove(position);
+//            adapter.notifyItemRemoved(position);
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,23 +44,35 @@ public class PlannerActivity extends AppCompatActivity {
 
 
         // TODO: get data from db to populate exhibits
-        ZooData.Node n1 = new ZooData.Node();
-        n1.name = "Dragon";
-        n1.id = "dragon1";
-        n1.tags = Arrays.asList("mammal", "precious");
+//        ZooData.Node n1 = new ZooData.Node();
+//        n1.name = "Dragon";
+//        n1.id = "dragon1";
+//        n1.tags = Arrays.asList("mammal", "precious");
+//
+//        ZooData.Node n2 = new ZooData.Node();
+//        n2.name = "Unicorn";
+//
+//        ZooData.Node n3 = new ZooData.Node();
+//        n3.name = "Ditto";
+//
+//        exhibits.addAll(Arrays.asList(n1, n2, n3));
 
-        ZooData.Node n2 = new ZooData.Node();
-        n2.name = "Unicorn";
+//        exhibits = NodeDatabase.getSingleton(this).nodeDao().getAll();
+//        Log.d(TAG, ""+exhibits.size());
+        adapter = new PlannerAdapter();
 
-        ZooData.Node n3 = new ZooData.Node();
-        n3.name = "Ditto";
-
-        exhibits.addAll(Arrays.asList(n1, n2, n3));
+        // Fetch the lasted date and repopulate the IU
+        PlannerViewModel plannerViewModel = new ViewModelProvider(this)
+                .get(PlannerViewModel.class);
+        plannerViewModel.getNodes().observe(this, adapter::populatePlanner);
+//         The observer here is adapter::populatePlanner, which receives event only when owner is active
 
         // TODO: avoid duplicate insert
-        adapter = new PlannerAdapter(this, onDeleteListener, exhibits);
+
+//        adapter.setHasStableIds(true);
         rvPlanner.setAdapter(adapter);
-        rvPlanner.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+//        adapter.populatePlanner(exhibits);
+        rvPlanner.setLayoutManager(new LinearLayoutManager(this));
 
 
         // TODO: populate data here
