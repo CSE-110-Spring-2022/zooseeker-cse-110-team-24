@@ -51,10 +51,12 @@ public class ZooData {
         @Override
         public String toString() {
             return "Node{" +
-                    "id='" + id + '\'' +
+                    "rtId=" + rtId +
+                    ", id='" + id + '\'' +
                     ", kind=" + kind +
                     ", name='" + name + '\'' +
                     ", tags=" + tags +
+                    ", added=" + added +
                     '}';
         }
     }
@@ -81,6 +83,21 @@ public class ZooData {
             e.printStackTrace();
         }
         return indexedNodes;
+    }
+
+    public static List<Node> loadListOfNodesFromJSON(Context context, String filename){
+        List<Node> nodes = Collections.emptyList();
+        try {
+            InputStream inputStream = context.getAssets().open(filename);
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            Gson gson = new Gson();
+            Type listType = new TypeToken<List<Node>>(){}.getType();
+            nodes = gson.fromJson(reader, listType);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return nodes;
     }
 
     public static List<Node> loadExhibitsFromJSON(Context context, String filename){

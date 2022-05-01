@@ -57,15 +57,17 @@ public class SearchActivity extends AppCompatActivity {
         btmNavi = findViewById(R.id.btmNavi);
         searchView = findViewById(R.id.searchView);
         lvResults = findViewById(R.id.lvResults);
+
         exhibits = ZooData.loadExhibitsFromJSON(this, "sample_node_info.json");
-//        indexedExhibits.forEach((id, node) -> Log.d(TAG, node.toString()));
+        exhibits.forEach(node -> Log.d(TAG, node.toString()));
 
 
         adapter = new SearchResultAdapter(this, exhibits);
 //        ArrayAdapter<Node> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, indexedExhibits);
         PlannerViewModel plannerViewModel = new ViewModelProvider(this)
                 .get(PlannerViewModel.class);
-        adapter.setOnAddBtnClickedHandler(plannerViewModel::addExhibit);
+        plannerViewModel.getNodes().observe(this, adapter::populateSearch);
+//        adapter.setOnAddBtnClickedHandler(plannerViewModel::addExhibit);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

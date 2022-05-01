@@ -36,6 +36,12 @@ public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
 //        public void performOnAdd(int position);
 //    }
 
+    public void populateSearch(List<ZooData.Node> nodes){
+        this.allExhibits.clear();
+        this.allExhibits.addAll(nodes);
+        notifyDataSetChanged();
+    }
+
     public SearchResultAdapter(@NonNull Context context, @NonNull List<ZooData.Node> exhibits) {
         super(context, 0, exhibits);
         this.context = context;
@@ -76,9 +82,10 @@ public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
                 onAddBtnClicked.accept(exhibit);
                 tvAdded.setClickable(false);
                 tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                notifyDataSetChanged();
             });
         }
-        notifyDataSetChanged();
+
 
 
 

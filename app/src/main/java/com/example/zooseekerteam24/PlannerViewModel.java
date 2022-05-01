@@ -40,6 +40,16 @@ public class PlannerViewModel extends AndroidViewModel {
         return nodes;
     }
 
+    // get added nodes
+    public LiveData<List<ZooData.Node>> getAddedNodes() {
+        if (nodes == null) {
+            // TODO: Do an asynchronous operation to fetch nodes.
+            nodes = nodeDao.getAllAddedLive();
+        }
+        return nodes;
+    }
+
+
     public void addExhibit(ZooData.Node exhibit){
         exhibit.added = true;
         nodeDao.insert(exhibit);
