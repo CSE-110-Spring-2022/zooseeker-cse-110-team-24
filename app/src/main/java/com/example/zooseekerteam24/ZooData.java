@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -40,7 +41,10 @@ public class ZooData {
         public String strId;
         public Kind kind;
         public String name;
+
+        @TypeConverters({Converters.class})
         public List<String> tags;
+
         public boolean added = false;
 
         @Override
