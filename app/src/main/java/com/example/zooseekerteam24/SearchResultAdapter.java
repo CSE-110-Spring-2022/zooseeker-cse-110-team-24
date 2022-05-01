@@ -17,29 +17,29 @@ import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
 
     Context context;
     List<ZooData.Node> allExhibits;
-    OnAddListener onAddListener;
+//    OnAddListener onAddListener;
 
-    public interface OnAddListener{
-        public void performOnAdd(int position);
+    private Consumer<ZooData.Node> onAddBtnClicked;
+
+    public void setOnAddBtnClickedHandler(Consumer<ZooData.Node> onAddBtnClicked){
+        this.onAddBtnClicked = onAddBtnClicked;
     }
+
+//    public interface OnAddListener{
+//        public void performOnAdd(int position);
+//    }
 
     public SearchResultAdapter(@NonNull Context context, @NonNull List<ZooData.Node> exhibits) {
         super(context, 0, exhibits);
         this.context = context;
         this.allExhibits = new ArrayList<>(exhibits);
-    }
-
-    public SearchResultAdapter(@NonNull Context context, OnAddListener onAddListener, @NonNull List<ZooData.Node> exhibits) {
-        super(context, 0, exhibits);
-        this.context = context;
-        this.allExhibits = new ArrayList<>(exhibits);
-        this.onAddListener = onAddListener;
     }
 
 
@@ -65,16 +65,22 @@ public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
         TextView tvName = itemView.findViewById(R.id.tvName);
         TextView tvAdded = itemView.findViewById(R.id.tvAdded);
         tvName.setText(exhibit.name);
+
         if (exhibit.added){
             tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
         } else {
             tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.grey));
-            tvAdded.setOnClickListener(view -> {
-                tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+            tvAdded.setOnClickListener(v->{
+                Log.d("to plan", exhibit.name);
+                if (onAddBtnClicked==null) return;
+                onAddBtnClicked.accept(exhibit);
                 tvAdded.setClickable(false);
-                onAddListener.performOnAdd(position);
+                tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
             });
         }
+        notifyDataSetChanged();
+
+
 
 //        tvName.setOnClickListener(view -> {
 //            onAddListener.performOnAdd(position);// TODO: questionable
