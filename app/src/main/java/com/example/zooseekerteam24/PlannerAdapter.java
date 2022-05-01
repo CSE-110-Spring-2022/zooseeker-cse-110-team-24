@@ -1,6 +1,7 @@
 package com.example.zooseekerteam24;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHolder> {
 
 //    private Context context;
     private List<ZooData.Node> exhibits = new ArrayList<ZooData.Node>();
+    private Consumer<ZooData.Node> onDeleteBtnClicked;
 //    private OnDeleteListener onDeleteListener;
 
 //    public interface OnDeleteListener{
@@ -30,6 +33,9 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
 //        this.onDeleteListener = onDeleteListener;
 //    }
 
+    public void setOnDeleteBtnClickedHandler(Consumer<ZooData.Node> onDeleteBtnClicked){
+        this.onDeleteBtnClicked = onDeleteBtnClicked;
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -50,6 +56,9 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
     public void populatePlanner(List<ZooData.Node> exhibits){
         this.exhibits.clear();
         this.exhibits.addAll(exhibits);
+        exhibits.forEach(n -> {
+            Log.d("populatePlanner", n.toString());
+        });
         notifyDataSetChanged();
     }
 
@@ -78,9 +87,11 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
             tvName.setText(exhibit.name);
             tvDist.setText("100ft");
             // TODO: delete
-//            tvDelete.setOnClickListener( v -> {
-//                onDeleteListener.performOnDelete(getAdapterPosition());
-//            });
+            tvDelete.setOnClickListener( v -> {
+                if (onDeleteBtnClicked == null) return;
+                onDeleteBtnClicked.accept(exhibit);
+                notifyDataSetChanged();
+            });
         }
 
     }

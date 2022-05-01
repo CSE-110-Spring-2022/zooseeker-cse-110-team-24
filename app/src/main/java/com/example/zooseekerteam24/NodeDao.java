@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -27,9 +28,15 @@ public interface NodeDao {
     @Query ("SELECT * FROM `node`")
     List<ZooData.Node> getAll();
 
-    @Query ("SELECT * FROM `node`")
+    @Query ("SELECT * FROM `node` WHERE `kind`='EXHIBIT'")
     LiveData<List<ZooData.Node>> getAllLive();
 
-    @Delete
-    int delete (ZooData.Node exhibit);
+    @Query ("SELECT * FROM `node` WHERE `added`")
+    LiveData<List<ZooData.Node>> getAllAddedLive();
+
+    @Update
+    int update(ZooData.Node exhibit);
+
+//    @Delete
+//    List<Long> deleteAll (ZooData.Node exhibit);
 }

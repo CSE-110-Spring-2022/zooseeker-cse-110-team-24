@@ -36,6 +36,15 @@ public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
 //        public void performOnAdd(int position);
 //    }
 
+    public void populateSearch(List<ZooData.Node> nodes){
+        this.allExhibits.clear();
+        this.allExhibits.addAll(nodes);
+        allExhibits.forEach(n -> {
+            Log.d("populateSearch", n.toString());
+        });
+        notifyDataSetChanged();
+    }
+
     public SearchResultAdapter(@NonNull Context context, @NonNull List<ZooData.Node> exhibits) {
         super(context, 0, exhibits);
         this.context = context;
@@ -68,17 +77,20 @@ public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
 
         if (exhibit.added){
             tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+//            tvAdded.setClickable(false);
         } else {
             tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.grey));
-            tvAdded.setOnClickListener(v->{
-                Log.d("to plan", exhibit.name);
-                if (onAddBtnClicked==null) return;
-                onAddBtnClicked.accept(exhibit);
-                tvAdded.setClickable(false);
-                tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
-            });
+
         }
-        notifyDataSetChanged();
+
+        tvAdded.setOnClickListener(v->{
+            Log.d("to plan", exhibit.name);
+            if (onAddBtnClicked==null) return;
+            onAddBtnClicked.accept(exhibit);
+//                tvAdded.setClickable(false);
+//            tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+            notifyDataSetChanged();
+        });
 
 
 

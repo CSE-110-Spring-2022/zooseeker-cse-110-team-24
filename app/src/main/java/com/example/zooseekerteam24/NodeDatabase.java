@@ -23,13 +23,15 @@ public abstract class NodeDatabase extends RoomDatabase {
     // Factory pattern
     public synchronized static NodeDatabase getSingleton(Context context){
         if (singleton == null){
+//            singleton.clearAllTables();
             singleton = createDatabase(context);
         }
         return singleton;
     }
 
     private static NodeDatabase createDatabase(Context context){
-        return Room.databaseBuilder(context, NodeDatabase.class, "zoo3.db")
+//        singleton.clearAllTables();
+        return Room.databaseBuilder(context, NodeDatabase.class, "aaa.db")
                 .allowMainThreadQueries()
                 .addCallback(new Callback(){
                     @Override
@@ -38,9 +40,7 @@ public abstract class NodeDatabase extends RoomDatabase {
                         Executors.newSingleThreadScheduledExecutor().execute(new Runnable() {
                             @Override
                             public void run() {
-                                List<ZooData.Node> nodes = ZooData.loadNodesFromJSON(context, "db2.json")
-                                        .values()
-                                        .stream().collect(Collectors.toList());
+                                List<ZooData.Node> nodes = ZooData.loadListOfNodesFromJSON(context, "sample_node_info.json");
                                 Log.d("nodes to be added", "run: " + nodes.size());
                                 getSingleton(context).nodeDao().insertAll(nodes);
                             }
