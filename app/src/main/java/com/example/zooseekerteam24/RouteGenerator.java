@@ -54,10 +54,27 @@ public class RouteGenerator {
         ShortestPathAlgorithm.SingleSourcePaths<String,IdentifiedWeightedEdge> ssPaths =
                 new DijkstraShortestPath<>(g).getPaths(source.name);
 
-        // TODO find a way to iterate through the paths in ssPaths to find the shortest path
-        // This path can be converted into a graphpath or list of vertices or whatever
+        double currMinWeight = Double.MAX_VALUE;
+        double currWeight;
+        List<String> currMinPath = new ArrayList<String>();
 
-        return null;
+        // Iterate through each of the paths to TARGET NODES and find the shortest one
+        for(int i = 0; i < targets.size(); i++){
+            currWeight = ssPaths.getWeight((targets.get(i)).name);
+            if(currWeight < currMinWeight) {
+                currMinWeight = currWeight;
+                currMinPath = (ssPaths.getPath((targets.get(i)).name)).getVertexList();
+            }
+        }
+
+        List<ZooData.Node> returnPath = new ArrayList<ZooData.Node>();
+
+        // Turn the list of node names into the list of nodes
+        for(int i = 0; i < currMinPath.size(); i++){
+            returnPath.add(nodes.get(currMinPath.get(i)));
+        }
+
+        return returnPath;
     }
 
 
@@ -86,6 +103,4 @@ public class RouteGenerator {
 
         return route;
     }
-
-    //TODO direction edges from route nodes
 }

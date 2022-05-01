@@ -10,9 +10,18 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import org.jgrapht.Graph;
+
+import java.util.List;
+import java.util.Map;
+
 public class PlannerActivity extends AppCompatActivity {
 
     private BottomNavigationView btmNavi;
+    private List<ZooData.Node> targets;
+    private Map<String,ZooData.Node> nodes;
+    private Map<String,ZooData.Node> edges;
+    private Graph<String,IdentifiedWeightedEdge> g;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

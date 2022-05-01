@@ -20,7 +20,6 @@ public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "SearchActivity";
     private BottomNavigationView btmNavi;
     private AutoCompleteTextView searchBar;
-
     private List<ZooData.Node> exhibits;
 
 //    private static final String[] COUNTRIES = new String[] {
