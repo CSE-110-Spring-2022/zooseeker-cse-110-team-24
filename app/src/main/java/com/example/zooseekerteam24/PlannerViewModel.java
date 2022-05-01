@@ -35,8 +35,10 @@ public class PlannerViewModel extends AndroidViewModel {
     public LiveData<List<ZooData.Node>> getNodes() {
         if (nodes == null) {
             // TODO: Do an asynchronous operation to fetch nodes.
+            Log.d("getNodes", "a");
             nodes = nodeDao.getAllLive();
         }
+        Log.d("getNodes", "b");
         return nodes;
     }
 
@@ -51,8 +53,8 @@ public class PlannerViewModel extends AndroidViewModel {
 
 
     public void addExhibit(ZooData.Node exhibit){
-        exhibit.added = true;
-        nodeDao.insert(exhibit);
+        exhibit.added = !exhibit.added;
+        nodeDao.update(exhibit);
     }
 
 //    private void loadNodes() {

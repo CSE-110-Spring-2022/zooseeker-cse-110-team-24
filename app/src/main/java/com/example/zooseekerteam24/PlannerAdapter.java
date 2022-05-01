@@ -1,6 +1,7 @@
 package com.example.zooseekerteam24;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,9 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
     public void populatePlanner(List<ZooData.Node> exhibits){
         this.exhibits.clear();
         this.exhibits.addAll(exhibits);
+        exhibits.forEach(n -> {
+            Log.d("populatePlanner", n.toString());
+        });
         notifyDataSetChanged();
     }
 

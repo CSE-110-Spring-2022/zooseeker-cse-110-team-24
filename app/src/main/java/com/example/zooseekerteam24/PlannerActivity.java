@@ -23,7 +23,7 @@ public class PlannerActivity extends AppCompatActivity {
     private List<ZooData.Node> exhibits = Collections.emptyList();
     private RecyclerView rvPlanner;
     private PlannerAdapter adapter;
-//    private PlannerViewModel plannerViewModel;
+    private PlannerViewModel plannerViewModel;
 
 //    private PlannerAdapter.OnDeleteListener onDeleteListener = new PlannerAdapter.OnDeleteListener(){
 //
@@ -62,9 +62,9 @@ public class PlannerActivity extends AppCompatActivity {
         adapter = new PlannerAdapter();
 
         // Fetch the lasted date and repopulate the IU
-        PlannerViewModel plannerViewModel = new ViewModelProvider(this)
+        plannerViewModel = new ViewModelProvider(this)
                 .get(PlannerViewModel.class);
-        plannerViewModel.getNodes().observe(this, adapter::populatePlanner);
+        plannerViewModel.getAddedNodes().observe(this, adapter::populatePlanner);
 //         The observer here is adapter::populatePlanner, which receives event only when owner is active
 
         // TODO: avoid duplicate insert

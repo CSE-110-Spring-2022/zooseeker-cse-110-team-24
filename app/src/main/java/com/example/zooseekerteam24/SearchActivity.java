@@ -16,6 +16,8 @@ import android.widget.SearchView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -27,10 +29,10 @@ public class SearchActivity extends AppCompatActivity {
     private BottomNavigationView btmNavi;
 //    private AutoCompleteTextView searchBar;
     private SearchView searchView;
-    private List<ZooData.Node> exhibits;
+    private List<ZooData.Node> exhibits = new ArrayList<>();
     private ListView lvResults;
     private SearchResultAdapter adapter;
-
+    PlannerViewModel plannerViewModel;
 
 
 //    SearchResultAdapter.OnAddListener onAddListener = new SearchResultAdapter.OnAddListener() {
@@ -58,16 +60,17 @@ public class SearchActivity extends AppCompatActivity {
         searchView = findViewById(R.id.searchView);
         lvResults = findViewById(R.id.lvResults);
 
-        exhibits = ZooData.loadExhibitsFromJSON(this, "sample_node_info.json");
-        exhibits.forEach(node -> Log.d(TAG, node.toString()));
+//        exhibits = ZooData.loadExhibitsFromJSON(this, "sample_node_info.json");
+//        exhibits.forEach(node -> Log.d(TAG, node.toString()));
 
 
         adapter = new SearchResultAdapter(this, exhibits);
 //        ArrayAdapter<Node> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, indexedExhibits);
-        PlannerViewModel plannerViewModel = new ViewModelProvider(this)
+        plannerViewModel = new ViewModelProvider(this)
                 .get(PlannerViewModel.class);
+
+        adapter.setOnAddBtnClickedHandler(plannerViewModel::addExhibit);
         plannerViewModel.getNodes().observe(this, adapter::populateSearch);
-//        adapter.setOnAddBtnClickedHandler(plannerViewModel::addExhibit);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

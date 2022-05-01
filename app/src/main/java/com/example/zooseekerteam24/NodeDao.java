@@ -31,7 +31,7 @@ public interface NodeDao {
     @Query ("SELECT * FROM `node` WHERE `kind`='EXHIBIT'")
     LiveData<List<ZooData.Node>> getAllLive();
 
-    @Query ("SELECT * FROM `node` WHERE `added`='true'")
+    @Query ("SELECT * FROM `node` WHERE `added`")
     LiveData<List<ZooData.Node>> getAllAddedLive();
 
     @Update
