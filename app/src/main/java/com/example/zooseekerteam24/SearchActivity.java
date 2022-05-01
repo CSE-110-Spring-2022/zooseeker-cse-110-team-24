@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -17,10 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -69,7 +65,7 @@ public class SearchActivity extends AppCompatActivity {
         plannerViewModel = new ViewModelProvider(this)
                 .get(PlannerViewModel.class);
 
-        adapter.setOnAddBtnClickedHandler(plannerViewModel::addExhibit);
+        adapter.setOnAddBtnClickedHandler(plannerViewModel::toggleExhibitAdded);
         plannerViewModel.getNodes().observe(this, adapter::populateSearch);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

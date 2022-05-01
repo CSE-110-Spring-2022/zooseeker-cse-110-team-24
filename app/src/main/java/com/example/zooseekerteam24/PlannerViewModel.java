@@ -52,7 +52,7 @@ public class PlannerViewModel extends AndroidViewModel {
     }
 
 
-    public void addExhibit(ZooData.Node exhibit){
+    public void toggleExhibitAdded(ZooData.Node exhibit){
         exhibit.added = !exhibit.added;
         nodeDao.update(exhibit);
     }
