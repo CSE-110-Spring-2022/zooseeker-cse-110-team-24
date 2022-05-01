@@ -1,6 +1,5 @@
 package com.example.zooseekerteam24;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,17 +7,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class PlannerActivity extends AppCompatActivity {
 
@@ -48,6 +41,7 @@ public class PlannerActivity extends AppCompatActivity {
         // TODO: get data from db to populate exhibits
         ZooData.Node n1 = new ZooData.Node();
         n1.name = "Dragon";
+        n1.id = "dragon1";
         n1.tags = Arrays.asList("mammal", "precious");
 
         ZooData.Node n2 = new ZooData.Node();

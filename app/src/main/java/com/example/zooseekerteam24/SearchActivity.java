@@ -55,7 +55,7 @@ public class SearchActivity extends AppCompatActivity {
         searchView = findViewById(R.id.searchView);
         lvResults = findViewById(R.id.lvResults);
         exhibits = ZooData.loadExhibitsFromJSON(this, "sample_node_info.json");
-//        indexedExhibits.forEach((strId, node) -> Log.d(TAG, node.toString()));
+//        indexedExhibits.forEach((id, node) -> Log.d(TAG, node.toString()));
 
 
         adapter = new SearchResultAdapter(this, onAddListener, exhibits);

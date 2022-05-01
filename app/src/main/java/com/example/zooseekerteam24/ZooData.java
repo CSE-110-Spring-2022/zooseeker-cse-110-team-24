@@ -38,7 +38,8 @@ public class ZooData {
         public Long rtId;
 
         @NonNull
-        public String strId;
+        public String id = "";
+
         public Kind kind;
         public String name;
 
@@ -50,7 +51,7 @@ public class ZooData {
         @Override
         public String toString() {
             return "Node{" +
-                    "strId='" + strId + '\'' +
+                    "id='" + id + '\'' +
                     ", kind=" + kind +
                     ", name='" + name + '\'' +
                     ", tags=" + tags +
@@ -75,7 +76,7 @@ public class ZooData {
 
             // index nodes
             indexedNodes = nodes.stream()
-                    .collect(Collectors.toMap(node -> node.strId, node->node));
+                    .collect(Collectors.toMap(node -> node.id, node->node));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,12 +92,12 @@ public class ZooData {
         return exhibits;
     }
 
-//    String strId;
+//    String id;
 //    String itemType;
 //    List<String> tags;
 //
-//    public ZooData(String strId, String itemType, List<String> tags) {
-//        this.strId = strId;
+//    public ZooData(String id, String itemType, List<String> tags) {
+//        this.id = id;
 //        this.itemType = itemType;
 //        this.tags = tags;
 //    }
@@ -104,7 +105,7 @@ public class ZooData {
 //    @Override
 //    public String toString() {
 //        return "Node{" +
-//                "strId='" + strId + '\'' +
+//                "id='" + id + '\'' +
 //                ", itemType='" + itemType + '\'' +
 //                ", tags=" + tags +
 //                '}';
