@@ -1,16 +1,18 @@
 package com.example.zooseekerteam24;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,12 +23,26 @@ public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
 
     Context context;
     List<ZooData.Node> allExhibits;
+    OnAddListener onAddListener;
+
+    public interface OnAddListener{
+        public void performOnAdd(int position);
+    }
 
     public SearchResultAdapter(@NonNull Context context, @NonNull List<ZooData.Node> exhibits) {
         super(context, 0, exhibits);
         this.context = context;
         this.allExhibits = new ArrayList<>(exhibits);
     }
+
+    public SearchResultAdapter(@NonNull Context context, OnAddListener onAddListener, @NonNull List<ZooData.Node> exhibits) {
+        super(context, 0, exhibits);
+        this.context = context;
+        this.allExhibits = new ArrayList<>(exhibits);
+        this.onAddListener = onAddListener;
+    }
+
+
 
     @NonNull
     @Override
@@ -39,16 +55,32 @@ public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
     public View getView(int position, @Nullable View itemView, @NonNull ViewGroup parent) {
         if (itemView == null) {
             itemView = LayoutInflater.from(context)
-                    .inflate(R.layout.node_item, parent, false);
+                    .inflate(R.layout.search_result_item, parent, false);
         }
 
         ZooData.Node exhibit = getItem(position);
+        Log.d("lolgetView", exhibit.toString());
+        Log.d("getView", (exhibit==null)+"");
 
         TextView tvName = itemView.findViewById(R.id.tvName);
+        TextView tvAdded = itemView.findViewById(R.id.tvAdded);
         tvName.setText(exhibit.name);
-        tvName.setOnClickListener(view -> {
-            Toast.makeText(context, ((TextView)view).getText() + " added", Toast.LENGTH_SHORT).show();;
-        });
+        if (exhibit.added){
+            tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+        } else {
+            tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.grey));
+            tvAdded.setOnClickListener(view -> {
+                tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                tvAdded.setClickable(false);
+                onAddListener.performOnAdd(position);
+            });
+        }
+
+//        tvName.setOnClickListener(view -> {
+//            onAddListener.performOnAdd(position);// TODO: questionable
+//        });
+
+
 
         return itemView;
     }

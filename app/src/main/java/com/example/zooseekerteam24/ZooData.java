@@ -2,6 +2,10 @@ package com.example.zooseekerteam24;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -17,7 +21,10 @@ import java.util.stream.Collectors;
 
 public class ZooData {
 
-    public static class Node{
+
+    @Entity(tableName = "node")
+    public static class Node {
+
         enum Kind{
             // The SerializedName annotation tells GSON how to convert
             // from the strings in our JSON to this Enum.
@@ -25,15 +32,21 @@ public class ZooData {
             @SerializedName("exhibit") EXHIBIT,
             @SerializedName("intersection") INTERSECTION
         }
-        public String id;
+
+        @PrimaryKey(autoGenerate = true)
+        public Long rtId;
+
+        @NonNull
+        public String strId;
         public Kind kind;
         public String name;
         public List<String> tags;
+        public boolean added = false;
 
         @Override
         public String toString() {
             return "Node{" +
-                    "id='" + id + '\'' +
+                    "strId='" + strId + '\'' +
                     ", kind=" + kind +
                     ", name='" + name + '\'' +
                     ", tags=" + tags +
@@ -58,7 +71,7 @@ public class ZooData {
 
             // index nodes
             indexedNodes = nodes.stream()
-                    .collect(Collectors.toMap(node -> node.id, node->node));
+                    .collect(Collectors.toMap(node -> node.strId, node->node));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -74,12 +87,12 @@ public class ZooData {
         return exhibits;
     }
 
-//    String id;
+//    String strId;
 //    String itemType;
 //    List<String> tags;
 //
-//    public ZooData(String id, String itemType, List<String> tags) {
-//        this.id = id;
+//    public ZooData(String strId, String itemType, List<String> tags) {
+//        this.strId = strId;
 //        this.itemType = itemType;
 //        this.tags = tags;
 //    }
@@ -87,7 +100,7 @@ public class ZooData {
 //    @Override
 //    public String toString() {
 //        return "Node{" +
-//                "id='" + id + '\'' +
+//                "strId='" + strId + '\'' +
 //                ", itemType='" + itemType + '\'' +
 //                ", tags=" + tags +
 //                '}';

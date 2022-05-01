@@ -7,19 +7,21 @@
     tools:context=".SearchActivity">
 
 
-    <AutoCompleteTextView
+    <SearchView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="search here"
         android:layout_alignParentTop="true"
-        android:id="@+id/searchBar"
-        android:maxLines="1"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SearchActivity"
-        android:layout_centerInParent="true"
-        android:textSize="30sp"/>
+        android:id="@+id/searchView"/>
+
+    <ListView
+        android:id="@+id/lvResults"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/btmNavi"
+        android:layout_below="@id/searchView"
+        android:padding="10dp" />
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
@@ -30,6 +32,8 @@
         app:itemBackground="@color/teal_700"
         app:itemTextColor="@drawable/selector"
         app:itemIconTint="@drawable/selector"/>
+
+
 
 
 

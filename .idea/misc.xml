@@ -9,8 +9,10 @@
         <entry key="app/src/main/res/layout/activity_direction.xml" value="0.2234375" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.16770833333333332" />
         <entry key="app/src/main/res/layout/activity_planner.xml" value="0.15364583333333334" />
-        <entry key="app/src/main/res/layout/activity_search.xml" value="0.17063159144092285" />
+        <entry key="app/src/main/res/layout/activity_search.xml" value="0.375" />
         <entry key="app/src/main/res/layout/node_item.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/planner_item.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/search_result_item.xml" value="0.17291666666666666" />
         <entry key="app/src/main/res/menu/menu.xml" value="0.16770833333333332" />
       </map>
     </option>
