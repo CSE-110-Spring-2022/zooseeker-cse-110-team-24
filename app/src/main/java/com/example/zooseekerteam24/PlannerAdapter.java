@@ -21,6 +21,7 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
 //    private Context context;
     private List<ZooData.Node> exhibits = new ArrayList<ZooData.Node>();
     private Consumer<ZooData.Node> onDeleteBtnClicked;
+
 //    private OnDeleteListener onDeleteListener;
 
 //    public interface OnDeleteListener{

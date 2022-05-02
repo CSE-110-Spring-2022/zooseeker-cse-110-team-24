@@ -23,13 +23,13 @@ public class SearchActivity extends AppCompatActivity {
     public static final String KEY_EXHIBIT = "KEY_EXHIBIT";
     private static final String TAG = "SearchActivity";
     private BottomNavigationView btmNavi;
+
 //    private AutoCompleteTextView searchBar;
     private SearchView searchView;
     private List<ZooData.Node> exhibits = new ArrayList<>();
     private ListView lvResults;
     private SearchResultAdapter adapter;
     PlannerViewModel plannerViewModel;
-
 
 //    SearchResultAdapter.OnAddListener onAddListener = new SearchResultAdapter.OnAddListener() {
 //        @Override

@@ -24,7 +24,7 @@ public interface NodeDao {
     @Query("SELECT * FROM `node` WHERE `rtId`=:rtid")
     ZooData.Node get(long rtid);
 
-    @Query ("SELECT * FROM `node`")
+    @Query ("SELECT * FROM `node` WHERE `added`")
     List<ZooData.Node> getAll();
 
     @Query ("SELECT * FROM `node` WHERE `kind`='EXHIBIT'")
@@ -35,6 +35,7 @@ public interface NodeDao {
 
     @Update
     int update(ZooData.Node exhibit);
+
 
 //    @Delete
 //    List<Long> deleteAll (ZooData.Node exhibit);
