@@ -82,21 +82,20 @@ public class PlannerActivity extends AppCompatActivity {
 
         //Assuming exhibits is already the TARGETS
         // < --
-        System.err.println("THIS SHOULD BE CALLED EVERYTIME I CLICK Planner");
-        System.err.println("EXHIBITS SIZE = " + exhibits.size());
         nodes = ZooData.loadNodesFromJSON(this ,nodeFile);
         edges = ZooData.loadEdgesFromJSON(this, edgeFile);
         g = ZooData.loadZooGraphJSON(this,graphFile);
-//        System.err.println("NODES SIZE =" + nodes.size());
-//        System.err.println("EDGES SIZE =" + edges.size());
-//        System.err.println("Graph SIZE =" + g.vertexSet().size());
 
         generator = new RouteGenerator(this, exhibits, nodes, edges ,g );
         //ArrayList<ZooData.Node> TEMP = (ArrayList<ZooData.Node>) exhibits;
         NodeDao nodeDao = NodeDatabase.getSingleton(this).nodeDao();
         exhibits = nodeDao.getAll();
-        System.err.println("EXHIBITS SIZE = " + exhibits.size());
-        exhibits = generator.pathGenerator(exhibits);
+        generator.setTargets(exhibits);
+        exhibits = generator.pathGenerator();
+
+        System.err.println(exhibits);
+
+
         // --- >
 
         // Fetch the lasted date and repopulate the IU
@@ -146,6 +145,5 @@ public class PlannerActivity extends AppCompatActivity {
         return this.exhibits;
     }
 
-
-
+    //public Map<ZooData.Node, Double>
 }

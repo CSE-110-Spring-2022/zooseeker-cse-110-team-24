@@ -28,7 +28,7 @@ import org.jgrapht.nio.json.JSONImporter;
 public class ZooData {
 
     @Entity(tableName = "node")
-    public static class Node{
+    public static class Node {
 
         enum Kind{
             // The SerializedName annotation tells GSON how to convert
@@ -63,6 +63,7 @@ public class ZooData {
                     ", added=" + added +
                     '}';
         }
+
     }
 
     public static class Edge {
