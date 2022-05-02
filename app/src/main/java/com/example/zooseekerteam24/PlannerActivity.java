@@ -15,6 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jgrapht.Graph;
@@ -44,15 +45,14 @@ public class PlannerActivity extends AppCompatActivity {
 //        }
 //    };
 
-    //Dylan's copy paste
+    private String edgeFile = "sample_edge_info.json";
+    private String graphFile = "sample_zoo_graph.json";
+    private String nodeFile = "sample_exhibits.json";
+
     private List<ZooData.Node> targets;
     private Map<String,ZooData.Node> nodes;
     private Map<String,ZooData.Edge> edges;
     private Graph<String,IdentifiedWeightedEdge> g;
-
-    private String edgeFile = "sample_edge_info.json";
-    private String graphFile = "sample_zoo_graph.json";
-    private String nodeFile = "sample_exhibits.json";
 
 
     @Override
@@ -82,9 +82,11 @@ public class PlannerActivity extends AppCompatActivity {
 
         //Assuming exhibits is already the TARGETS
         // < --
-        nodes = ZooData.loadNodesFromJSON(this ,nodeFile);
+
+        nodes = ZooData.loadNodesFromJSON(this, nodeFile);
         edges = ZooData.loadEdgesFromJSON(this, edgeFile);
-        g = ZooData.loadZooGraphJSON(this,graphFile);
+        g = ZooData.loadZooGraphJSON(this, graphFile);
+
 
         generator = new RouteGenerator(this, exhibits, nodes, edges ,g );
         //ArrayList<ZooData.Node> TEMP = (ArrayList<ZooData.Node>) exhibits;
@@ -92,9 +94,6 @@ public class PlannerActivity extends AppCompatActivity {
         exhibits = nodeDao.getAll();
         generator.setTargets(exhibits);
         exhibits = generator.pathGenerator();
-
-        System.err.println(exhibits);
-
 
         // --- >
 
@@ -140,10 +139,22 @@ public class PlannerActivity extends AppCompatActivity {
         });
     }
 
-    // BY: PRPL & BLOO (JOSE AND DYLAN)
+
     public List<ZooData.Node> getPlannedExhibits(){
         return this.exhibits;
     }
 
-    //public Map<ZooData.Node, Double>
+    public Map<ZooData.Node, Double> generateDistances(List<ZooData.Node> route){
+        Map<ZooData.Node, Double> returnMap = new HashMap<ZooData.Node, Double>();
+
+        returnMap.put(route.get(0),(g.getEdge(route.get(0).id,route.get(1).id)).getWeight());
+        for(int i = 1; i < route.size()-1; i++){
+            //holy FUCK
+
+            returnMap.put(route.get(i),(g.getEdge(route.get(i).id,
+                    route.get(i+1).id)).getWeight() +
+                    returnMap.get(route.get(i-1)));
+        }
+        return null;
+    }
 }
