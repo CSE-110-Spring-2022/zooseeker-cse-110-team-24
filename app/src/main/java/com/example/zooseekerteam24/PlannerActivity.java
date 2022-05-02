@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.webkit.WebSettings;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -16,14 +17,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.jgrapht.Graph;
+
+import java.util.List;
+import java.util.Map;
+
 public class PlannerActivity extends AppCompatActivity {
 
     private static final String TAG = "PlannerActivity";
     private BottomNavigationView btmNavi;
+
     private List<ZooData.Node> exhibits = Collections.emptyList();
     private RecyclerView rvPlanner;
     private PlannerAdapter adapter;
     private PlannerViewModel plannerViewModel;
+    private RouteGenerator generator;
 
 //    private PlannerAdapter.OnDeleteListener onDeleteListener = new PlannerAdapter.OnDeleteListener(){
 //
@@ -35,6 +43,17 @@ public class PlannerActivity extends AppCompatActivity {
 //            adapter.notifyItemRemoved(position);
 //        }
 //    };
+
+    //Dylan's copy paste
+    private List<ZooData.Node> targets;
+    private Map<String,ZooData.Node> nodes;
+    private Map<String,ZooData.Edge> edges;
+    private Graph<String,IdentifiedWeightedEdge> g;
+
+    private String edgeFile = "sample_edge_info.json";
+    private String graphFile = "sample_zoo_graph.json";
+    private String nodeFile = "sample_exhibits.json";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +79,25 @@ public class PlannerActivity extends AppCompatActivity {
 //        exhibits = NodeDatabase.getSingleton(this).nodeDao().getAll();
 //        Log.d(TAG, ""+exhibits.size());
         adapter = new PlannerAdapter();
+
+        //Assuming exhibits is already the TARGETS
+        // < --
+        System.err.println("THIS SHOULD BE CALLED EVERYTIME I CLICK Planner");
+        System.err.println("EXHIBITS SIZE = " + exhibits.size());
+        nodes = ZooData.loadNodesFromJSON(this ,nodeFile);
+        edges = ZooData.loadEdgesFromJSON(this, edgeFile);
+        g = ZooData.loadZooGraphJSON(this,graphFile);
+//        System.err.println("NODES SIZE =" + nodes.size());
+//        System.err.println("EDGES SIZE =" + edges.size());
+//        System.err.println("Graph SIZE =" + g.vertexSet().size());
+
+        generator = new RouteGenerator(this, exhibits, nodes, edges ,g );
+        //ArrayList<ZooData.Node> TEMP = (ArrayList<ZooData.Node>) exhibits;
+        NodeDao nodeDao = NodeDatabase.getSingleton(this).nodeDao();
+        exhibits = nodeDao.getAll();
+        System.err.println("EXHIBITS SIZE = " + exhibits.size());
+        exhibits = generator.pathGenerator(exhibits);
+        // --- >
 
         // Fetch the lasted date and repopulate the IU
         plannerViewModel = new ViewModelProvider(this)
@@ -102,4 +140,12 @@ public class PlannerActivity extends AppCompatActivity {
 
         });
     }
+
+    // BY: PRPL & BLOO (JOSE AND DYLAN)
+    public List<ZooData.Node> getPlannedExhibits(){
+        return this.exhibits;
+    }
+
+
+
 }

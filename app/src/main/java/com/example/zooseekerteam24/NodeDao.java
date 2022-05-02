@@ -25,7 +25,7 @@ public interface NodeDao {
     @Query("SELECT * FROM `node` WHERE `rtId`=:rtId")
     ZooData.Node get(long rtId);
 
-    @Query ("SELECT * FROM `node`")
+    @Query ("SELECT * FROM `node` WHERE `added`")
     List<ZooData.Node> getAll();
 
     @Query ("SELECT * FROM `node` WHERE `kind`='EXHIBIT'")
