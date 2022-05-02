@@ -78,8 +78,8 @@ public class NodeDatabaseTest {
 
         ZooData.Node nget = dao.get(id);
 
-        int itemsDeleted = dao.delete(nget);
-        assertEquals(1, itemsDeleted);
+        //int itemsDeleted = dao.delete(nget);
+        //assertEquals(1, itemsDeleted);
         assertNull(dao.get(id));
     }
 
