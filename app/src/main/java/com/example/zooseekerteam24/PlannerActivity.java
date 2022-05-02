@@ -65,6 +65,7 @@ public class PlannerActivity extends AppCompatActivity {
         plannerViewModel = new ViewModelProvider(this)
                 .get(PlannerViewModel.class);
         plannerViewModel.getAddedNodes().observe(this, adapter::populatePlanner);
+
         adapter.setOnDeleteBtnClickedHandler(plannerViewModel::toggleExhibitAdded);
 //         The observer here is adapter::populatePlanner, which receives event only when owner is active
 

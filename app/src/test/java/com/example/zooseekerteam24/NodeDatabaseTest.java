@@ -3,6 +3,7 @@ package com.example.zooseekerteam24;
 import static org.junit.Assert.*;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.room.Room;
@@ -12,13 +13,16 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4.class)
 public class NodeDatabaseTest {
     private NodeDao dao;
@@ -27,6 +31,7 @@ public class NodeDatabaseTest {
     @Before
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
+//        db = NodeDatabase.getSingleton(context);
         db = Room.inMemoryDatabaseBuilder(context, NodeDatabase.class)
                 .allowMainThreadQueries()
                 .build();
@@ -39,17 +44,20 @@ public class NodeDatabaseTest {
         n1.name = "Dragon";
         n1.id = "dragon1";
         n1.tags = Arrays.asList("mammal", "precious");
+        long id = dao.insert(n1);
+        ZooData.Node node = dao.get(id);
 
-        ZooData.Node n2 = new ZooData.Node();
-        n2.name = "Ditto";
-        n2.id = "ditto1";
-        n2.tags = Arrays.asList("pokemon", "morphs");
+        // flip its add
+        node.added = !node.added;
+        int nodeUpdated = dao.update(node);
 
-        long id1 = dao.insert(n1);
-        long id2 = dao.insert(n2);
+        assertEquals(1, nodeUpdated);
 
-        // Check that these have all been inserted with unique IDs
-        assertNotEquals(id1, id2);
+        node = dao.get(id);
+        assertNotNull(node);
+        assertEquals(true, node.added);
+
+
     }
 
     @Test
@@ -61,10 +69,14 @@ public class NodeDatabaseTest {
 
         long id = dao.insert(n1);
 
-        ZooData.Node nget = dao.get(id);
-        assertEquals(n1.name, nget.name);
-        assertEquals(n1.tags, nget.tags);
-        assertEquals(n1.rtId, nget.rtId);
+//        String ID_OF_LION = "lions";
+        ZooData.Node node = dao.get(id);
+
+        assertNotNull(node);
+        assertEquals(n1.name, node.name);
+        assertEquals(id, node.rtId);
+        assertEquals(n1.id, node.id);
+        assertEquals(n1.tags, node.tags);
     }
 
     @Test
@@ -73,14 +85,19 @@ public class NodeDatabaseTest {
         n1.name = "Dragon";
         n1.id = "dragon1";
         n1.tags = Arrays.asList("mammal", "precious");
-
+        n1.added = true;
         long id = dao.insert(n1);
+        ZooData.Node node = dao.get(id);
 
-        ZooData.Node nget = dao.get(id);
+        // flip its add
+        node.added = !node.added;
+        int nodeUpdated = dao.update(node);
 
-        int itemsDeleted = dao.delete(nget);
-        assertEquals(1, itemsDeleted);
-        assertNull(dao.get(id));
+        assertEquals(1, nodeUpdated);
+
+        node = dao.get(id);
+        assertNotNull(node);
+        assertEquals(false, node.added);
     }
 
     @After

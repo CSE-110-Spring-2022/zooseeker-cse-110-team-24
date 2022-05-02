@@ -2,7 +2,6 @@ package com.example.zooseekerteam24;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -22,8 +21,8 @@ public interface NodeDao {
     @Insert
     List<Long> insertAll (List<ZooData.Node> exhibits);
 
-    @Query("SELECT * FROM `node` WHERE `rtId`=:rtId")
-    ZooData.Node get(long rtId);
+    @Query("SELECT * FROM `node` WHERE `rtId`=:rtid")
+    ZooData.Node get(long rtid);
 
     @Query ("SELECT * FROM `node`")
     List<ZooData.Node> getAll();

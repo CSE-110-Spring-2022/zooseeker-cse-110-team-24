@@ -52,6 +52,7 @@ public class PlannerViewModel extends AndroidViewModel {
     }
 
 
+    // Modify whether a Node is added
     public void toggleExhibitAdded(ZooData.Node exhibit){
         exhibit.added = !exhibit.added;
         nodeDao.update(exhibit);
