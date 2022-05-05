@@ -115,4 +115,31 @@ public class RouteGenerator {
 
         return route;
     }
+
+    // Generates Cumulative Distances ;)
+    public Map<ZooData.Node, Double> generateCumDistances(List<ZooData.Node> route){
+        Map<ZooData.Node, Double> returnMap = new HashMap<ZooData.Node, Double>();
+
+        returnMap.put(route.get(0),(g.getEdge(route.get(0).id,route.get(1).id)).getWeight());
+        for(int i = 1; i < route.size()-1; i++){
+            //holy FUCK
+
+            returnMap.put(route.get(i),(g.getEdge(route.get(i).id,
+                    route.get(i+1).id)).getWeight() +
+                    returnMap.get(route.get(i-1)));
+        }
+        return returnMap;
+    }
+
+    // Generates Individual Distances
+    public Map<ZooData.Node, Double> generateDistances(List<ZooData.Node> route){
+        Map<ZooData.Node, Double> returnMap = new HashMap<ZooData.Node, Double>();
+        for(int i = 0; i < route.size()-1; i++){
+            //holy FUCK
+
+            returnMap.put(route.get(i),(g.getEdge(route.get(i).id,
+                    route.get(i+1).id)).getWeight());
+        }
+        return returnMap;
+    }
 }

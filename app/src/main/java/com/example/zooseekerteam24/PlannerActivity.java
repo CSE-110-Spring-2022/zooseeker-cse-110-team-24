@@ -94,6 +94,7 @@ public class PlannerActivity extends AppCompatActivity {
         exhibits = nodeDao.getAll();
         generator.setTargets(exhibits);
         exhibits = generator.pathGenerator();
+        adapter.populatePlanner(exhibits);
 
         // --- >
 
@@ -144,17 +145,4 @@ public class PlannerActivity extends AppCompatActivity {
         return this.exhibits;
     }
 
-    public Map<ZooData.Node, Double> generateDistances(List<ZooData.Node> route){
-        Map<ZooData.Node, Double> returnMap = new HashMap<ZooData.Node, Double>();
-
-        returnMap.put(route.get(0),(g.getEdge(route.get(0).id,route.get(1).id)).getWeight());
-        for(int i = 1; i < route.size()-1; i++){
-            //holy FUCK
-
-            returnMap.put(route.get(i),(g.getEdge(route.get(i).id,
-                    route.get(i+1).id)).getWeight() +
-                    returnMap.get(route.get(i-1)));
-        }
-        return null;
-    }
 }

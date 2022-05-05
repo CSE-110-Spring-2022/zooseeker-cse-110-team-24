@@ -57,6 +57,10 @@ public class PlannerViewModel extends AndroidViewModel {
         nodeDao.update(exhibit);
     }
 
+    public void reOrder(List<ZooData.Node> oldExhibits, List<ZooData.Node> newExhibits) {
+        oldExhibits = newExhibits;
+    }
+
 //    private void loadNodes() {
 //        // Do an asynchronous operation to fetch nodes.
 //        nodes = nodeDao.getAllLive();

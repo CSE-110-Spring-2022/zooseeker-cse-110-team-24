@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHolder> {
@@ -21,6 +22,8 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
 //    private Context context;
     private List<ZooData.Node> exhibits = new ArrayList<ZooData.Node>();
     private Consumer<ZooData.Node> onDeleteBtnClicked;
+    private BiConsumer<List<ZooData.Node>, List<ZooData.Node>> onOrderCalled;
+
 //    private OnDeleteListener onDeleteListener;
 
 //    public interface OnDeleteListener{
@@ -32,6 +35,10 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
 //        this.context = context;
 //        this.onDeleteListener = onDeleteListener;
 //    }
+
+    public void setOnOrderCalledHandler(BiConsumer<List<ZooData.Node>,List<ZooData.Node>> onOrderCalled){
+        this.onOrderCalled = onOrderCalled;
+    }
 
     public void setOnDeleteBtnClickedHandler(Consumer<ZooData.Node> onDeleteBtnClicked){
         this.onDeleteBtnClicked = onDeleteBtnClicked;
