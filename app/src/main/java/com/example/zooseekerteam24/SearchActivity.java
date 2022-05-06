@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,7 +73,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchView.clearFocus();
-                if (searchView.getQuery()==""){
+                if (TextUtils.isEmpty(searchView.getQuery())){
                     lvResults.setVisibility(View.INVISIBLE);
                 }
                 // TODO: if exhibits.contains
@@ -89,6 +90,10 @@ public class SearchActivity extends AppCompatActivity {
                 // TODO: search add not working
                 if (lvResults.getVisibility()== View.INVISIBLE){
                     lvResults.setVisibility(View.VISIBLE);
+                }
+
+                if (TextUtils.isEmpty(searchView.getQuery())){
+                    lvResults.setVisibility(View.INVISIBLE);
                 }
 
                 adapter.getFilter().filter(newText);
