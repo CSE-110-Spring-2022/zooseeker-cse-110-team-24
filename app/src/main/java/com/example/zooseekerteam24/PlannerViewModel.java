@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * helper class that store and manage UI-related data in a lifecycle-aware way
@@ -55,6 +56,10 @@ public class PlannerViewModel extends AndroidViewModel {
     public void toggleExhibitAdded(ZooData.Node exhibit){
         exhibit.added = !exhibit.added;
         nodeDao.update(exhibit);
+    }
+
+    public void orderExhibitsAdded(){
+
     }
 
     public void reOrder(List<ZooData.Node> oldExhibits, List<ZooData.Node> newExhibits) {

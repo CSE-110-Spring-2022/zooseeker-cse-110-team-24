@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-@Database(entities = {ZooData.Node.class}, version = 1)
+@Database(entities = {ZooData.Node.class}, version = 1, exportSchema = false)
 public abstract class NodeDatabase extends RoomDatabase {
     private static final String TAG = "NodeDatabase";
     private static NodeDatabase singleton = null;

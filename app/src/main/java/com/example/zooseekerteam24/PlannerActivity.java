@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebSettings;
+import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -22,6 +24,8 @@ import org.jgrapht.Graph;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class PlannerActivity extends AppCompatActivity {
 
@@ -30,20 +34,15 @@ public class PlannerActivity extends AppCompatActivity {
 
     private List<ZooData.Node> exhibits = Collections.emptyList();
     private RecyclerView rvPlanner;
+    private Button btnOrder;
     private PlannerAdapter adapter;
     private PlannerViewModel plannerViewModel;
     private RouteGenerator generator;
+    private Consumer<Map<ZooData.Node, Double>> onOrderClicked;
 
-//    private PlannerAdapter.OnDeleteListener onDeleteListener = new PlannerAdapter.OnDeleteListener(){
-//
-//        @Override
-//        public void performOnDelete(int position) {
-//
-//            Log.d(TAG, "deleted: " + exhibits.get(position).name);
-//            exhibits.remove(position);
-//            adapter.notifyItemRemoved(position);
-//        }
-//    };
+    public void setOnOrderClickedHandler(Consumer<Map<ZooData.Node, Double>> onOrderClicked){
+        this.onOrderClicked = onOrderClicked;
+    }
 
     private String edgeFile = "sample_edge_info.json";
     private String graphFile = "sample_zoo_graph.json";
@@ -54,12 +53,17 @@ public class PlannerActivity extends AppCompatActivity {
     private Map<String,ZooData.Edge> edges;
     private Graph<String,IdentifiedWeightedEdge> g;
 
+    private NodeDao nodeDao;
+    private Map<String, Double> distanceMap = new HashMap<>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planner);
         rvPlanner = findViewById(R.id.rvPlanner);
+        btnOrder = findViewById(R.id.btnOrder);
 
 
         // TODO: get data from db to populate exhibits
@@ -88,13 +92,8 @@ public class PlannerActivity extends AppCompatActivity {
         g = ZooData.loadZooGraphJSON(this, graphFile);
 
 
-        generator = new RouteGenerator(this, exhibits, nodes, edges ,g );
+        generator = new RouteGenerator(this, exhibits, nodes, edges ,g);
         //ArrayList<ZooData.Node> TEMP = (ArrayList<ZooData.Node>) exhibits;
-        NodeDao nodeDao = NodeDatabase.getSingleton(this).nodeDao();
-        exhibits = nodeDao.getAll();
-        generator.setTargets(exhibits);
-        exhibits = generator.pathGenerator();
-        adapter.populatePlanner(exhibits);
 
         // --- >
 
@@ -103,6 +102,36 @@ public class PlannerActivity extends AppCompatActivity {
                 .get(PlannerViewModel.class);
         plannerViewModel.getAddedNodes().observe(this, adapter::populatePlanner);
         adapter.setOnDeleteBtnClickedHandler(plannerViewModel::toggleExhibitAdded);
+
+
+
+        nodeDao = NodeDatabase.getSingleton(this).nodeDao();
+        exhibits = nodeDao.getAllAdded();
+        exhibits.forEach(n -> Log.d("yoadd", "" + n.toString()));
+//
+        generator.setTargets(nodeDao.getAllAdded());
+
+
+        distanceMap = generator.fakeMethod();
+        distanceMap.forEach((s, d) -> Log.d("yomap", d + " " + s));
+
+        exhibits.forEach(ex -> {
+            ex.cumDistance = distanceMap.getOrDefault(ex.id, -10.0);
+            nodeDao.update(ex);
+        });
+        adapter.populatePlanner(exhibits);
+//        List<ZooData.Node> route = generator.pathGenerator();
+//        route.forEach(n -> Log.d("yogen", "" + n.toString()));
+//
+//        Map<ZooData.Node, Double> map = generator.generateDistances(route);
+
+//        btnOrder.setOnClickListener( v -> {
+//            onOrderClicked.accept(map);
+//            setOnOrderClickedHandler(plannerViewModel::orderExhibitsAdded);
+//        });
+
+
+
 //         The observer here is adapter::populatePlanner, which receives event only when owner is active
 
         // TODO: avoid duplicate insert

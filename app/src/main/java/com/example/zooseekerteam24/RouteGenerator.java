@@ -1,6 +1,7 @@
 package com.example.zooseekerteam24;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -11,10 +12,12 @@ import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RouteGenerator {
 
@@ -129,6 +132,57 @@ public class RouteGenerator {
                     returnMap.get(route.get(i-1)));
         }
         return returnMap;
+    }
+
+    public Map<String, Double> fakeMethod(){
+//        List<ZooData.Node> route = pathGenerator();
+        GraphPath<String, IdentifiedWeightedEdge> path;
+        HashMap<String, Double> distancedMap = new HashMap<>();
+        targets = pathGenerator().stream()
+                .filter(n -> n.kind== ZooData.Node.Kind.EXHIBIT)
+                .collect(Collectors.toList());
+        targets.add(0, getEntranceNode());
+        targets.add(getEntranceNode());
+        double totalDistance = 0;
+//        targets.add(getEntranceNode());
+
+//        path = DijkstraShortestPath
+//                    .findPathBetween(g, targets.get(0).id, targets.get(targets.size()-1).id);
+//        System.out.printf("The shortest path from '%s' to '%s' is:\n", targets
+//                .get(0).name, targets.get(targets.size()-1).name);
+//        int j = 1;
+//        for (IdentifiedWeightedEdge e : path.getEdgeList()) {
+//            System.out.printf("  %d. Walk %.0f meters along %s from '%s' to '%s'.\n",
+//                    j,
+//                    g.getEdgeWeight(e),
+//                    edges.get(e.getId()).street,
+//                    nodes.get(g.getEdgeSource(e).toString()).name,
+//                    nodes.get(g.getEdgeTarget(e).toString()).name);
+//            j++;
+//        }
+        for (int i = 0; i < targets.size()-1; i++){
+            ZooData.Node start = targets.get(i);
+            ZooData.Node end = targets.get(i+1);
+            path = DijkstraShortestPath
+                    .findPathBetween(g, start.id, end.id);
+            System.out.printf("The shortest path from '%s' to '%s' is:\n", start.name, end.name);
+            int j = 1;
+            for (IdentifiedWeightedEdge e : path.getEdgeList()) {
+                System.out.printf("  %d. Walk %.0f meters along %s from '%s' to '%s'.\n",
+                        j,
+                        g.getEdgeWeight(e),
+                        edges.get(e.getId()).street,
+                        nodes.get(g.getEdgeSource(e).toString()).name,
+                        nodes.get(g.getEdgeTarget(e).toString()).name);
+                j++;
+            }
+            if (end.kind == ZooData.Node.Kind.EXHIBIT){
+                totalDistance += path.getWeight();
+                distancedMap.put(end.id, totalDistance);
+            }
+            System.out.printf("total weight = %.0f\n", path.getWeight());
+        }
+        return distancedMap;
     }
 
     // Generates Individual Distances
