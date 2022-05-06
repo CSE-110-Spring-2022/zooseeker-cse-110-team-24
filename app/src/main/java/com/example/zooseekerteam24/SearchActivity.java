@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,10 +73,13 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchView.clearFocus();
-                if (searchView.getQuery()==""){
+                //make default no results when nothing to filter by
+                if (TextUtils.isEmpty(searchView.getQuery())){
                     lvResults.setVisibility(View.INVISIBLE);
                 }
+
                 // TODO: if exhibits.contains
+                //filter based on inputted text
                 Log.d("onQueryTextSubmit", query);
                 adapter.getFilter().filter(query);
                 return false;
@@ -84,13 +88,17 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d("onQueryTextChange", newText);
-                // TODO: blank when not searching
-                // TODO: suggestion
-                // TODO: search add not working
-                if (lvResults.getVisibility()== View.INVISIBLE){
+                //make results visible once there is content to filter for
+                if (lvResults.getVisibility() == View.INVISIBLE){
                     lvResults.setVisibility(View.VISIBLE);
                 }
 
+                //show no results if there is no text to filter by
+                if (TextUtils.isEmpty(searchView.getQuery())){
+                    lvResults.setVisibility(View.INVISIBLE);
+                }
+
+                //filter based on inputted text
                 adapter.getFilter().filter(newText);
                 adapter.notifyDataSetChanged();
                 return false;
@@ -98,15 +106,6 @@ public class SearchActivity extends AppCompatActivity {
 
 
         });
-
-//        searchView.oncl
-//        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-//            @Override
-//            public boolean onClose() {
-//                lvResults.setVisibility(View.INVISIBLE);
-//                return true;
-//            }
-//        });
 
         lvResults.setAdapter(adapter);
 
