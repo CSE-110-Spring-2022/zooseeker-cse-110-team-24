@@ -38,9 +38,9 @@ public class PlannerActivity extends AppCompatActivity {
     private PlannerAdapter adapter;
     private PlannerViewModel plannerViewModel;
     private RouteGenerator generator;
-    private Consumer<Map<ZooData.Node, Double>> onOrderClicked;
+    private Consumer<RouteGenerator> onOrderClicked;
 
-    public void setOnOrderClickedHandler(Consumer<Map<ZooData.Node, Double>> onOrderClicked){
+    public void setOnOrderClickedHandler(Consumer<RouteGenerator> onOrderClicked){
         this.onOrderClicked = onOrderClicked;
     }
 
@@ -103,23 +103,25 @@ public class PlannerActivity extends AppCompatActivity {
         plannerViewModel.getAddedNodes().observe(this, adapter::populatePlanner);
         adapter.setOnDeleteBtnClickedHandler(plannerViewModel::toggleExhibitAdded);
 
+//        onOrderClicked.accept(generator);
+//        setOnOrderClickedHandler(plannerViewModel::orderExhibitsAdded);
 
+        btnOrder.setOnClickListener(v -> plannerViewModel.orderExhibitsAdded(generator));
+        btnOrder.performClick();
 
-        nodeDao = NodeDatabase.getSingleton(this).nodeDao();
-        exhibits = nodeDao.getAllAdded();
-        exhibits.forEach(n -> Log.d("yoadd", "" + n.toString()));
+//        nodeDao = NodeDatabase.getSingleton(this).nodeDao();
+//        exhibits = nodeDao.getAllAdded();
+//        exhibits.forEach(n -> Log.d("yoadd", "" + n.toString()));
+////
+//        generator.setTargets(nodeDao.getAllAdded());
+//        distanceMap = generator.fakeMethod();
+//        distanceMap.forEach((s, d) -> Log.d("yomap", d + " " + s));
 //
-        generator.setTargets(nodeDao.getAllAdded());
-
-
-        distanceMap = generator.fakeMethod();
-        distanceMap.forEach((s, d) -> Log.d("yomap", d + " " + s));
-
-        exhibits.forEach(ex -> {
-            ex.cumDistance = distanceMap.getOrDefault(ex.id, -10.0);
-            nodeDao.update(ex);
-        });
-        adapter.populatePlanner(exhibits);
+//        exhibits.forEach(ex -> {
+//            ex.cumDistance = distanceMap.getOrDefault(ex.id, -10.0);
+//            nodeDao.update(ex);
+//        });
+//        adapter.populatePlanner(exhibits);
 //        List<ZooData.Node> route = generator.pathGenerator();
 //        route.forEach(n -> Log.d("yogen", "" + n.toString()));
 //

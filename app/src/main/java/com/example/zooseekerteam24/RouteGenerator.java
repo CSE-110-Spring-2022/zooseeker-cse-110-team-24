@@ -138,9 +138,6 @@ public class RouteGenerator {
 //        List<ZooData.Node> route = pathGenerator();
         GraphPath<String, IdentifiedWeightedEdge> path;
         HashMap<String, Double> distancedMap = new HashMap<>();
-        targets = pathGenerator().stream()
-                .filter(n -> n.kind== ZooData.Node.Kind.EXHIBIT)
-                .collect(Collectors.toList());
         targets.add(0, getEntranceNode());
         targets.add(getEntranceNode());
         double totalDistance = 0;

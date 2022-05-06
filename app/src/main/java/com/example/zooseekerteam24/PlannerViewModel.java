@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +59,15 @@ public class PlannerViewModel extends AndroidViewModel {
         nodeDao.update(exhibit);
     }
 
-    public void orderExhibitsAdded(){
-
+    public void orderExhibitsAdded(RouteGenerator generator){
+        Log.d("orderExhibitsAdded", "is called");
+        List<ZooData.Node> exhibits = nodeDao.getAllAdded();
+        generator.setTargets(exhibits);
+        Map<String, Double> distanceMap = generator.fakeMethod();
+        exhibits.forEach(ex -> {
+            ex.cumDistance = distanceMap.getOrDefault(ex.id, -10.0);
+            nodeDao.update(ex);
+        });
     }
 
     public void reOrder(List<ZooData.Node> oldExhibits, List<ZooData.Node> newExhibits) {
