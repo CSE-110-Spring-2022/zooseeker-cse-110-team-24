@@ -63,7 +63,7 @@ public class PlannerViewModel extends AndroidViewModel {
         Log.d("orderExhibitsAdded", "is called");
         List<ZooData.Node> exhibits = nodeDao.getAllAdded();
         generator.setTargets(exhibits);
-        Map<String, Double> distanceMap = generator.fakeMethod();
+        Map<String, Double> distanceMap = generator.exhibitDistances(exhibits);
         exhibits.forEach(ex -> {
             ex.cumDistance = distanceMap.getOrDefault(ex.id, -10.0);
             nodeDao.update(ex);

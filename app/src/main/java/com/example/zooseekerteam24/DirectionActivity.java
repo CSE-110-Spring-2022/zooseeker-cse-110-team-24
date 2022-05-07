@@ -34,7 +34,7 @@ public class DirectionActivity extends AppCompatActivity {
     private List<ZooData.Node> exhibits = Collections.emptyList();
     private List<ZooData.Node> route = Collections.emptyList();
 
-    private Map<ZooData.Node, Double> distanceMap = new HashMap<ZooData.Node, Double>();
+    private List<Double> distanceList = new ArrayList<Double>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +53,15 @@ public class DirectionActivity extends AppCompatActivity {
         NodeDao nodeDao = NodeDatabase.getSingleton(this).nodeDao();
         exhibits = nodeDao.getAll();
         generator.setTargets(exhibits);
-        route = generator.pathGenerator();
+        if(RouteGenerator.staticroute == null){
+            route = generator.pathGenerator();
+        } else {
+            route = RouteGenerator.staticroute;
+        }
 
-        distanceMap = generator.generateDistances(route);
+        distanceList = generator.generateDistances(route);
 
-        generateDirections(exhibits,route,distanceMap);
+        generateDirections(exhibits,route,distanceList);
 
         // <---------------
 
@@ -86,19 +90,19 @@ public class DirectionActivity extends AppCompatActivity {
 
     private List<Pair<String, Boolean>> generateDirections(List<ZooData.Node> targets,
                                                            List<ZooData.Node> route,
-                                                           Map<ZooData.Node, Double> distanceMap) {
+                                                           List<Double> distanceList) {
         StringBuilder sb = new StringBuilder();
         List<Pair<String, Boolean>> directionList = new ArrayList<Pair<String, Boolean>>();
+        List<ZooData.Node> targCopy = generator.copyZooList(targets);
 
         // used to check if the user has reached one of the target exhibits
-        int exCount = 0;
         Boolean atExhibit;
 
         for (int i = 0; i < route.size()-1; i++) {
             atExhibit = false;
             sb.append(i+1); // direction number
             sb.append(") Walk ");
-            sb.append(distanceMap.get(route.get(i))); // distance to walk
+            sb.append(distanceList.get(i)); // distance to walk
             sb.append(" meters along ");
             // street name  |  this line will have to be thoroughly tested
             sb.append(edges.get((g.getEdge(route.get(i).id,
@@ -111,10 +115,13 @@ public class DirectionActivity extends AppCompatActivity {
             sb.append(".");
 
             //TODO figure out why targets is empty when calling the method
-            //if(route.get(i+1).id.equals(targets.get(exCount).id)) {
-            //    atExhibit = true;
-            //    exCount++;
-            //}
+            for(int j = 0; j < targCopy.size(); j++){
+                if (route.get(i + 1).id.equals(targCopy.get(j).id)) {
+                    atExhibit = true;
+                    targCopy.remove(j);
+                    sb.append(" EXHIBIT");
+                }
+            }
 
             System.out.println(sb.toString());
             directionList.add(new Pair<String, Boolean>(sb.toString(),atExhibit));
