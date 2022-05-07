@@ -51,6 +51,7 @@ public class ZooData {
         public List<String> tags;
 
         public boolean added = false;
+        public double cumDistance = -1;
 
         @Override
         public String toString() {
@@ -61,9 +62,9 @@ public class ZooData {
                     ", name='" + name + '\'' +
                     ", tags=" + tags +
                     ", added=" + added +
+                    ", cumDistance=" + cumDistance +
                     '}';
         }
-
     }
 
     public static class Edge {

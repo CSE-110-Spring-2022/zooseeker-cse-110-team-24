@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHolder> {
@@ -21,6 +23,8 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
 //    private Context context;
     private List<ZooData.Node> exhibits = new ArrayList<ZooData.Node>();
     private Consumer<ZooData.Node> onDeleteBtnClicked;
+    private Consumer<Map<ZooData.Node, Double>> onOrderClicked;
+
 //    private OnDeleteListener onDeleteListener;
 
 //    public interface OnDeleteListener{
@@ -31,6 +35,10 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
 ////        this.exhibits = exhibits;
 //        this.context = context;
 //        this.onDeleteListener = onDeleteListener;
+//    }
+
+//    public void setOnOrderClickedHandler(Consumer<Map<ZooData.Node, Double>> onOrderClicked){
+//        this.onOrderClicked = onOrderClicked;
 //    }
 
     public void setOnDeleteBtnClickedHandler(Consumer<ZooData.Node> onDeleteBtnClicked){
@@ -85,7 +93,7 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
         public void setDataAndMethods(int position){
             ZooData.Node exhibit = exhibits.get(position);
             tvName.setText(exhibit.name);
-            tvDist.setText("100ft");
+            tvDist.setText(String.valueOf(exhibit.cumDistance));
             // TODO: delete
             tvDelete.setOnClickListener( v -> {
                 if (onDeleteBtnClicked == null) return;
@@ -93,7 +101,6 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
                 notifyDataSetChanged();
             });
         }
-
     }
 
 

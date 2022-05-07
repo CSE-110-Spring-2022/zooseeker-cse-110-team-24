@@ -1,6 +1,7 @@
 package com.example.zooseekerteam24;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -11,10 +12,12 @@ import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RouteGenerator {
 
@@ -23,6 +26,7 @@ public class RouteGenerator {
     Map<String, ZooData.Node> nodes;
     Map<String, ZooData.Edge> edges;
     Graph<String, IdentifiedWeightedEdge> g;
+    static List<ZooData.Node> staticroute;
 
     public RouteGenerator(@NonNull Context context,
                           @NonNull List<ZooData.Node> targets,
@@ -36,8 +40,17 @@ public class RouteGenerator {
         this.g = g;
     }
 
+    // Performs a deep copy of targets
     public void setTargets(List<ZooData.Node> targets){
-        this.targets = targets;
+        this.targets = copyZooList(targets);
+    }
+
+    public List<ZooData.Node> copyZooList(List<ZooData.Node> nodes){
+        List<ZooData.Node> newList = new ArrayList<ZooData.Node>();
+        for(int i = 0; i < nodes.size(); i++) {
+            newList.add(nodes.get(i));
+        }
+        return newList;
     }
 
     // TODO
@@ -103,16 +116,68 @@ public class RouteGenerator {
                 }
             }
         }
-        //source = route.get(route.size()-1);
-        //route.remove(route.size()-1);
-
+        source = route.get(route.size()-1);
+        route.remove(route.size()-1);
 
         // find the path to the exit from the last exhibit
-        //targets.add(getExitNode());
-        //List<ZooData.Node> TEMPEXIT = new ArrayList<ZooData.Node>();
-        //TEMPEXIT.add(getExitNode());
-        //route.addAll(nearestNode(source, targets));
+        targets.add(getExitNode());;
+        route.addAll(nearestNode(source));
 
+        staticroute = route;
         return route;
+    }
+
+    // Generates Cumulative Distances ;)
+    public List<Double> generateCumDistances(List<ZooData.Node> route){
+        List<Double> returnList = new ArrayList<Double>();
+
+        if(route.size() < 2){
+            return returnList;
+        }
+
+        returnList.add((g.getEdge(route.get(0).id,route.get(1).id)).getWeight());
+        for(int i = 1; i < route.size()-1; i++){
+            //holy FUCK
+
+            returnList.add((g.getEdge(route.get(i).id,
+                    route.get(i+1).id)).getWeight() +
+                    returnList.get(i-1));
+        }
+        return returnList;
+    }
+
+    // Generates Individual Distances
+    public List<Double> generateDistances(List<ZooData.Node> route){
+        List<Double> returnDists = new ArrayList<Double>();
+        for(int i = 0; i < route.size()-1; i++){
+            //holy FUCK
+            returnDists.add((g.getEdge(route.get(i).id,
+                    route.get(i+1).id)).getWeight());
+        }
+        return returnDists;
+    }
+
+    public Map<String, Double> exhibitDistances(List<ZooData.Node> exhibits){
+        List<Double> distances;
+        Map<String, Double> distanceMap = new HashMap<String, Double>();
+        List<ZooData.Node> exCopy = copyZooList(exhibits); //copied so we can remove safely
+
+        staticroute = pathGenerator();
+
+        // generate cumulative distances
+        distances = generateCumDistances(staticroute);
+
+        // compare with the parameter
+        for(int i = 0; i < staticroute.size()-1; i++) {
+            //iterate through all targets
+            for(int j = 0; j < exCopy.size(); j++){
+                if(staticroute.get(i+1).id.equals(exCopy.get(j).id)){
+                    distanceMap.put(staticroute.get(i + 1).id, distances.get(i));
+                    exCopy.remove(j);
+                    break;
+                }
+            }
+        }
+        return distanceMap;
     }
 }
