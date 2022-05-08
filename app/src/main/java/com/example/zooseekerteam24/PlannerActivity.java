@@ -1,6 +1,8 @@
 package com.example.zooseekerteam24;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.Observable;
+import androidx.databinding.ObservableInt;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,25 +10,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 import org.jgrapht.Graph;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class PlannerActivity extends AppCompatActivity {
 
@@ -39,11 +35,12 @@ public class PlannerActivity extends AppCompatActivity {
     private PlannerAdapter adapter;
     private PlannerViewModel plannerViewModel;
     private RouteGenerator generator;
-    private Consumer<RouteGenerator> onOrderClicked;
+    TextView counterText;
+//    private Consumer<RouteGenerator> onOrderClicked;
 
-    public void setOnOrderClickedHandler(Consumer<RouteGenerator> onOrderClicked){
-        this.onOrderClicked = onOrderClicked;
-    }
+//    public void setOnOrderClickedHandler(Consumer<RouteGenerator> onOrderClicked){
+//        this.onOrderClicked = onOrderClicked;
+//    }
 
     private String edgeFile = "sample_edge_info.json";
     private String graphFile = "sample_zoo_graph.json";
@@ -64,7 +61,7 @@ public class PlannerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planner);
         rvPlanner = findViewById(R.id.rvPlanner);
-        btnOrder = findViewById(R.id.btnOrder);
+        counterText = (TextView)findViewById(R.id.counterText);
 
 
         // TODO: get data from db to populate exhibits
@@ -81,7 +78,7 @@ public class PlannerActivity extends AppCompatActivity {
 //
 //        exhibits.addAll(Arrays.asList(n1, n2, n3));
 
-//        exhibits = NodeDatabase.getSingleton(this).nodeDao().getAll();
+//        exhibits = NodeDatabase.getSingleton(this).nodeDao().getAllAdded();
 //        Log.d(TAG, ""+exhibits.size());
         adapter = new PlannerAdapter();
 
@@ -102,19 +99,36 @@ public class PlannerActivity extends AppCompatActivity {
         plannerViewModel = new ViewModelProvider(this)
                 .get(PlannerViewModel.class);
         plannerViewModel.getAddedNodes().observe(this, adapter::populatePlanner);
+        adapter.setRouteGenerator(generator);
         adapter.setOnDeleteBtnClickedHandler(plannerViewModel::toggleExhibitAdded);
+        adapter.setOnOrderCalledHandler(plannerViewModel::orderExhibitsAdded);
 
+
+//        ObservableInt count = new ObservableInt(Integer.parseInt(counterText.getText().toString()));
+//        count.set(adapter.setOnCountCalled(plannerViewModel::countExhibitsAdded));
+        plannerViewModel.getNumOfExhibits().addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                setCounter(((ObservableInt)sender).get());
+            }
+        });
+        adapter.setOnCountCalled(plannerViewModel::countExhibitsAdded);
+//        Log.d("countExhibit", count.get()+"");
+//        setCounter(count.get());
+//        setCounter(count);
+        plannerViewModel.orderExhibitsAdded(generator);
+        setCounter(plannerViewModel.getNumOfExhibits().get());
 //        onOrderClicked.accept(generator);
 //        setOnOrderClickedHandler(plannerViewModel::orderExhibitsAdded);
 
-        btnOrder.setOnClickListener(v -> plannerViewModel.orderExhibitsAdded(generator));
-        btnOrder.performClick();
+//        btnOrder.setOnClickListener(v -> plannerViewModel.orderExhibitsAdded());
+//        btnOrder.performClick();
 
-        nodeDao = NodeDatabase.getSingleton(this).nodeDao();
-//        exhibits = nodeDao.getAllAdded();
+//        nodeDao = NodeDatabase.getSingleton(this).nodeDao();
+//        exhibits = nodeDao.getAllOrderedAdded();
 //        exhibits.forEach(n -> Log.d("yoadd", "" + n.toString()));
 ////
-//        generator.setTargets(nodeDao.getAllAdded());
+//        generator.setTargets(nodeDao.getAllOrderedAdded());
 //        distanceMap = generator.fakeMethod();
 //        distanceMap.forEach((s, d) -> Log.d("yomap", d + " " + s));
 //
@@ -139,15 +153,13 @@ public class PlannerActivity extends AppCompatActivity {
 
         // TODO: avoid duplicate insert
 
-//        adapter.setHasStableIds(true);
+        adapter.setHasStableIds(true);
         rvPlanner.setAdapter(adapter);
 //        adapter.populatePlanner(exhibits);
         rvPlanner.setLayoutManager(new LinearLayoutManager(this));
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(nodeDao.getAll().size());
-        TextView counterText = (TextView)findViewById(R.id.counterText);
-        counterText.setText(sb);
+
+
 
 
         // TODO: populate data here
@@ -178,8 +190,10 @@ public class PlannerActivity extends AppCompatActivity {
     }
 
 
-    public List<ZooData.Node> getPlannedExhibits(){
-        return this.exhibits;
+    private void setCounter(int count){
+        String title = String.format("Planner (%d)", count);
+        getSupportActionBar().setTitle(title);
+        counterText.setText(title);
     }
 
 }

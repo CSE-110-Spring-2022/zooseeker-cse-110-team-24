@@ -39,7 +39,7 @@ public class ZooData {
         }
 
         @PrimaryKey(autoGenerate = true)
-        public Long rtId;
+        public long rtId;
 
         @NonNull
         public String id = "";

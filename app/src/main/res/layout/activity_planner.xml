@@ -6,21 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".PlannerActivity">
 
-    <Button
-        android:id="@+id/btnOrder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="order" />
-
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPlanner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/btnOrder"
-        android:id="@+id/rvPlanner"
+        android:layout_below="@id/counterText"
         android:layout_above="@id/btmNavi"
-        android:padding="10dp"
-        />
+        android:padding="10dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
@@ -37,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="32dp"
-        android:text="TextView" />
+        android:text="-1" />
 
 
 </RelativeLayout>

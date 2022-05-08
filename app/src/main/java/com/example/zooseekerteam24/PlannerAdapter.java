@@ -1,3 +1,9 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * File   : PlannerAdapter.java
+ * Authors: Yiran Wan, Rahul Puranam
+ * Desc   :
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 package com.example.zooseekerteam24;
 
 import android.content.Context;
@@ -6,8 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import android.os.Parcelable;
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableInt;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,35 +22,36 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.lang.Object;
+import java.util.Observable;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHolder> {
 
-//    private Context context;
     private List<ZooData.Node> exhibits = new ArrayList<ZooData.Node>();
     private Consumer<ZooData.Node> onDeleteBtnClicked;
-    private Consumer<Map<ZooData.Node, Double>> onOrderClicked;
+    private Consumer<RouteGenerator> onOrderCalled;
+    private Consumer<Integer> onCountCalled;
+    private RouteGenerator generator;
 
-//    private OnDeleteListener onDeleteListener;
+    public void setRouteGenerator(RouteGenerator generator){
+        this.generator = generator;
+    }
 
-//    public interface OnDeleteListener{
-//        public void performOnDelete(int position);
-//    }
-
-//    public PlannerAdapter(Context context) {
-////        this.exhibits = exhibits;
-//        this.context = context;
-//        this.onDeleteListener = onDeleteListener;
-//    }
-
-//    public void setOnOrderClickedHandler(Consumer<Map<ZooData.Node, Double>> onOrderClicked){
-//        this.onOrderClicked = onOrderClicked;
-//    }
+    public void setOnCountCalled(Consumer<Integer> onCountCalled) {
+        this.onCountCalled = onCountCalled;
+    }
 
     public void setOnDeleteBtnClickedHandler(Consumer<ZooData.Node> onDeleteBtnClicked){
         this.onDeleteBtnClicked = onDeleteBtnClicked;
     }
+
+    public void setOnOrderCalledHandler(Consumer<RouteGenerator> onOrderCalled){
+        this.onOrderCalled = onOrderCalled;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -70,6 +78,10 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
         notifyDataSetChanged();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return exhibits.get(position).rtId;
+    }
 //    public PlannerAdapter(@NonNull Context context, ) {
 //        super(context);
 //    }
@@ -96,8 +108,11 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
             tvDist.setText(String.valueOf(exhibit.cumDistance));
             // TODO: delete
             tvDelete.setOnClickListener( v -> {
-                if (onDeleteBtnClicked == null) return;
+                if (onDeleteBtnClicked == null || onOrderCalled == null) return;
                 onDeleteBtnClicked.accept(exhibit);
+                onOrderCalled.accept(generator);
+                onCountCalled.accept(exhibits.size()-1);
+//                Log.d("num exhibits left", "setDataAndMethods: "+ onCountCalled.get().intValue());
                 notifyDataSetChanged();
             });
         }

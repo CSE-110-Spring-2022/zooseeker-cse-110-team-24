@@ -26,16 +26,16 @@ public interface NodeDao {
     ZooData.Node get(long rtId);
 
     @Query ("SELECT * FROM `node` WHERE `added`")
-    List<ZooData.Node> getAll();
+    List<ZooData.Node> getAllAdded();
 
     @Query ("SELECT * FROM `node` WHERE `kind`='EXHIBIT'")
     LiveData<List<ZooData.Node>> getAllLive();
 
     @Query ("SELECT * FROM `node` WHERE `added` ORDER BY `cumDistance`")
-    LiveData<List<ZooData.Node>> getAllAddedLive();
+    LiveData<List<ZooData.Node>> getAllOrderedAddedLive();
 
     @Query ("SELECT * FROM `node` WHERE `added` ORDER BY `cumDistance`")
-    List<ZooData.Node> getAllAdded();
+    List<ZooData.Node> getAllOrderedAdded();
 
 
     @Update

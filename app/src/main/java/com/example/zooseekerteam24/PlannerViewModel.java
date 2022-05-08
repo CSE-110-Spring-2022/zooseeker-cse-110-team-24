@@ -4,14 +4,13 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableInt;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 
 /**
  * helper class that store and manage UI-related data in a lifecycle-aware way
@@ -23,6 +22,7 @@ import java.util.Map;
 public class PlannerViewModel extends AndroidViewModel {
     private LiveData<List<ZooData.Node>> nodes;
     private final NodeDao nodeDao;
+    private ObservableInt numOfExhibits;
 
     public PlannerViewModel(@NonNull Application application) {
         super(application);
@@ -32,6 +32,13 @@ public class PlannerViewModel extends AndroidViewModel {
                 .nodeDao();
     }
 
+    public ObservableInt getNumOfExhibits() {
+        if (numOfExhibits == null) {
+            numOfExhibits = new ObservableInt(nodeDao.getAllAdded().size());
+        }
+        Log.d("getNumOfExhibits", numOfExhibits.get()+"");
+        return numOfExhibits;
+    }
 
     // Get the newest nodes
     public LiveData<List<ZooData.Node>> getNodes() {
@@ -48,7 +55,7 @@ public class PlannerViewModel extends AndroidViewModel {
     public LiveData<List<ZooData.Node>> getAddedNodes() {
         if (nodes == null) {
             // TODO: Do an asynchronous operation to fetch nodes.
-            nodes = nodeDao.getAllAddedLive();
+            nodes = nodeDao.getAllOrderedAddedLive();
         }
         return nodes;
     }
@@ -70,8 +77,9 @@ public class PlannerViewModel extends AndroidViewModel {
         });
     }
 
-    public void reOrder(List<ZooData.Node> oldExhibits, List<ZooData.Node> newExhibits) {
-        oldExhibits = newExhibits;
+    public void countExhibitsAdded(int i){
+        numOfExhibits.set(i);
+        Log.d("countExhibitsAdded", "countExhibitsAdded: " + numOfExhibits.get());
     }
 
 //    private void loadNodes() {

@@ -21,7 +21,6 @@ import org.jgrapht.Graph;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -69,7 +68,7 @@ public class DirectionActivity extends AppCompatActivity {
         // Sets the targets in the route generator to the exhibits that
         // the user wishes to see
         NodeDao nodeDao = NodeDatabase.getSingleton(this).nodeDao();
-        exhibits = nodeDao.getAll();
+        exhibits = nodeDao.getAllAdded();
         generator.setTargets(exhibits);
 
         // Generates a new path ONLY if a path doesn't already exist
