@@ -24,7 +24,13 @@ public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
 
     Context context;
     List<ZooData.Node> allExhibits;
+    RouteGenerator routeGenerator;
 //    OnAddListener onAddListener;
+
+
+    public void setRouteGenerator(RouteGenerator routeGenerator) {
+        this.routeGenerator = routeGenerator;
+    }
 
     private Consumer<ZooData.Node> onAddBtnClicked;
 

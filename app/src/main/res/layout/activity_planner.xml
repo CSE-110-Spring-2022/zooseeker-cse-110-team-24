@@ -7,12 +7,11 @@
     tools:context=".PlannerActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPlanner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/rvPlanner"
         android:layout_above="@id/btmNavi"
-        android:padding="10dp"
-        />
+        android:padding="10dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
@@ -23,5 +22,8 @@
         app:itemBackground="@color/teal_700"
         app:itemTextColor="@drawable/selector"
         app:itemIconTint="@drawable/selector"/>
+
+
+
 
 </RelativeLayout>

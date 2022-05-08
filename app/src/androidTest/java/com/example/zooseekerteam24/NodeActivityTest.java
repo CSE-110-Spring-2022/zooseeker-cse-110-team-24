@@ -52,9 +52,9 @@ public class NodeActivityTest {
         scenario.moveToState(Lifecycle.State.RESUMED);
 
         scenario.onActivity(activity -> {
-            List<ZooData.Node> beforeList = NodeDao.getAll();
+            List<ZooData.Node> beforeList = NodeDao.getAllAdded();
 
-            List<ZooData.Node> afterList = NodeDao.getAll();
+            List<ZooData.Node> afterList = NodeDao.getAllAdded();
             assertEquals(beforeList.size() + 1, afterList.size());
             assertEquals("new exhibit added name", afterList.get(afterList.size() - 1).name);
         });

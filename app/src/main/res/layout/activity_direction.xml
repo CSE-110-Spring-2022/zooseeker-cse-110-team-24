@@ -7,11 +7,21 @@
     tools:context=".DirectionActivity">
 
     <TextView
+        android:id="@+id/directionsText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DirectionActivity"
         android:layout_centerInParent="true"
-        android:textSize="30sp"/>
+        android:text="Directions!"
+        android:textSize="30sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/atExhibitText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textSize="30sp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
@@ -22,5 +32,27 @@
         app:itemBackground="@color/teal_700"
         app:itemTextColor="@drawable/selector"
         app:itemIconTint="@drawable/selector"/>
+
+    <Button
+        android:id="@+id/nextBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="290dp"
+        android:layout_marginTop="-8dp"
+        android:layout_marginBottom="126dp"
+        android:onClick="onNextButtonClicked"
+        android:text="Next" />
+
+    <Button
+        android:id="@+id/prevBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="-8dp"
+        android:layout_marginBottom="126dp"
+        android:onClick="onPrevButtonClicked"
+        android:text="Prev" />
 
 </RelativeLayout>
