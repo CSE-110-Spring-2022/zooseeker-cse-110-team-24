@@ -61,7 +61,7 @@ public class PlannerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planner);
         rvPlanner = findViewById(R.id.rvPlanner);
-        counterText = (TextView)findViewById(R.id.counterText);
+//        counterText = (TextView)findViewById(R.id.counterText);
 
 
         // TODO: get data from db to populate exhibits
@@ -193,7 +193,6 @@ public class PlannerActivity extends AppCompatActivity {
     private void setCounter(int count){
         String title = String.format("Planner (%d)", count);
         getSupportActionBar().setTitle(title);
-        counterText.setText(title);
     }
 
 }
