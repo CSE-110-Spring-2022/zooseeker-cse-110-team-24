@@ -20,17 +20,19 @@ public abstract class NodeDatabase extends RoomDatabase {
 
     public abstract NodeDao nodeDao();
 
-    // Factory pattern
+    /**
+     * getSingleton
+     * @param context: a context to connect to databade
+     * @return the same database object accessible throughout our app (one thread can call it at a time)
+     */
     public synchronized static NodeDatabase getSingleton(Context context){
         if (singleton == null){
-//            singleton.clearAllTables();
             singleton = createDatabase(context);
         }
         return singleton;
     }
 
     private static NodeDatabase createDatabase(Context context){
-//        singleton.clearAllTables();
         return Room.databaseBuilder(context, NodeDatabase.class, "aaa.db")
                 .allowMainThreadQueries()
                 .addCallback(new Callback(){
