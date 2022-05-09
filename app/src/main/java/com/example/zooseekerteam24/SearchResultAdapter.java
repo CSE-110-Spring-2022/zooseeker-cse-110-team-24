@@ -20,17 +20,16 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * SearchResultAdapter
+ * tell Android how to populate search result
+ * and add exhibits from search results to planner
+ */
 public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
 
     Context context;
     List<ZooData.Node> allExhibits;
-    RouteGenerator routeGenerator;
-//    OnAddListener onAddListener;
 
-
-    public void setRouteGenerator(RouteGenerator routeGenerator) {
-        this.routeGenerator = routeGenerator;
-    }
 
     private Consumer<ZooData.Node> onAddBtnClicked;
 
@@ -38,9 +37,6 @@ public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
         this.onAddBtnClicked = onAddBtnClicked;
     }
 
-//    public interface OnAddListener{
-//        public void performOnAdd(int position);
-//    }
 
     public void populateSearch(List<ZooData.Node> nodes){
         this.allExhibits.clear();
@@ -74,8 +70,6 @@ public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
         }
 
         ZooData.Node exhibit = getItem(position);
-        Log.d("lolgetView", exhibit.toString());
-        Log.d("getView", (exhibit==null)+"");
 
         TextView tvName = itemView.findViewById(R.id.tvName);
         TextView tvAdded = itemView.findViewById(R.id.tvAdded);
@@ -83,26 +77,18 @@ public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
 
         if (exhibit.added){
             tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
-//            tvAdded.setClickable(false);
         } else {
             tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.grey));
 
         }
 
+        // Add/Unadd clicked exhibit to planner
         tvAdded.setOnClickListener(v->{
             Log.d("to plan", exhibit.name);
             if (onAddBtnClicked==null) return;
             onAddBtnClicked.accept(exhibit);
-//                tvAdded.setClickable(false);
-//            tvAdded.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
             notifyDataSetChanged();
         });
-
-
-
-//        tvName.setOnClickListener(view -> {
-//            onAddListener.performOnAdd(position);// TODO: questionable
-//        });
 
 
 

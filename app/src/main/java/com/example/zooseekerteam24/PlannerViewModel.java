@@ -13,11 +13,12 @@ import java.util.Map;
 import java.util.Observable;
 
 /**
+ * PlannerViewModel:
  * helper class that store and manage UI-related data in a lifecycle-aware way
  * retain data upon configuration changes
  * if developer correctly acquire and keep data in VM
  *
- * you can access data stored here from an Activity
+ * can access changing data stored here from an Activity
  */
 public class PlannerViewModel extends AndroidViewModel {
     private LiveData<List<ZooData.Node>> nodes;
@@ -26,7 +27,6 @@ public class PlannerViewModel extends AndroidViewModel {
 
     public PlannerViewModel(@NonNull Application application) {
         super(application);
-//        Log.d("curious", get.equals(getApplication())+"");
         nodeDao = NodeDatabase
                 .getSingleton(getApplication().getApplicationContext())
                 .nodeDao();
@@ -40,7 +40,10 @@ public class PlannerViewModel extends AndroidViewModel {
         return numOfExhibits;
     }
 
-    // Get the newest nodes
+    /**
+     * getNodes
+     * @return Get all nodes that are exhibits
+     */
     public LiveData<List<ZooData.Node>> getNodes() {
         if (nodes == null) {
             // TODO: Do an asynchronous operation to fetch nodes.
@@ -51,7 +54,10 @@ public class PlannerViewModel extends AndroidViewModel {
         return nodes;
     }
 
-    // get added nodes
+    /**
+     * getAddedNodes
+     * @return Get all exhibits added in order
+     */
     public LiveData<List<ZooData.Node>> getAddedNodes() {
         if (nodes == null) {
             // TODO: Do an asynchronous operation to fetch nodes.
@@ -61,11 +67,21 @@ public class PlannerViewModel extends AndroidViewModel {
     }
 
 
+    /**
+     * toggleExhibitAdded
+     * change added exhibit to unadded, and vice versa
+     * @param exhibit: exhibit to add or unadd
+     */
     public void toggleExhibitAdded(ZooData.Node exhibit){
         exhibit.added = !exhibit.added;
         nodeDao.update(exhibit);
     }
 
+    /**
+     * orderExhibitsAdded
+     * reorder the exhibits when an exhibit is added or removed from list
+     * @param generator: route generator to determine the order of exhibits
+     */
     public void orderExhibitsAdded(RouteGenerator generator){
         Log.d("orderExhibitsAdded", "is called");
         List<ZooData.Node> exhibits = nodeDao.getAllAdded();
@@ -77,13 +93,14 @@ public class PlannerViewModel extends AndroidViewModel {
         });
     }
 
+    /**
+     * countExhibitsAdded
+     * update the counter when an exhibit is added or removed from list
+     * @param i: number of exhibits in current list
+     */
     public void countExhibitsAdded(int i){
         numOfExhibits.set(i);
         Log.d("countExhibitsAdded", "countExhibitsAdded: " + numOfExhibits.get());
     }
 
-//    private void loadNodes() {
-//        // Do an asynchronous operation to fetch nodes.
-//        nodes = nodeDao.getAllLive();
-//    }
 }

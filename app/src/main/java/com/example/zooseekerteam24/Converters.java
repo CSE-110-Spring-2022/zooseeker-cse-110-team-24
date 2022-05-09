@@ -8,6 +8,11 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+/**
+ * Converter:
+ * TypeConverter implemented to handle List in Entity
+ * to be able to store in Room Database
+ */
 public class Converters {
     @TypeConverter
     public static List<String> fromString(String value) {

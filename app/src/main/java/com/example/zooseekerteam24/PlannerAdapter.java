@@ -1,32 +1,23 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * File   : PlannerAdapter.java
  * Authors: Yiran Wan, Rahul Puranam
- * Desc   :
+ * Desc   : An Adapter that tells android how to create and manage each item in the view
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 package com.example.zooseekerteam24;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
-import androidx.databinding.ObservableInt;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.lang.Object;
-import java.util.Observable;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHolder> {
 
@@ -82,9 +73,6 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
     public long getItemId(int position) {
         return exhibits.get(position).rtId;
     }
-//    public PlannerAdapter(@NonNull Context context, ) {
-//        super(context);
-//    }
 
     // Hold one row of a planner
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -101,18 +89,19 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.ViewHold
 
         }
 
-        // TODO: Set data and methods to all subViews of the row
+        // Set data and methods to all subViews of the row
         public void setDataAndMethods(int position){
             ZooData.Node exhibit = exhibits.get(position);
             tvName.setText(exhibit.name);
             tvDist.setText(String.valueOf(exhibit.cumDistance));
-            // TODO: delete
+
+            // When user delete an exhibit from planner, distance attached to each exhibit
+            // is recalculated and reordered, and counter updates accordingly
             tvDelete.setOnClickListener( v -> {
                 if (onDeleteBtnClicked == null || onOrderCalled == null) return;
                 onDeleteBtnClicked.accept(exhibit);
                 onOrderCalled.accept(generator);
                 onCountCalled.accept(exhibits.size()-1);
-//                Log.d("num exhibits left", "setDataAndMethods: "+ onCountCalled.get().intValue());
                 notifyDataSetChanged();
             });
         }
