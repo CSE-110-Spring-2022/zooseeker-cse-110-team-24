@@ -16,7 +16,7 @@ public interface NodeDao {
 
     /**
      * LiveData is an observable data holder that is lifecycle-aware
-     * Observer registered to watch LiveData object gets notified when its active & underlyding data changes
+     * Observer registered to watch LiveData object gets notified when its active & underlying data changes
      * so that Observer updates UI (we do so by update Adapter with new db contents
      */
     @Insert

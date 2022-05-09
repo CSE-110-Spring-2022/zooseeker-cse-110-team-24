@@ -30,7 +30,7 @@ public class RouteGenerator {
     Map<String, ZooData.Edge> edges;
     Graph<String, IdentifiedWeightedEdge> g;
 
-    static List<ZooData.Node> staticroute; // Static so it can be refereced between activities
+    static List<ZooData.Node> staticroute; // Static so it can be referenced between activities
 
     public RouteGenerator(@NonNull Context context,
                           @NonNull List<ZooData.Node> targets,
@@ -211,7 +211,6 @@ public class RouteGenerator {
         }
 
         for(int i = 0; i < route.size()-1; i++){
-            //holy FUCK
             returnDists.add((g.getEdge(route.get(i).id,
                     route.get(i+1).id)).getWeight());
         }

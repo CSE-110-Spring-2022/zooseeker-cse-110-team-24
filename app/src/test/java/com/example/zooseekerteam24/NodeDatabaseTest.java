@@ -25,7 +25,7 @@ import java.util.List;
 //@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4.class)
 public class NodeDatabaseTest {
-    /**private NodeDao dao;
+    private NodeDao dao;
     private NodeDatabase db;
 
     @Before
@@ -103,7 +103,7 @@ public class NodeDatabaseTest {
     @After
     public void closeDb() throws IOException {
         db.close();
-    }**/
+    }
 
     @Test
     public void phantomTest() {

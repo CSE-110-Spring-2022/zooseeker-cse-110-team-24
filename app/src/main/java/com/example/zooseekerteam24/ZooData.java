@@ -106,14 +106,6 @@ public class ZooData {
         return nodes;
     }
 
-    public static List<Node> loadExhibitsFromJSON(Context context, String filename){
-        Map<String, Node> indexedNodes = loadNodesFromJSON(context, filename);
-        List<Node> exhibits = indexedNodes.values()
-                .stream()
-                .filter(node -> node.kind.equals(Node.Kind.EXHIBIT))
-                .collect(Collectors.toList());
-        return exhibits;
-    }
 
     public static Map<String, ZooData.Edge> loadEdgesFromJSON(Context context, String filename) {
 
