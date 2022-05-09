@@ -133,7 +133,7 @@ public class DirectionActivity extends AppCompatActivity {
                     route.get(i + 1).id)).getId())).street); // street name
             sb.append(" from\n");
             sb.append(route.get(i).name); // vertex 1 name
-            sb.append("\nto");
+            sb.append("\nto ");
             sb.append(route.get(i+1).name); // vertex 2 name
             sb.append(".");
 
