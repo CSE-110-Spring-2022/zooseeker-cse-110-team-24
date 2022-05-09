@@ -27,6 +27,10 @@ import org.jgrapht.nio.json.JSONImporter;
 
 public class ZooData {
 
+    public static final String EDGE_FILE = "sample_edge_info.json";
+    public static final String GRAPH_FILE = "sample_zoo_graph.json";
+    public static final String NODE_FILE = "sample_exhibits.json";
+
     @Entity(tableName = "node")
     public static class Node {
 

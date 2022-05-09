@@ -42,7 +42,7 @@ public abstract class NodeDatabase extends RoomDatabase {
                         Executors.newSingleThreadScheduledExecutor().execute(new Runnable() {
                             @Override
                             public void run() {
-                                List<ZooData.Node> nodes = ZooData.loadListOfNodesFromJSON(context, "sample_node_info.json");
+                                List<ZooData.Node> nodes = ZooData.loadListOfNodesFromJSON(context, ZooData.NODE_FILE);
                                 Log.d("nodes to be added", "run: " + nodes.size());
                                 getSingleton(context).nodeDao().insertAll(nodes);
                             }
