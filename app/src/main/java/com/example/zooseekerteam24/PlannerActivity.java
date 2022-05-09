@@ -31,10 +31,6 @@ public class PlannerActivity extends AppCompatActivity {
     private PlannerViewModel plannerViewModel;
     private RouteGenerator generator;
 
-    private String edgeFile = "sample_edge_info.json";
-    private String graphFile = "sample_zoo_graph.json";
-    private String nodeFile = "sample_exhibits.json";
-
 
     private Map<String, ZooData.Node> nodes;
     private Map<String, ZooData.Edge> edges;
@@ -53,9 +49,9 @@ public class PlannerActivity extends AppCompatActivity {
 
 
         // Create graph and routeGenerator
-        nodes = ZooData.loadNodesFromJSON(this, nodeFile);
-        edges = ZooData.loadEdgesFromJSON(this, edgeFile);
-        g = ZooData.loadZooGraphJSON(this, graphFile);
+        nodes = ZooData.loadNodesFromJSON(this, ZooData.NODE_FILE);
+        edges = ZooData.loadEdgesFromJSON(this, ZooData.EDGE_FILE);
+        g = ZooData.loadZooGraphJSON(this, ZooData.GRAPH_FILE);
 
         generator = new RouteGenerator(this, exhibits, nodes, edges, g);
 

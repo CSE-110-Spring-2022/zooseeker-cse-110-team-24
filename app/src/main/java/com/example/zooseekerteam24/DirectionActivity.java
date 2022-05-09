@@ -29,10 +29,6 @@ public class DirectionActivity extends AppCompatActivity {
 
     private BottomNavigationView btmNavi;
 
-    private String edgeFile = "sample_edge_info.json";
-    private String graphFile = "sample_zoo_graph.json";
-    private String nodeFile = "sample_exhibits.json";
-
     private RouteGenerator generator;
 
     private Map<String,ZooData.Node> nodes;
@@ -58,9 +54,9 @@ public class DirectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_direction);
 
         // Converts each JSON data file into relevant data types
-        nodes = ZooData.loadNodesFromJSON(this, nodeFile);
-        edges = ZooData.loadEdgesFromJSON(this, edgeFile);
-        g = ZooData.loadZooGraphJSON(this, graphFile);
+        nodes = ZooData.loadNodesFromJSON(this, ZooData.NODE_FILE);
+        edges = ZooData.loadEdgesFromJSON(this, ZooData.EDGE_FILE);
+        g = ZooData.loadZooGraphJSON(this, ZooData.GRAPH_FILE);
 
         // Creates empty routeGenerator object to be used to find the path
         generator = new RouteGenerator(this, exhibits, nodes, edges ,g );
