@@ -20,6 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
         android:text=""
         android:textSize="30sp" />
 
@@ -33,26 +34,29 @@
         app:itemTextColor="@drawable/selector"
         app:itemIconTint="@drawable/selector"/>
 
-    <Button
-        android:id="@+id/nextBtn"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="290dp"
-        android:layout_marginTop="-8dp"
-        android:layout_marginBottom="126dp"
-        android:onClick="onNextButtonClicked"
-        android:text="Next" />
+        android:layout_above="@id/btmNavi"
+        android:layout_marginBottom="10dp"
+        android:paddingHorizontal="10dp">
 
-    <Button
-        android:id="@+id/prevBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="-8dp"
-        android:layout_marginBottom="126dp"
-        android:onClick="onPrevButtonClicked"
-        android:text="Prev" />
+        <Button
+            android:id="@+id/nextBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:onClick="onNextButtonClicked"
+            android:text="Next" />
+
+        <Button
+            android:id="@+id/prevBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:onClick="onPrevButtonClicked"
+            android:text="Prev" />
+    </RelativeLayout>
+
 
 </RelativeLayout>

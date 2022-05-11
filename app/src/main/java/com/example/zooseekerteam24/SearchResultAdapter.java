@@ -106,7 +106,7 @@ public class SearchResultAdapter extends ArrayAdapter<ZooData.Node> {
             if (constraint != null){
                 String filterPattern = constraint.toString().toLowerCase().trim();
                 filteredExhibits = allExhibits.stream()
-                        .filter(e-> e.tags.stream().anyMatch(tag -> tag.startsWith(filterPattern)))
+                        .filter(e-> e.tags.stream().anyMatch(tag -> tag.contains(filterPattern)))
                         .collect(Collectors.toList());
 
             }
