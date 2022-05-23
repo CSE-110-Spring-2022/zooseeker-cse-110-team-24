@@ -27,9 +27,9 @@ import org.jgrapht.nio.json.JSONImporter;
 
 public class ZooData {
 
-    public static final String EDGE_FILE = "sample_edge_info.json";
-    public static final String GRAPH_FILE = "sample_zoo_graph.json";
-    public static final String NODE_FILE = "sample_exhibits.json";
+    public static final String EDGE_FILE = "zoo_edge_info.json";
+    public static final String GRAPH_FILE = "zoo_graph.json";
+    public static final String NODE_FILE = "zoo_node_info.json";
 
     @Entity(tableName = "node")
     public static class Node {
@@ -39,7 +39,8 @@ public class ZooData {
             // from the strings in our JSON to this Enum.
             @SerializedName("gate") GATE,
             @SerializedName("exhibit") EXHIBIT,
-            @SerializedName("intersection") INTERSECTION
+            @SerializedName("intersection") INTERSECTION,
+            @SerializedName("exhibit_group") EXHIBIT_GROUP
         }
 
         @PrimaryKey(autoGenerate = true)
@@ -47,12 +48,17 @@ public class ZooData {
 
         @NonNull
         public String id = "";
+        public String parent_id;
 
         public Kind kind;
         public String name;
 
         @TypeConverters({Converters.class})
         public List<String> tags;
+
+        public float lat;
+        public float lng;
+
 
         public boolean added = false;
         public double cumDistance = -1;
@@ -62,9 +68,12 @@ public class ZooData {
             return "Node{" +
                     "rtId=" + rtId +
                     ", id='" + id + '\'' +
+                    ", parent_id='" + parent_id + '\'' +
                     ", kind=" + kind +
                     ", name='" + name + '\'' +
                     ", tags=" + tags +
+                    ", lat=" + lat +
+                    ", lng=" + lng +
                     ", added=" + added +
                     ", cumDistance=" + cumDistance +
                     '}';
@@ -151,6 +160,7 @@ public class ZooData {
         // While this is automatic for vertices, it isn't for edges. We keep the
         // definition of this in the IdentifiedWeightedEdge class for convenience.
         importer.addEdgeAttributeConsumer(IdentifiedWeightedEdge::attributeConsumer);
+
 
         // On Android, you would use context.getAssets().open(path) here like in Lab 5.
         //InputStream inputStream = App.class.getClassLoader().getResourceAsStream(path);

@@ -10,7 +10,6 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
 
 /**
  * PlannerViewModel:
@@ -41,29 +40,33 @@ public class PlannerViewModel extends AndroidViewModel {
     }
 
     /**
-     * getNodes
+     * getAllExhibits
      * @return Get all nodes that are exhibits
      */
-    public LiveData<List<ZooData.Node>> getNodes() {
+    public LiveData<List<ZooData.Node>> getAllExhibits() {
         if (nodes == null) {
             // TODO: Do an asynchronous operation to fetch nodes.
-            Log.d("getNodes", "a");
-            nodes = nodeDao.getAllLive();
+            Log.d("getAllExhibits", "a");
+            nodes = nodeDao.getAllExhibitsLive();
         }
-        Log.d("getNodes", "b");
+        Log.d("getAllExhibits", "b");
         return nodes;
     }
 
     /**
-     * getAddedNodes
+     * getAddedNodesByDist
      * @return Get all exhibits added in order
      */
-    public LiveData<List<ZooData.Node>> getAddedNodes() {
+    public LiveData<List<ZooData.Node>> getAddedNodesByDist() {
         if (nodes == null) {
             // TODO: Do an asynchronous operation to fetch nodes.
             nodes = nodeDao.getAllOrderedAddedLive();
         }
         return nodes;
+    }
+
+    public List<ZooData.Node> getAddedNodes() {
+        return nodeDao.getAllAdded();
     }
 
 

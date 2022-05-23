@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RouteGenerator {
 
@@ -110,10 +111,12 @@ public class RouteGenerator {
 
         // Iterate through each of the paths to TARGET NODES and find the shortest one
         for(int i = 0; i < targets.size(); i++){
-            currWeight = ssPaths.getWeight((targets.get(i)).id);
+            currWeight = ssPaths.getWeight(getParentOrDefaultId((targets.get(i))));
             if(currWeight < currMinWeight) {
                 currMinWeight = currWeight;
-                currMinPath = (ssPaths.getPath((targets.get(i)).id)).getVertexList();
+                currMinPath = (ssPaths.getPath
+                        (getParentOrDefaultId(targets.get(i)))
+                        .getVertexList());
             }
         }
 
@@ -153,11 +156,18 @@ public class RouteGenerator {
             route.addAll(nearestNode(source));
 
             // Removes whatever target was added to the route from the targets list
-            for(int i = 0; i < targets.size(); i++){
-                if(targets.get(i).id.equals(route.get(route.size() - 1).id)){
-                    targets.remove(i);
+            for (ZooData.Node target: targets){
+                if (route.stream().map(e -> e.id).collect(Collectors.toList()).contains(getParentOrDefaultId(target))){
+                    targets.remove(target);
                 }
             }
+
+            // This causes an infinite loop because targets never removed
+//            for(int i = 0; i < targets.size(); i++){
+//                if(targets.get(i).id.equals(route.get(route.size() - 1).id)){
+//                    targets.remove(i);
+//                }
+//            }
         }
         source = route.get(route.size()-1);
         route.remove(route.size()-1);
@@ -185,15 +195,25 @@ public class RouteGenerator {
         }
 
         // Add the first edge, then iterate through remaining ones
-        returnList.add((g.getEdge(route.get(0).id,route.get(1).id)).getWeight());
+
+        //TODO: treat child-exhibit as their parent
+        returnList.add((g.getEdge(route.get(0).id, getParentOrDefaultId(route.get(1))))
+                .getWeight());
         for(int i = 1; i < route.size()-1; i++){
             // Add the current edge weight plus the previous
             // returnList entry to make it cumulative
             returnList.add((g.getEdge(route.get(i).id,
-                    route.get(i+1).id)).getWeight() +
-                    returnList.get(i-1));
+                    getParentOrDefaultId(route.get(i+1)))).getWeight()
+                    + returnList.get(i-1));
         }
         return returnList;
+    }
+
+    private String getParentOrDefaultId(ZooData.Node node){
+        if (node.parent_id != null){
+            return node.parent_id;
+        }
+        return node.id;
     }
 
     /**

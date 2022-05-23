@@ -1,5 +1,7 @@
 package com.example.zooseekerteam24;
 
+import android.util.Log;
+
 import org.jgrapht.alg.util.Pair;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.nio.Attribute;
@@ -36,4 +38,5 @@ public class IdentifiedWeightedEdge extends DefaultWeightedEdge {
             edge.setId(attrValue);
         }
     }
+
 }
