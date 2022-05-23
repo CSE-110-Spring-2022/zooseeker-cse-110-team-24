@@ -128,19 +128,20 @@ public class RouteGenerator {
     }
 
     /**
-     * Method: pathGenerator
+     * Method: pathGeneratorFromNode
      * Desc  : Generates an approximately optimal path between the target exhibits that the
      *         user wants to visit. This is done by repeatedly finding the nearest unvisited
      *         target node from where the user currently is using nearestNode
-     * @return A List of ZooData.Node's, in order from start to end, starting and ending at the
-     *         entrance/exit gate.
+     * @param  start  the the node that the route starts from
+     * @return A List of ZooData.Node's, in order from start to end, starting at the start and
+     *         ending at the entrance/exit gate
      */
-    public List<ZooData.Node> pathGenerator(){
+    public List<ZooData.Node> pathGeneratorFromNode(ZooData.Node start){
         // Used to return the correct order of exhibits
         List<ZooData.Node> route = new ArrayList<ZooData.Node>();
 
         // Route always starts at the entrance gate
-        route.add(getEntranceExitNode());
+        route.add(start);
 
         ZooData.Node source;
         while(!(targets.isEmpty())) {
@@ -168,6 +169,15 @@ public class RouteGenerator {
 
         staticroute = route;
         return route;
+    }
+
+    /**
+     * Method: pathGenerator
+     * Desc  : Generates the path, starting at the entrance/exit node
+     * @return route through all of the target exhibits, starting at the entrance/exit node
+     */
+    public List<ZooData.Node> pathGenerator(){
+        return pathGeneratorFromNode(getEntranceExitNode());
     }
 
     /**
@@ -247,5 +257,30 @@ public class RouteGenerator {
             }
         }
         return distanceMap;
+    }
+
+    /**
+     * Method: nextExhibitInRoute
+     * Desc  : Finds the next exhibit in the current route
+     * @param currNode the node that the user is currently at
+     * @return         the ZooData.Node value of the next exhibit in the route
+     */
+    public ZooData.Node nextExhibitInRoute(ZooData.Node currNode){
+        if(staticroute.contains(currNode)){
+            for(int i = staticroute.indexOf(currNode); i < staticroute.size(); i++){
+                if(targets.contains(staticroute.get(i))){
+                    return staticroute.get(i);
+                }
+            }
+        }
+        System.out.println("ERROR: NO REMAINING EXHIBIT IN ROUTE");
+        return null;
+    }
+
+    public List<ZooData.Node> clearRouteFromIndex(List<ZooData.Node> route, int index){
+        for(int i = index; i < route.size();){
+            route.remove(i);
+        }
+        return route;
     }
 }
