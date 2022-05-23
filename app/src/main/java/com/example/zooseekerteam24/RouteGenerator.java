@@ -259,11 +259,16 @@ public class RouteGenerator {
             // Iterate through all targets
             for(int j = 0; j < exCopy.size(); j++){
                 // If the current node on the route is an exhibit, add its distance
-                if(staticroute.get(i+1).id.equals(exCopy.get(j).id)){
-                    distanceMap.put(staticroute.get(i + 1).id, distances.get(i));
+                if(staticroute.get(i+1).id.equals(getParentOrDefaultId(exCopy.get(j)))){
+                    distanceMap.put(exCopy.get(j).id, distances.get(i));
                     exCopy.remove(j);
                     break;
                 }
+//                if(staticroute.get(i+1).id.equals(exCopy.get(j).id)){
+//                    distanceMap.put(staticroute.get(i + 1).id, distances.get(i));
+//                    exCopy.remove(j);
+//                    break;
+//                }
             }
         }
         return distanceMap;

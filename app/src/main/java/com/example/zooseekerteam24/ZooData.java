@@ -168,6 +168,7 @@ public class ZooData {
         InputStream inputStream = null;
         InputStreamReader reader = null;
         try {
+            // TODO: IO convert every integer weight in json file into double and redirect back to json
             inputStream = context.getAssets().open(filename);
             reader = new InputStreamReader(inputStream);
         } catch (IOException e) {
