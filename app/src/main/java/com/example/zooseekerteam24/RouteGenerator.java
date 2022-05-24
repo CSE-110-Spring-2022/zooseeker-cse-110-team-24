@@ -266,11 +266,27 @@ public class RouteGenerator {
      * @return         the ZooData.Node value of the next exhibit in the route
      */
     public ZooData.Node nextExhibitInRoute(ZooData.Node currNode){
+        //System.out.println("nextExhibit CurrNode: " + currNode);
+        //System.out.println("staticRoute " + staticroute);
         if(staticroute.contains(currNode)){
+            //System.out.println("staticroute.contains: TRUE");
             for(int i = staticroute.indexOf(currNode); i < staticroute.size(); i++){
-                if(targets.contains(staticroute.get(i))){
-                    return staticroute.get(i);
+
+                //System.out.println("i: " + i);
+                //System.out.println("TARGS: " + targets);
+
+                for(int j = 0; j < targets.size(); j++){
+                    if(targets.get(j).id.equals(staticroute.get(i).id)){
+                        //System.out.println("FINAL THING: " + staticroute.get(i));
+                        return staticroute.get(i);
+                    }
                 }
+                //if(targets.contains(staticroute.get(i)) //&&
+                //!staticroute.get(i).id.equals((getEntranceExitNode()).id)
+                //){
+                    //System.out.println("FINAL THING: " + staticroute.get(i));
+                    //return staticroute.get(i);
+                //}
             }
         }
         System.out.println("ERROR: NO REMAINING EXHIBIT IN ROUTE");

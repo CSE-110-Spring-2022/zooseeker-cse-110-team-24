@@ -142,16 +142,41 @@ public class DirectionActivity extends AppCompatActivity {
             sb.append("\nto ");
             sb.append(route.get(i + direction).name); // vertex 2 name
             sb.append(".");
+
+            /*
+            If you're wondering why we didn't just use .contains, it seems like the rtId value
+            of the ZooData.Node does not play well with contains, and we have to do this to
+            iterate through the id's instead.
+             */
             if(direction > 0) {
-                if (remainingTargets.contains(route.get(i+1))) {
-                    remainingTargets.remove(route.indexOf(route.get(i+1)));
+                //System.out.println("route get i+1: " + route.get(i+1));
+                // 🤢🤢🤢🤢🤢🤢🤢🤢🤢🤢
+                for(int j = 0; j < remainingTargets.size(); j++) {
+                    if (remainingTargets.get(j).id.equals((route.get(i + 1)).id)){
+                        //System.out.println("YEA YEA YEA");
+                        remainingTargets.remove(j);
+                    }
                 }
             } else {
-                if(targets.contains(route.get(i))){
-                    remainingTargets.add(route.get(i));
+                for(int j = 0; j < targets.size(); j++) {
+                    if (targets.get(j).id.equals((route.get(i)).id)) {
+                        // I HATE IT HERE I HATE IT HERE
+                        boolean containsTarget = false;
+                        for(int k = 0; k < remainingTargets.size(); k++){
+                            if (remainingTargets.get(k).id.equals(targets.get(j).id)){
+                                containsTarget = true;
+                            }
+                        }
+                        if(!containsTarget) {
+                            remainingTargets.add(route.get(i));
+                        }
+                    }
                 }
             }
         }
+
+        //System.out.println("direction remaining targets: " + remainingTargets);
+
         return sb.toString();
     }
 
@@ -167,8 +192,8 @@ public class DirectionActivity extends AppCompatActivity {
         if(currIndex < RouteGenerator.staticroute.size()-1){
             // Updates the directions to the next on the list
             TextView directionsText = (TextView) findViewById(R.id.directionsText);
-            TextView goingPreviousText = (TextView) findViewById(R.id.goingPreviousText);
             directionsText.setText(generateDirections(currIndex,route,distanceList,1));
+            TextView goingPreviousText = (TextView) findViewById(R.id.goingPreviousText);
             goingPreviousText.setText("");
             currNode = RouteGenerator.staticroute.get(++currIndex);
         }
@@ -196,15 +221,47 @@ public class DirectionActivity extends AppCompatActivity {
     }
 
     public void onSkipButtonClicked(View view) {
-        System.out.println("SKIPPED");
+
+        /*
         List<ZooData.Node> newSkippedRoute = new ArrayList<>();
         if(!remainingTargets.isEmpty()) {
-            targets.remove(generator.nextExhibitInRoute(currNode));
+            System.out.println("SKIPPED");
+
+            System.out.println("Remaining Targets: " + remainingTargets);
+            System.out.println("currNode " + currNode);
+            System.out.println("-----------");
+            //System.out.println("Next Exhibit " + generator.nextExhibitInRoute(currNode));
+
+            // Reset the targets so it can remove the next in list
+            generator.setTargets(targets);
+            ZooData.Node nextExhibit = generator.nextExhibitInRoute(currNode);
+
+            for(int i = 0; i < targets.size(); i++){
+                if(targets.get(i).id.equals(nextExhibit.id)){
+                    targets.remove(i);
+                }
+            }
+            for(int i = 0; i < remainingTargets.size(); i++){
+                if(remainingTargets.get(i).id.equals(nextExhibit.id)){
+                    remainingTargets.remove(i);
+                }
+            }
+
+            // Set the remaining targets so you can perform the new route
             generator.setTargets(remainingTargets);
+
+            //Generate the new route and append it to the first half
             newSkippedRoute = generator.pathGeneratorFromNode(currNode);
             route = generator.clearRouteFromIndex(route, currIndex);
             route.addAll(newSkippedRoute);
             RouteGenerator.staticroute = route;
+
+            TextView directionsText = (TextView) findViewById(R.id.directionsText);
+            directionsText.setText(generateDirections(currIndex-1,route,distanceList,1));
         }
+        */
+
     }
+
+
 }
