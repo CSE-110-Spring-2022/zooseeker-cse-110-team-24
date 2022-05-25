@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class AddFoxCheckCounter {
+public class AddGorillaCheckCounter {
 
 
     @Rule
@@ -62,7 +62,7 @@ public class AddFoxCheckCounter {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete.perform(replaceText("fox"), closeSoftKeyboard());
+        searchAutoComplete.perform(replaceText("gorilla"), closeSoftKeyboard());
 
         ViewInteraction materialTextView = onView(
                 allOf(withId(R.id.tvAdded), withText("Add"),

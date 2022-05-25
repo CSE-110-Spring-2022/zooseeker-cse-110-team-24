@@ -102,10 +102,10 @@ public class AddFoxGorillaLionToPlanner {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete3.perform(replaceText("lion"), closeSoftKeyboard());
+        searchAutoComplete3.perform(replaceText("flamingo"), closeSoftKeyboard());
 
         ViewInteraction searchAutoComplete4 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("lion"),
+                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("Flamingos"),
                         childAtPosition(
                                 allOf(withClassName(is("android.widget.LinearLayout")),
                                         childAtPosition(
@@ -143,10 +143,10 @@ public class AddFoxGorillaLionToPlanner {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete5.perform(replaceText("fox"), closeSoftKeyboard());
+        searchAutoComplete5.perform(replaceText("hippo"), closeSoftKeyboard());
 
         ViewInteraction searchAutoComplete6 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("fox"),
+                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("Hippos"),
                         childAtPosition(
                                 allOf(withClassName(is("android.widget.LinearLayout")),
                                         childAtPosition(
@@ -181,16 +181,16 @@ public class AddFoxGorillaLionToPlanner {
         textView.check(matches(withText("Gorillas")));
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.tvName), withText("Lions"),
+                allOf(withId(R.id.tvName), withText("Flamingos"),
                         withParent(withParent(withId(R.id.rvPlanner))),
                         isDisplayed()));
-        textView2.check(matches(withText("Lions")));
+        textView2.check(matches(withText("Flamingos")));
 
         ViewInteraction textView3 = onView(
-                allOf(withId(R.id.tvName), withText("Arctic Foxes"),
+                allOf(withId(R.id.tvName), withText("Hippos"),
                         withParent(withParent(withId(R.id.rvPlanner))),
                         isDisplayed()));
-        textView3.check(matches(withText("Arctic Foxes")));
+        textView3.check(matches(withText("Hippos")));
     }
 
     private static Matcher<View> childAtPosition(

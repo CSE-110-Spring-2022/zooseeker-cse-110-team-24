@@ -113,7 +113,7 @@ public class NotifyWhenArrivingAtExhibit {
         materialButton2.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.atExhibitText), withText("Arriving at Exhibit!"),
+                allOf(withId(R.id.goingPreviousText), withText(""),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
         textView.check(matches(withText("Arriving at Exhibit!")));
