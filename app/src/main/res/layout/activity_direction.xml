@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".DirectionActivity">
 
+    <Switch
+        android:id="@+id/directionSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:text="Brief"
+        android:textSize="20sp"
+        android:onClick="onSwitchClicked"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="10dp"/>
+
     <TextView
         android:id="@+id/directionsText"
         android:layout_width="wrap_content"
@@ -16,11 +28,11 @@
         android:gravity="center"/>
 
     <TextView
-        android:id="@+id/atExhibitText"
+        android:id="@+id/goingPreviousText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/directionSwitch"
         android:text=""
         android:textSize="30sp" />
 
@@ -42,21 +54,28 @@
         android:paddingHorizontal="10dp">
 
         <Button
-            android:id="@+id/nextBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:onClick="onNextButtonClicked"
-            android:text="Next" />
-
-        <Button
             android:id="@+id/prevBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:onClick="onPrevButtonClicked"
             android:text="Prev" />
-    </RelativeLayout>
 
+        <Button
+            android:id="@+id/skipBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:onClick="onSkipButtonClicked"
+            android:text="Skip"/>
+
+        <Button
+            android:id="@+id/nextBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:onClick="onNextButtonClicked"
+            android:text="Next" />
+    </RelativeLayout>
 
 </RelativeLayout>
