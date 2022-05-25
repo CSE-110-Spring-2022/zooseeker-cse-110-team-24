@@ -20,9 +20,9 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -36,7 +36,8 @@ import org.junit.runner.RunWith;
 public class SearchValidMultiResult {
 
     @Rule
-    public ActivityTestRule<SearchActivity> mActivityTestRule = new ActivityTestRule<>(SearchActivity.class);
+    public ActivityScenarioRule<SearchActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(SearchActivity.class);
 
     @Test
     public void searchValidMultiResult() {
@@ -63,28 +64,33 @@ public class SearchValidMultiResult {
         searchAutoComplete.perform(replaceText("mammal"), closeSoftKeyboard());
 
         ViewInteraction textView = onView(
+                allOf(withId(R.id.tvName), withText("Capuchin Monkeys"),
+                        withParent(withParent(withId(R.id.lvResults))),
+                        isDisplayed()));
+        textView.check(matches(withText("Capuchin Monkeys")));
+
+        ViewInteraction textView2 = onView(
                 allOf(withId(R.id.tvName), withText("Gorillas"),
                         withParent(withParent(withId(R.id.lvResults))),
                         isDisplayed()));
-        textView.check(matches(withText("Gorillas")));
-
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.tvName), withText("Lions"),
-                        withParent(withParent(withId(R.id.lvResults))),
-                        isDisplayed()));
-        textView2.check(matches(withText("Lions")));
+        textView2.check(matches(withText("Gorillas")));
 
         ViewInteraction textView3 = onView(
-                allOf(withId(R.id.tvName), withText("Elephant Odyssey"),
+                allOf(withId(R.id.tvName), withText("Orangutans"),
                         withParent(withParent(withId(R.id.lvResults))),
                         isDisplayed()));
-        textView3.check(matches(withText("Elephant Odyssey")));
+        textView3.check(matches(withText("Orangutans")));
 
-        ViewInteraction textView4 = onView(
-                allOf(withId(R.id.tvName), withText("Arctic Foxes"),
-                        withParent(withParent(withId(R.id.lvResults))),
+        ViewInteraction appCompatImageView2 = onView(
+                allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Clear query"),
+                        childAtPosition(
+                                allOf(withClassName(is("android.widget.LinearLayout")),
+                                        childAtPosition(
+                                                withClassName(is("android.widget.LinearLayout")),
+                                                1)),
+                                1),
                         isDisplayed()));
-        textView4.check(matches(withText("Arctic Foxes")));
+        appCompatImageView2.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

@@ -340,7 +340,7 @@ public class DirectionActivity extends AppCompatActivity {
 
         sb.append(pathDist); // distance to walk
 
-        sb.append(" meters along\n");
+        sb.append(" feet along\n");
         sb.append(street); // street name
         sb.append(" from\n");
         sb.append(route.get(i).name); // vertex 1 name
@@ -365,7 +365,7 @@ public class DirectionActivity extends AppCompatActivity {
         } else {
             sb.append(distanceList.get(i-1));
         }
-        sb.append(" meters along\n");
+        sb.append(" feet along\n");
         sb.append(Objects.requireNonNull(edges.get((g.getEdge(route.get(i).id,
                 route.get(i + direction).id)).getId())).street); // street name
         sb.append(" from\n");
