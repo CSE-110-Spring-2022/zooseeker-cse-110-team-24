@@ -193,8 +193,10 @@ public class DirectionActivity extends AppCompatActivity {
 
         Switch directionSwitch = findViewById(R.id.directionSwitch);
         if(directionSwitch.isChecked()) {
+            //directions should now be set to detailed mode
             directionSwitch.setText("Detailed");
         } else {
+            //directions should now be set to brief mode
             directionSwitch.setText("Brief");
         }
     }
