@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -178,6 +179,24 @@ public class DirectionActivity extends AppCompatActivity {
         //System.out.println("direction remaining targets: " + remainingTargets);
 
         return sb.toString();
+    }
+
+    /**
+     * Method: onSwitchClicked
+     * Desc  : Handles the clicking of the directions switch
+     *         When clicked while off, should change direction type to detailed
+     *         When clicked while on, should change direction type to brief
+     * @param view   The button to be clicked
+     */
+    public void onSwitchClicked(View view) {
+        // Only iterate to the next direction if one exists
+
+        Switch directionSwitch = findViewById(R.id.directionSwitch);
+        if(directionSwitch.isChecked()) {
+            directionSwitch.setText("Detailed");
+        } else {
+            directionSwitch.setText("Brief");
+        }
     }
 
     /**
