@@ -4,9 +4,7 @@ package com.example.zooseekerteam24;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
@@ -22,9 +20,9 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -35,13 +33,14 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class DeleteFromPlanner {
+public class AddGorillaFlamingoKoiToPlanner {
 
     @Rule
-    public ActivityTestRule<SearchActivity> mActivityTestRule = new ActivityTestRule<>(SearchActivity.class);
+    public ActivityScenarioRule<SearchActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(SearchActivity.class);
 
     @Test
-    public void deleteFromPlanner() {
+    public void addGorillaFlamingoKoiToPlanner() {
         ViewInteraction appCompatImageView = onView(
                 allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Search"),
                         childAtPosition(
@@ -62,7 +61,7 @@ public class DeleteFromPlanner {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete.perform(replaceText("monkey"), closeSoftKeyboard());
+        searchAutoComplete.perform(replaceText("gorilla"), closeSoftKeyboard());
 
         ViewInteraction materialTextView = onView(
                 allOf(withId(R.id.tvAdded), withText("Add"),
@@ -72,19 +71,19 @@ public class DeleteFromPlanner {
                         isDisplayed()));
         materialTextView.perform(click());
 
-        ViewInteraction searchAutoComplete2 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("monkey"),
+        ViewInteraction appCompatImageView2 = onView(
+                allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Clear query"),
                         childAtPosition(
                                 allOf(withClassName(is("android.widget.LinearLayout")),
                                         childAtPosition(
                                                 withClassName(is("android.widget.LinearLayout")),
                                                 1)),
-                                0),
+                                1),
                         isDisplayed()));
-        searchAutoComplete2.perform(replaceText("lion"));
+        appCompatImageView2.perform(click());
 
-        ViewInteraction searchAutoComplete3 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("lion"),
+        ViewInteraction searchAutoComplete2 = onView(
+                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")),
                         childAtPosition(
                                 allOf(withClassName(is("android.widget.LinearLayout")),
                                         childAtPosition(
@@ -92,7 +91,7 @@ public class DeleteFromPlanner {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete3.perform(closeSoftKeyboard());
+        searchAutoComplete2.perform(replaceText("flamingo"), closeSoftKeyboard());
 
         ViewInteraction materialTextView2 = onView(
                 allOf(withId(R.id.tvAdded), withText("Add"),
@@ -102,19 +101,19 @@ public class DeleteFromPlanner {
                         isDisplayed()));
         materialTextView2.perform(click());
 
-        ViewInteraction searchAutoComplete4 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("lion"),
+        ViewInteraction appCompatImageView3 = onView(
+                allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Clear query"),
                         childAtPosition(
                                 allOf(withClassName(is("android.widget.LinearLayout")),
                                         childAtPosition(
                                                 withClassName(is("android.widget.LinearLayout")),
                                                 1)),
-                                0),
+                                1),
                         isDisplayed()));
-        searchAutoComplete4.perform(replaceText("fox"));
+        appCompatImageView3.perform(click());
 
-        ViewInteraction searchAutoComplete5 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("fox"),
+        ViewInteraction searchAutoComplete3 = onView(
+                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")),
                         childAtPosition(
                                 allOf(withClassName(is("android.widget.LinearLayout")),
                                         childAtPosition(
@@ -122,7 +121,7 @@ public class DeleteFromPlanner {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete5.perform(closeSoftKeyboard());
+        searchAutoComplete3.perform(replaceText("fish"), closeSoftKeyboard());
 
         ViewInteraction materialTextView3 = onView(
                 allOf(withId(R.id.tvAdded), withText("Add"),
@@ -132,16 +131,16 @@ public class DeleteFromPlanner {
                         isDisplayed()));
         materialTextView3.perform(click());
 
-        ViewInteraction searchAutoComplete6 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("fox"),
+        ViewInteraction appCompatImageView4 = onView(
+                allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Clear query"),
                         childAtPosition(
                                 allOf(withClassName(is("android.widget.LinearLayout")),
                                         childAtPosition(
                                                 withClassName(is("android.widget.LinearLayout")),
                                                 1)),
-                                0),
+                                1),
                         isDisplayed()));
-        searchAutoComplete6.perform(pressImeActionButton());
+        appCompatImageView4.perform(click());
 
         ViewInteraction bottomNavigationItemView = onView(
                 allOf(withId(R.id.icPlanner), withContentDescription("Planner"),
@@ -152,6 +151,24 @@ public class DeleteFromPlanner {
                                 1),
                         isDisplayed()));
         bottomNavigationItemView.perform(click());
+
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.tvName), withText("Koi Fish"),
+                        withParent(withParent(withId(R.id.rvPlanner))),
+                        isDisplayed()));
+        textView.check(matches(withText("Koi Fish")));
+
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.tvName), withText("Flamingos"),
+                        withParent(withParent(withId(R.id.rvPlanner))),
+                        isDisplayed()));
+        textView2.check(matches(withText("Flamingos")));
+
+        ViewInteraction textView3 = onView(
+                allOf(withId(R.id.tvName), withText("Gorillas"),
+                        withParent(withParent(withId(R.id.rvPlanner))),
+                        isDisplayed()));
+        textView3.check(matches(withText("Gorillas")));
 
         ViewInteraction materialTextView4 = onView(
                 allOf(withId(R.id.tvDelete), withText("x"),
@@ -182,9 +199,6 @@ public class DeleteFromPlanner {
                                 2),
                         isDisplayed()));
         materialTextView6.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.tvName))).check(doesNotExist());
     }
 
     private static Matcher<View> childAtPosition(
