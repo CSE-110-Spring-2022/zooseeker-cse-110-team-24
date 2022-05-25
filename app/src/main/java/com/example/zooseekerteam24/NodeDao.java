@@ -20,16 +20,22 @@ public interface NodeDao {
      * so that Observer updates UI (we do so by update Adapter with new db contents
      */
     @Insert
-    List<Long> insertAll (List<ZooData.Node> exhibits);
+    List<Long> insertAll (List<ZooData.Node> nodes);
 
     @Query("SELECT * FROM `node` WHERE `rtId`=:rtId")
     ZooData.Node get(long rtId);
+
+    @Query("SELECT * FROM `node` WHERE `id`=:id")
+    ZooData.Node getById(String id);
 
     @Query ("SELECT * FROM `node` WHERE `added`")
     List<ZooData.Node> getAllAdded();
 
     @Query ("SELECT * FROM `node` WHERE `kind`='EXHIBIT'")
-    LiveData<List<ZooData.Node>> getAllLive();
+    LiveData<List<ZooData.Node>> getAllExhibitsLive();
+
+    @Query ("SELECT * FROM `node` WHERE `kind`='EXHIBIT'")
+    List<ZooData.Node> getAllExhibits();
 
     @Query ("SELECT * FROM `node` WHERE `added` ORDER BY `cumDistance`")
     LiveData<List<ZooData.Node>> getAllOrderedAddedLive();

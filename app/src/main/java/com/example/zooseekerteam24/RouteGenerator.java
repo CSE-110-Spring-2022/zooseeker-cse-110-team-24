@@ -9,6 +9,7 @@
 package com.example.zooseekerteam24;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RouteGenerator {
 
@@ -108,12 +110,20 @@ public class RouteGenerator {
         double currWeight;
         List<String> currMinPath = new ArrayList<String>();
 
+
         // Iterate through each of the paths to TARGET NODES and find the shortest one
         for(int i = 0; i < targets.size(); i++){
-            currWeight = ssPaths.getWeight((targets.get(i)).id);
+            currWeight = ssPaths.getWeight(getParentOrDefaultId((targets.get(i))));
+
             if(currWeight < currMinWeight) {
                 currMinWeight = currWeight;
-                currMinPath = (ssPaths.getPath((targets.get(i)).id)).getVertexList();
+                currMinPath = new ArrayList<>(ssPaths.getPath
+                        (getParentOrDefaultId(targets.get(i)))
+                        .getVertexList());
+            }
+            // TODO: edge case when source and target in the same group
+            if (currWeight == 0 && targets.get(i).parent_id != null){
+                currMinPath.add(getParentOrDefaultId(targets.get(i)));
             }
         }
 
@@ -153,11 +163,25 @@ public class RouteGenerator {
             route.addAll(nearestNode(source));
 
             // Removes whatever target was added to the route from the targets list
-            for(int i = 0; i < targets.size(); i++){
-                if(targets.get(i).id.equals(route.get(route.size() - 1).id)){
-                    targets.remove(i);
-                }
-            }
+            targets
+                    .remove(
+                            targets.stream().filter(target -> route.stream().map(e -> e.id)
+                                            .collect(Collectors.toList())
+                                            .contains(getParentOrDefaultId(target)))
+                            .findFirst()
+                            .get()
+                    );
+
+
+//            targets.removeIf(target -> route.stream().map(e -> e.id).collect(Collectors.toList())
+//                    .contains(getParentOrDefaultId(target)));
+
+            // This causes an infinite loop because targets never removed
+//            for(int i = 0; i < targets.size(); i++){
+//                if(targets.get(i).id.equals(route.get(route.size() - 1).id)){
+//                    targets.remove(i);
+//                }
+//            }
         }
         source = route.get(route.size()-1);
         route.remove(route.size()-1);
@@ -185,15 +209,36 @@ public class RouteGenerator {
         }
 
         // Add the first edge, then iterate through remaining ones
-        returnList.add((g.getEdge(route.get(0).id,route.get(1).id)).getWeight());
+
+        //TODO: treat child-exhibit as their parent
+        Log.d("TAG", "generateCumDistances: " + route.get(0).id);
+        Log.d("TAG", "generateCumDistances: " + getParentOrDefaultId(route.get(1)));
+        returnList.add(
+                (g.getEdge(route.get(0).id, getParentOrDefaultId(route.get(1)))).getWeight()
+        );
         for(int i = 1; i < route.size()-1; i++){
             // Add the current edge weight plus the previous
             // returnList entry to make it cumulative
-            returnList.add((g.getEdge(route.get(i).id,
-                    route.get(i+1).id)).getWeight() +
-                    returnList.get(i-1));
+            // TODO: account for the case that two consecutive exhibits in same group,
+            //  so in the route, their parent_id appears twice
+            String fromId = route.get(i).id;
+            String toId = route.get(i+1).id;
+            double currentEdgeWeight = 0;
+            if (fromId != toId){
+                currentEdgeWeight = g.getEdge(fromId, toId).getWeight();
+            }
+            returnList.add(returnList.get(i-1) + currentEdgeWeight);
+//            returnList.add(g.getEdge(route.get(i).id, getParentOrDefaultId(route.get(i+1))).getWeight()
+//                    + returnList.get(i-1));
         }
         return returnList;
+    }
+
+    private String getParentOrDefaultId(ZooData.Node node){
+        if (node.parent_id != null){
+            return node.parent_id;
+        }
+        return node.id;
     }
 
     /**
@@ -239,11 +284,16 @@ public class RouteGenerator {
             // Iterate through all targets
             for(int j = 0; j < exCopy.size(); j++){
                 // If the current node on the route is an exhibit, add its distance
-                if(staticroute.get(i+1).id.equals(exCopy.get(j).id)){
-                    distanceMap.put(staticroute.get(i + 1).id, distances.get(i));
+                if(staticroute.get(i+1).id.equals(getParentOrDefaultId(exCopy.get(j)))){
+                    distanceMap.put(exCopy.get(j).id, distances.get(i));
                     exCopy.remove(j);
                     break;
                 }
+//                if(staticroute.get(i+1).id.equals(exCopy.get(j).id)){
+//                    distanceMap.put(staticroute.get(i + 1).id, distances.get(i));
+//                    exCopy.remove(j);
+//                    break;
+//                }
             }
         }
         return distanceMap;

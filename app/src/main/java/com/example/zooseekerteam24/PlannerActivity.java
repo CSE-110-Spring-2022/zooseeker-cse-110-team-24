@@ -2,8 +2,7 @@ package com.example.zooseekerteam24;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.TextView;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.Observable;
@@ -53,12 +52,18 @@ public class PlannerActivity extends AppCompatActivity {
         edges = ZooData.loadEdgesFromJSON(this, ZooData.EDGE_FILE);
         g = ZooData.loadZooGraphJSON(this, ZooData.GRAPH_FILE);
 
+//        for(IdentifiedWeightedEdge e: g.edgeSet()){
+//            Log.d(TAG, "edge: " + e.getWeight());
+//        }
+
         generator = new RouteGenerator(this, exhibits, nodes, edges, g);
 
         // Register viewModel to observe changes in planner
         plannerViewModel = new ViewModelProvider(this)
                 .get(PlannerViewModel.class);
-        plannerViewModel.getAddedNodes().observe(this, adapter::populatePlanner);
+        plannerViewModel.getAddedNodesByDist().observe(this, adapter::populatePlanner);
+
+        generator.setTargets(plannerViewModel.getAddedNodes());
         adapter.setRouteGenerator(generator);
         adapter.setOnDeleteBtnClickedHandler(plannerViewModel::toggleExhibitAdded);
         adapter.setOnOrderCalledHandler(plannerViewModel::orderExhibitsAdded);

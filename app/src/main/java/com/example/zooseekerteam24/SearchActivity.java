@@ -40,13 +40,16 @@ public class SearchActivity extends AppCompatActivity {
         lvResults = findViewById(R.id.lvResults);
 
 
+//        List<ZooData.Node> nodes = ZooData.loadListOfNodesFromJSON(this, ZooData.NODE_FILE);
+//        nodes.forEach(n -> Log.d(TAG, "node: " + n));
+
 
         adapter = new SearchResultAdapter(this, exhibits);
         plannerViewModel = new ViewModelProvider(this)
                 .get(PlannerViewModel.class);
 
         adapter.setOnAddBtnClickedHandler(plannerViewModel::toggleExhibitAdded);
-        plannerViewModel.getNodes().observe(this, adapter::populateSearch);
+        plannerViewModel.getAllExhibits().observe(this, adapter::populateSearch);
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
