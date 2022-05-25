@@ -42,28 +42,28 @@
         android:paddingHorizontal="10dp">
 
         <Button
-            android:id="@+id/nextBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:onClick="onNextButtonClicked"
-            android:text="Next" />
-
-        <Button
             android:id="@+id/prevBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:onClick="onPrevButtonClicked"
             android:text="Prev" />
+
+        <Button
+            android:id="@+id/skipBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:onClick="onSkipButtonClicked"
+            android:text="Skip"/>
+
+        <Button
+            android:id="@+id/nextBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:onClick="onNextButtonClicked"
+            android:text="Next" />
     </RelativeLayout>
-
-
-    <Button
-        android:id="@+id/skipBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Skip"
-        android:onClick="onSkipButtonClicked"/>
 
 </RelativeLayout>
