@@ -4,7 +4,6 @@ package com.example.zooseekerteam24;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -21,9 +20,9 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -34,13 +33,14 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class AddingGorillaAndFoxToPlanner {
+public class AddGorillasCheckCounter {
 
     @Rule
-    public ActivityTestRule<SearchActivity> mActivityTestRule = new ActivityTestRule<>(SearchActivity.class);
+    public ActivityScenarioRule<SearchActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(SearchActivity.class);
 
     @Test
-    public void addingGorillaAndFoxToPlanner() {
+    public void addGorillasCheckCounter() {
         ViewInteraction appCompatImageView = onView(
                 allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Search"),
                         childAtPosition(
@@ -61,18 +61,7 @@ public class AddingGorillaAndFoxToPlanner {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete.perform(replaceText("fox"), closeSoftKeyboard());
-
-        ViewInteraction searchAutoComplete2 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("fox"),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete2.perform(pressImeActionButton());
+        searchAutoComplete.perform(replaceText("gorilla"), closeSoftKeyboard());
 
         ViewInteraction materialTextView = onView(
                 allOf(withId(R.id.tvAdded), withText("Add"),
@@ -82,57 +71,16 @@ public class AddingGorillaAndFoxToPlanner {
                         isDisplayed()));
         materialTextView.perform(click());
 
-        ViewInteraction searchAutoComplete3 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("fox"),
+        ViewInteraction appCompatImageView2 = onView(
+                allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Clear query"),
                         childAtPosition(
                                 allOf(withClassName(is("android.widget.LinearLayout")),
                                         childAtPosition(
                                                 withClassName(is("android.widget.LinearLayout")),
                                                 1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete3.perform(click());
-
-        ViewInteraction searchAutoComplete4 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("fox"),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete4.perform(replaceText("Monkey"));
-
-        ViewInteraction searchAutoComplete5 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("Monkey"),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete5.perform(closeSoftKeyboard());
-
-        ViewInteraction materialTextView2 = onView(
-                allOf(withId(R.id.tvAdded), withText("Add"),
-                        childAtPosition(
-                                withParent(withId(R.id.lvResults)),
                                 1),
                         isDisplayed()));
-        materialTextView2.perform(click());
-
-        ViewInteraction searchAutoComplete6 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("Monkey"),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete6.perform(pressImeActionButton());
+        appCompatImageView2.perform(click());
 
         ViewInteraction bottomNavigationItemView = onView(
                 allOf(withId(R.id.icPlanner), withContentDescription("Planner"),
@@ -145,16 +93,21 @@ public class AddingGorillaAndFoxToPlanner {
         bottomNavigationItemView.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.tvName), withText("Gorillas"),
-                        withParent(withParent(withId(R.id.rvPlanner))),
+                allOf(withText("Planner (1)"),
+                        withParent(allOf(withId(androidx.appcompat.R.id.action_bar),
+                                withParent(withId(androidx.appcompat.R.id.action_bar_container)))),
                         isDisplayed()));
-        textView.check(matches(withText("Gorillas")));
+        textView.check(matches(withText("Planner (1)")));
 
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.tvName), withText("Arctic Foxes"),
-                        withParent(withParent(withId(R.id.rvPlanner))),
+        ViewInteraction materialTextView2 = onView(
+                allOf(withId(R.id.tvDelete), withText("x"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.rvPlanner),
+                                        0),
+                                2),
                         isDisplayed()));
-        textView2.check(matches(withText("Arctic Foxes")));
+        materialTextView2.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

@@ -4,7 +4,6 @@ package com.example.zooseekerteam24;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -21,9 +20,9 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -34,13 +33,14 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class NotifyWhenArrivingAtExhibit {
+public class DeletingFromPlanner {
 
     @Rule
-    public ActivityTestRule<SearchActivity> mActivityTestRule = new ActivityTestRule<>(SearchActivity.class);
+    public ActivityScenarioRule<SearchActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(SearchActivity.class);
 
     @Test
-    public void notifyWhenArrivingAtExhibit() {
+    public void deletingFromPlanner() {
         ViewInteraction appCompatImageView = onView(
                 allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Search"),
                         childAtPosition(
@@ -61,18 +61,7 @@ public class NotifyWhenArrivingAtExhibit {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete.perform(replaceText("monkey"), closeSoftKeyboard());
-
-        ViewInteraction searchAutoComplete2 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("monkey"),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete2.perform(pressImeActionButton());
+        searchAutoComplete.perform(replaceText("gorilla"), closeSoftKeyboard());
 
         ViewInteraction materialTextView = onView(
                 allOf(withId(R.id.tvAdded), withText("Add"),
@@ -82,41 +71,90 @@ public class NotifyWhenArrivingAtExhibit {
                         isDisplayed()));
         materialTextView.perform(click());
 
+        ViewInteraction appCompatImageView2 = onView(
+                allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Clear query"),
+                        childAtPosition(
+                                allOf(withClassName(is("android.widget.LinearLayout")),
+                                        childAtPosition(
+                                                withClassName(is("android.widget.LinearLayout")),
+                                                1)),
+                                1),
+                        isDisplayed()));
+        appCompatImageView2.perform(click());
+
+        ViewInteraction searchAutoComplete2 = onView(
+                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")),
+                        childAtPosition(
+                                allOf(withClassName(is("android.widget.LinearLayout")),
+                                        childAtPosition(
+                                                withClassName(is("android.widget.LinearLayout")),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete2.perform(replaceText("fish"), closeSoftKeyboard());
+
+        ViewInteraction materialTextView2 = onView(
+                allOf(withId(R.id.tvAdded), withText("Add"),
+                        childAtPosition(
+                                withParent(withId(R.id.lvResults)),
+                                1),
+                        isDisplayed()));
+        materialTextView2.perform(click());
+
+        ViewInteraction appCompatImageView3 = onView(
+                allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Clear query"),
+                        childAtPosition(
+                                allOf(withClassName(is("android.widget.LinearLayout")),
+                                        childAtPosition(
+                                                withClassName(is("android.widget.LinearLayout")),
+                                                1)),
+                                1),
+                        isDisplayed()));
+        appCompatImageView3.perform(click());
+
         ViewInteraction bottomNavigationItemView = onView(
-                allOf(withId(R.id.icDirection), withContentDescription("Direction"),
+                allOf(withId(R.id.icPlanner), withContentDescription("Planner"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.btmNavi),
                                         0),
-                                2),
+                                1),
                         isDisplayed()));
         bottomNavigationItemView.perform(click());
 
-        ViewInteraction materialButton = onView(
-                allOf(withId(R.id.nextBtn), withText("Next"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        materialButton.perform(click());
-
-        ViewInteraction materialButton2 = onView(
-                allOf(withId(R.id.nextBtn), withText("Next"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        materialButton2.perform(click());
-
         ViewInteraction textView = onView(
-                allOf(withId(R.id.atExhibitText), withText("Arriving at Exhibit!"),
-                        withParent(withParent(withId(android.R.id.content))),
+                allOf(withText("Planner (2)"),
+                        withParent(allOf(withId(androidx.appcompat.R.id.action_bar),
+                                withParent(withId(androidx.appcompat.R.id.action_bar_container)))),
                         isDisplayed()));
-        textView.check(matches(withText("Arriving at Exhibit!")));
+        textView.check(matches(withText("Planner (2)")));
+
+        ViewInteraction materialTextView3 = onView(
+                allOf(withId(R.id.tvDelete), withText("x"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.rvPlanner),
+                                        0),
+                                2),
+                        isDisplayed()));
+        materialTextView3.perform(click());
+
+        ViewInteraction materialTextView4 = onView(
+                allOf(withId(R.id.tvDelete), withText("x"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.rvPlanner),
+                                        0),
+                                2),
+                        isDisplayed()));
+        materialTextView4.perform(click());
+
+        ViewInteraction textView2 = onView(
+                allOf(withText("Planner (0)"),
+                        withParent(allOf(withId(androidx.appcompat.R.id.action_bar),
+                                withParent(withId(androidx.appcompat.R.id.action_bar_container)))),
+                        isDisplayed()));
+        textView2.check(matches(withText("Planner (0)")));
     }
 
     private static Matcher<View> childAtPosition(
