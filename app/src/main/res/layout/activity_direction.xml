@@ -16,7 +16,7 @@
         android:gravity="center"/>
 
     <TextView
-        android:id="@+id/atExhibitText"
+        android:id="@+id/goingPreviousText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -58,5 +58,12 @@
             android:text="Prev" />
     </RelativeLayout>
 
+
+    <Button
+        android:id="@+id/skipBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Skip"
+        android:onClick="onSkipButtonClicked"/>
 
 </RelativeLayout>
