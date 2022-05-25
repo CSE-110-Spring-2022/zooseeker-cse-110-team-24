@@ -11,7 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -42,6 +44,8 @@ public class DirectionActivity extends AppCompatActivity {
     private int currIndex; // curr index of route user is at, used to help against duplicates
 
     private List<Double> distanceList = new ArrayList<Double>();
+
+    private boolean detailedOn = false;
 
     //private List<Pair<String, Boolean>> directionsList;
 
@@ -121,27 +125,27 @@ public class DirectionActivity extends AppCompatActivity {
                                       List<ZooData.Node> route,
                                       List<Double> distanceList,
                                       int direction) {
-        StringBuilder sb = new StringBuilder();
+        String returnDirection = "NO DIRECTION";
+
         int i; // index of currNode in the route
         i = currIndex;
 
         // Iterates through each node in the route
         if (i >= 0) {
-            sb.append("Walk ");
-            // Grab the distanceList element depending on direction
-            if(direction > 0) {
-                sb.append(distanceList.get(i)); // distance to walk
+
+            if(detailedOn){
+                returnDirection = detailedDirectionsHelper(i,direction,route);
             } else {
-                sb.append(distanceList.get(i-1));
+                Pair<String, Integer> briefDirectionPair = briefDirectionsHelper(i,direction,route);
+                returnDirection = briefDirectionPair.first;
+                if(direction > 0) {
+                    i += briefDirectionPair.second;
+                    this.currIndex += briefDirectionPair.second;
+                } else {
+                    i -= briefDirectionPair.second;
+                    this.currIndex -= briefDirectionPair.second;
+                }
             }
-            sb.append(" meters along\n");
-            sb.append(Objects.requireNonNull(edges.get((g.getEdge(route.get(i).id,
-                    route.get(i + direction).id)).getId())).street); // street name
-            sb.append(" from\n");
-            sb.append(route.get(i).name); // vertex 1 name
-            sb.append("\nto ");
-            sb.append(route.get(i + direction).name); // vertex 2 name
-            sb.append(".");
 
             /*
             If you're wondering why we didn't just use .contains, it seems like the rtId value
@@ -177,7 +181,29 @@ public class DirectionActivity extends AppCompatActivity {
 
         //System.out.println("direction remaining targets: " + remainingTargets);
 
-        return sb.toString();
+        return returnDirection;
+    }
+
+    /**
+     * Method: onSwitchClicked
+     * Desc  : Handles the clicking of the directions switch
+     *         When clicked while off, should change direction type to detailed
+     *         When clicked while on, should change direction type to brief
+     * @param view   The button to be clicked
+     */
+    public void onSwitchClicked(View view) {
+        // Only iterate to the next direction if one exists
+
+        Switch directionSwitch = findViewById(R.id.directionSwitch);
+        if(directionSwitch.isChecked()) {
+            //directions should now be set to detailed mode
+            detailedOn = true;
+            directionSwitch.setText("Detailed");
+        } else {
+            //directions should now be set to brief mode
+            detailedOn = false;
+            directionSwitch.setText("Brief");
+        }
     }
 
     /**
@@ -261,6 +287,94 @@ public class DirectionActivity extends AppCompatActivity {
         }
         */
 
+    }
+
+    private Pair<String, Integer> briefDirectionsHelper
+            (int i, int direction, List<ZooData.Node> route){
+        int dirLength = 0; // how many directions are being compressed
+        double pathDist = 0;
+        String street = Objects.requireNonNull(edges.get((g.getEdge(route.get(i).id,
+                route.get(i + direction).id)).getId())).street;
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Walk ");
+        // Grab the distanceList element depending on direction
+        // If the user is going forward in the path
+        if(direction > 0) {
+            while(i + dirLength + 2 < route.size()){
+
+                // If the current street name is the same as the next street name
+                if((street).equals((Objects.requireNonNull
+                        (edges.get((g.getEdge(route.get(i+dirLength+1).id,
+                                route.get(i + dirLength+2).id)).getId())).street))){
+
+                    // Then you're travelling along a straight road
+                    // Add to the total distance of the road
+
+                    // TODO check if it's an exhibit and return early
+
+                    pathDist += distanceList.get(i+dirLength);
+                    dirLength += 1;
+
+                } else {
+                    break;
+                }
+            }
+            pathDist += distanceList.get(i+dirLength);
+        }
+        // Else, the user is travelling backwards
+        else if (direction < 0) {
+            while(i - dirLength - 2 >= 0) {
+                // If the street name equals the next (previous) street name
+                if((street).equals((Objects.requireNonNull
+                        (edges.get((g.getEdge(route.get(i-dirLength-1).id,
+                                route.get(i - dirLength-2).id)).getId())).street))){
+                    pathDist += distanceList.get(i-dirLength-1);
+                    dirLength += 1;
+                } else {
+                    break;
+                }
+            }
+            pathDist += distanceList.get(i-dirLength-1);
+        }
+
+        sb.append(pathDist); // distance to walk
+
+        sb.append(" meters along\n");
+        sb.append(street); // street name
+        sb.append(" from\n");
+        sb.append(route.get(i).name); // vertex 1 name
+        sb.append("\nto ");
+        if (direction > 0) {
+            sb.append(route.get(i + direction + dirLength).name); // vertex 2 name
+        } else {
+            sb.append(route.get(i + direction - dirLength).name); // vertex 2 name (prev)
+        }
+        sb.append(".");
+
+        return new Pair<String, Integer>(sb.toString(), dirLength);
+    }
+
+    private String detailedDirectionsHelper(int i, int direction, List<ZooData.Node> route){
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Walk ");
+        // Grab the distanceList element depending on direction
+        if(direction > 0) {
+            sb.append(distanceList.get(i)); // distance to walk
+        } else {
+            sb.append(distanceList.get(i-1));
+        }
+        sb.append(" meters along\n");
+        sb.append(Objects.requireNonNull(edges.get((g.getEdge(route.get(i).id,
+                route.get(i + direction).id)).getId())).street); // street name
+        sb.append(" from\n");
+        sb.append(route.get(i).name); // vertex 1 name
+        sb.append("\nto ");
+        sb.append(route.get(i + direction).name); // vertex 2 name
+        sb.append(".");
+
+        return sb.toString();
     }
 
 
