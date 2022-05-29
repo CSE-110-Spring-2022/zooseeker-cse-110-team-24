@@ -1,13 +1,10 @@
 package com.example.zooseekerteam24;
 
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.actionWithAssertions;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
@@ -16,20 +13,16 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNull;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -43,10 +36,11 @@ import org.junit.runner.RunWith;
 public class SearchActivityTest {
 
     @Rule
-    public ActivityTestRule<SearchActivity> mActivityTestRule = new ActivityTestRule<>(SearchActivity.class);
+    public ActivityScenarioRule<SearchActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(SearchActivity.class);
 
     @Test
-    public void searchActivityTest() {
+    public void searchActivityTest2() {
         ViewInteraction appCompatImageView = onView(
                 allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Search"),
                         childAtPosition(
@@ -67,9 +61,13 @@ public class SearchActivityTest {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete.perform(replaceText("fox"), closeSoftKeyboard());
+        searchAutoComplete.perform(replaceText("fish"), closeSoftKeyboard());
 
-        onView(allOf(withId(R.id.tvName))).check(matches(withText("Arctic Foxes")));
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.tvName), withText("Koi Fish"),
+                        withParent(withParent(withId(R.id.lvResults))),
+                        isDisplayed()));
+        textView.check(matches(withText("Koi Fish")));
 
         ViewInteraction materialTextView = onView(
                 allOf(withId(R.id.tvAdded), withText("Add"),
@@ -89,7 +87,11 @@ public class SearchActivityTest {
                         isDisplayed()));
         bottomNavigationItemView.perform(click());
 
-        onView(allOf(withId(R.id.tvName))).check(matches(withText("Arctic Foxes")));
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.tvName), withText("Koi Fish"),
+                        withParent(withParent(withId(R.id.rvPlanner))),
+                        isDisplayed()));
+        textView2.check(matches(withText("Koi Fish")));
 
         ViewInteraction materialTextView2 = onView(
                 allOf(withId(R.id.tvDelete), withText("x"),
@@ -100,8 +102,6 @@ public class SearchActivityTest {
                                 2),
                         isDisplayed()));
         materialTextView2.perform(click());
-
-        onView(allOf(withId(R.id.tvName))).check(doesNotExist());
     }
 
     private static Matcher<View> childAtPosition(

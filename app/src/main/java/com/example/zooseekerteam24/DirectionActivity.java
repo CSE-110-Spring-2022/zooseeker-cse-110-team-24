@@ -255,16 +255,13 @@ public class DirectionActivity extends AppCompatActivity {
         List<ZooData.Node> newSkippedRoute = new ArrayList<>();
         if(!remainingTargets.isEmpty()) {
             System.out.println("SKIPPED");
-
             System.out.println("Remaining Targets: " + remainingTargets);
             System.out.println("currNode " + currNode);
             System.out.println("-----------");
             //System.out.println("Next Exhibit " + generator.nextExhibitInRoute(currNode));
-
             // Reset the targets so it can remove the next in list
             generator.setTargets(targets);
             ZooData.Node nextExhibit = generator.nextExhibitInRoute(currNode);
-
             for(int i = 0; i < targets.size(); i++){
                 if(targets.get(i).id.equals(nextExhibit.id)){
                     targets.remove(i);
@@ -275,16 +272,13 @@ public class DirectionActivity extends AppCompatActivity {
                     remainingTargets.remove(i);
                 }
             }
-
             // Set the remaining targets so you can perform the new route
             generator.setTargets(remainingTargets);
-
             //Generate the new route and append it to the first half
             newSkippedRoute = generator.pathGeneratorFromNode(currNode);
             route = generator.clearRouteFromIndex(route, currIndex);
             route.addAll(newSkippedRoute);
             RouteGenerator.staticroute = route;
-
             TextView directionsText = (TextView) findViewById(R.id.directionsText);
             directionsText.setText(generateDirections(currIndex-1,route,distanceList,1));
         }

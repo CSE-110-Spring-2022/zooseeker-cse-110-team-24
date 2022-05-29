@@ -3,10 +3,12 @@ package com.example.zooseekerteam24;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withParent;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
 import android.view.View;
@@ -14,9 +16,9 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -27,13 +29,14 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class NothingInPlanner {
+public class AddNothingCheckCounter {
 
     @Rule
-    public ActivityTestRule<SearchActivity> mActivityTestRule = new ActivityTestRule<>(SearchActivity.class);
+    public ActivityScenarioRule<SearchActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(SearchActivity.class);
 
     @Test
-    public void nothingInPlanner() {
+    public void addNothingCheckCounter() {
         ViewInteraction bottomNavigationItemView = onView(
                 allOf(withId(R.id.icPlanner), withContentDescription("Planner"),
                         childAtPosition(
@@ -43,7 +46,13 @@ public class NothingInPlanner {
                                 1),
                         isDisplayed()));
         bottomNavigationItemView.perform(click());
-        onView(allOf(withId(R.id.tvName))).check(doesNotExist());
+
+        ViewInteraction textView = onView(
+                allOf(withText("Planner (0)"),
+                        withParent(allOf(withId(androidx.appcompat.R.id.action_bar),
+                                withParent(withId(androidx.appcompat.R.id.action_bar_container)))),
+                        isDisplayed()));
+        textView.check(matches(withText("Planner (0)")));
     }
 
     private static Matcher<View> childAtPosition(
