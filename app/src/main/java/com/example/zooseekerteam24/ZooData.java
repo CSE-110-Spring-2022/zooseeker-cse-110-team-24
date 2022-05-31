@@ -48,7 +48,7 @@ public class ZooData {
 
         @NonNull
         public String id = "";
-        public String parent_id;
+        public String group_id;
 
         public Kind kind;
         public String name;
@@ -63,12 +63,24 @@ public class ZooData {
         public boolean added = false;
         public double cumDistance = -1;
 
+        public boolean hasGroup() {
+            return group_id != null;
+        }
+
+        public boolean isExhibit(){
+            return kind.equals(Kind.EXHIBIT);
+        }
+
+        public boolean isExhibitGroup() {
+            return kind.equals(Kind.EXHIBIT_GROUP);
+        }
+
         @Override
         public String toString() {
             return "Node{" +
                     "rtId=" + rtId +
                     ", id='" + id + '\'' +
-                    ", parent_id='" + parent_id + '\'' +
+                    ", group_id='" + group_id + '\'' +
                     ", kind=" + kind +
                     ", name='" + name + '\'' +
                     ", tags=" + tags +

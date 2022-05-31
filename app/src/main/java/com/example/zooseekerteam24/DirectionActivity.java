@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class DirectionActivity extends AppCompatActivity {
 
@@ -44,6 +45,7 @@ public class DirectionActivity extends AppCompatActivity {
     private int currIndex; // curr index of route user is at, used to help against duplicates
 
     private List<Double> distanceList = new ArrayList<Double>();
+    private List<ZooData.Node> exhibitsInGroup =  new ArrayList<>();
 
     private boolean detailedOn = false;
 
@@ -71,6 +73,7 @@ public class DirectionActivity extends AppCompatActivity {
         // the user wishes to see
         NodeDao nodeDao = NodeDatabase.getSingleton(this).nodeDao();
         targets = nodeDao.getAllAdded();
+        exhibitsInGroup = new ArrayList<>(targets.stream().filter(n -> n.hasGroup()).collect(Collectors.toList()));
         generator.setTargets(targets);
         remainingTargets = generator.copyZooList(targets);
 
@@ -252,16 +255,13 @@ public class DirectionActivity extends AppCompatActivity {
         List<ZooData.Node> newSkippedRoute = new ArrayList<>();
         if(!remainingTargets.isEmpty()) {
             System.out.println("SKIPPED");
-
             System.out.println("Remaining Targets: " + remainingTargets);
             System.out.println("currNode " + currNode);
             System.out.println("-----------");
             //System.out.println("Next Exhibit " + generator.nextExhibitInRoute(currNode));
-
             // Reset the targets so it can remove the next in list
             generator.setTargets(targets);
             ZooData.Node nextExhibit = generator.nextExhibitInRoute(currNode);
-
             for(int i = 0; i < targets.size(); i++){
                 if(targets.get(i).id.equals(nextExhibit.id)){
                     targets.remove(i);
@@ -272,16 +272,13 @@ public class DirectionActivity extends AppCompatActivity {
                     remainingTargets.remove(i);
                 }
             }
-
             // Set the remaining targets so you can perform the new route
             generator.setTargets(remainingTargets);
-
             //Generate the new route and append it to the first half
             newSkippedRoute = generator.pathGeneratorFromNode(currNode);
             route = generator.clearRouteFromIndex(route, currIndex);
             route.addAll(newSkippedRoute);
             RouteGenerator.staticroute = route;
-
             TextView directionsText = (TextView) findViewById(R.id.directionsText);
             directionsText.setText(generateDirections(currIndex-1,route,distanceList,1));
         }
@@ -340,7 +337,7 @@ public class DirectionActivity extends AppCompatActivity {
 
         sb.append(pathDist); // distance to walk
 
-        sb.append(" feet along\n");
+        sb.append(" meters along\n");
         sb.append(street); // street name
         sb.append(" from\n");
         sb.append(route.get(i).name); // vertex 1 name
@@ -355,23 +352,61 @@ public class DirectionActivity extends AppCompatActivity {
         return new Pair<String, Integer>(sb.toString(), dirLength);
     }
 
+//    private String getExhibitFromGroupId(String groupId){
+//        ZooData.Node exhibit = exhibitsInGroup.stream().filter(n -> n.group_id.equals(groupId)).findFirst().get();
+//        exhibitsInGroup.remove(exhibit);
+//        return exhibit.name;
+//    }
+
     private String detailedDirectionsHelper(int i, int direction, List<ZooData.Node> route){
 
         StringBuilder sb = new StringBuilder();
         sb.append("Walk ");
         // Grab the distanceList element depending on direction
+        double distance = 0.0;
         if(direction > 0) {
-            sb.append(distanceList.get(i)); // distance to walk
+            distance = distanceList.get(i);
+//            sb.append(distanceList.get(i)); // distance to walk
         } else {
-            sb.append(distanceList.get(i-1));
+            distance = distanceList.get(i-1);
+//            sb.append(distanceList.get(i-1));
         }
-        sb.append(" feet along\n");
-        sb.append(Objects.requireNonNull(edges.get((g.getEdge(route.get(i).id,
-                route.get(i + direction).id)).getId())).street); // street name
-        sb.append(" from\n");
-        sb.append(route.get(i).name); // vertex 1 name
-        sb.append("\nto ");
-        sb.append(route.get(i + direction).name); // vertex 2 name
+
+        String fromId = route.get(i).id;
+        String toId = route.get(i + direction).id;
+
+        if (distance > 0){
+            sb.append(distance + " meters along\n");
+            sb.append(Objects.requireNonNull(edges.get((g.getEdge(fromId, toId)).getId())).street); // street name
+            sb.append(" from\n");
+            sb.append(route.get(i).name); // vertex 1 name
+            sb.append("\nto ");
+            sb.append(route.get(i + direction).name); // vertex 2 name
+        } else{
+            sb.append(" around " + route.get(i).name + "\n");
+            sb.append(" from\n");
+            sb.append(route.get(i).name); // vertex 1 name
+            sb.append("\nto ");
+            sb.append(route.get(i + direction).name); // vertex 2 name
+        }
+
+
+
+        // Edge is null when two exhibits in route are in the same group,
+        // this is resolved, but
+        // In route we treat subexhibits as group id, so now say from parker aviary to parter aviary
+        // instead of from mot-mot to toucan
+
+
+//        sb.append(Objects.requireNonNull(edges.get((g.getEdge(route.get(i).id,
+//                route.get(i + direction).id)).getId())).street); // street name
+
+
+
+//        sb.append(" from\n");
+//        sb.append(route.get(i).name); // vertex 1 name
+//        sb.append("\nto ");
+//        sb.append(route.get(i + direction).name); // vertex 2 name
         sb.append(".");
 
         return sb.toString();

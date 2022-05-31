@@ -113,17 +113,17 @@ public class RouteGenerator {
 
         // Iterate through each of the paths to TARGET NODES and find the shortest one
         for(int i = 0; i < targets.size(); i++){
-            currWeight = ssPaths.getWeight(getParentOrDefaultId((targets.get(i))));
+            currWeight = ssPaths.getWeight(getGroupOrDefaultId((targets.get(i))));
 
             if(currWeight < currMinWeight) {
                 currMinWeight = currWeight;
                 currMinPath = new ArrayList<>(ssPaths.getPath
-                        (getParentOrDefaultId(targets.get(i)))
+                        (getGroupOrDefaultId(targets.get(i)))
                         .getVertexList());
             }
             // TODO: edge case when source and target in the same group
-            if (currWeight == 0 && targets.get(i).parent_id != null){
-                currMinPath.add(getParentOrDefaultId(targets.get(i)));
+            if (currWeight == 0 && targets.get(i).group_id != null){
+                currMinPath.add(getGroupOrDefaultId(targets.get(i)));
             }
         }
 
@@ -168,14 +168,14 @@ public class RouteGenerator {
                     .remove(
                             targets.stream().filter(target -> route.stream().map(e -> e.id)
                                             .collect(Collectors.toList())
-                                            .contains(getParentOrDefaultId(target)))
+                                            .contains(getGroupOrDefaultId(target)))
                             .findFirst()
                             .get()
                     );
 
 
 //            targets.removeIf(target -> route.stream().map(e -> e.id).collect(Collectors.toList())
-//                    .contains(getParentOrDefaultId(target)));
+//                    .contains(getGroupOrDefaultId(target)));
 
             // This causes an infinite loop because targets never removed
 //            for(int i = 0; i < targets.size(); i++){
@@ -222,9 +222,9 @@ public class RouteGenerator {
 
         //TODO: treat child-exhibit as their parent
         Log.d("TAG", "generateCumDistances: " + route.get(0).id);
-        Log.d("TAG", "generateCumDistances: " + getParentOrDefaultId(route.get(1)));
+        Log.d("TAG", "generateCumDistances: " + getGroupOrDefaultId(route.get(1)));
         returnList.add(
-                (g.getEdge(route.get(0).id, getParentOrDefaultId(route.get(1)))).getWeight()
+                (g.getEdge(route.get(0).id, getGroupOrDefaultId(route.get(1)))).getWeight()
         );
         for(int i = 1; i < route.size()-1; i++){
             // Add the current edge weight plus the previous
@@ -238,15 +238,15 @@ public class RouteGenerator {
                 currentEdgeWeight = g.getEdge(fromId, toId).getWeight();
             }
             returnList.add(returnList.get(i-1) + currentEdgeWeight);
-//            returnList.add(g.getEdge(route.get(i).id, getParentOrDefaultId(route.get(i+1))).getWeight()
+//            returnList.add(g.getEdge(route.get(i).id, getGroupOrDefaultId(route.get(i+1))).getWeight()
 //                    + returnList.get(i-1));
         }
         return returnList;
     }
 
-    private String getParentOrDefaultId(ZooData.Node node){
-        if (node.parent_id != null){
-            return node.parent_id;
+    private String getGroupOrDefaultId(ZooData.Node node){
+        if (node.hasGroup()){
+            return node.group_id;
         }
         return node.id;
     }
@@ -265,12 +265,20 @@ public class RouteGenerator {
             return returnDists;
         }
 
+        //TODO: treat child-exhibit as their parent
         for(int i = 0; i < route.size()-1; i++){
-            returnDists.add((g.getEdge(route.get(i).id,
-                    route.get(i+1).id)).getWeight());
+            String fromId = route.get(i).id;
+            String toId = route.get(i+1).id;
+            double currentEdgeWeight = 0;
+            if (fromId != toId){
+                currentEdgeWeight = g.getEdge(fromId, toId).getWeight();
+            }
+            returnDists.add(currentEdgeWeight);
         }
         return returnDists;
     }
+
+
 
     /**
      * Method: exhibitDistances
@@ -294,7 +302,7 @@ public class RouteGenerator {
             // Iterate through all targets
             for(int j = 0; j < exCopy.size(); j++){
                 // If the current node on the route is an exhibit, add its distance
-                if(staticroute.get(i+1).id.equals(getParentOrDefaultId(exCopy.get(j)))){
+                if(staticroute.get(i+1).id.equals(getGroupOrDefaultId(exCopy.get(j)))){
                     distanceMap.put(exCopy.get(j).id, distances.get(i));
                     exCopy.remove(j);
                     break;
