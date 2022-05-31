@@ -41,6 +41,7 @@ public class DirectionActivity extends AppCompatActivity {
     private List<ZooData.Node> route = Collections.emptyList();
     private List<ZooData.Node> remainingTargets;
 
+    private ZooData.Node currNextExhibit; // The exhibit the user is navigating to
     private ZooData.Node currNode; // The node that the user is currently at
     private int currIndex; // curr index of route user is at, used to help against duplicates
 
@@ -136,6 +137,35 @@ public class DirectionActivity extends AppCompatActivity {
         // Iterates through each node in the route
         if (i >= 0) {
 
+
+
+            /*
+            If you're wondering why we didn't just use .contains, it seems like the rtId value
+            of the ZooData.Node does not play well with contains, and we have to do this to
+            iterate through the id's instead.
+             */
+            if(direction > 0) {
+                for(int j = 0; j < remainingTargets.size(); j++) {
+                    if (remainingTargets.get(j).id.equals((route.get(i)).id)){
+                        remainingTargets.remove(j);
+                    }
+                }
+            } else {
+                for(int j = 0; j < targets.size(); j++) {
+                    if (targets.get(j).id.equals((route.get(i-1)).id)) {
+                        boolean containsTarget = false;
+                        for(int k = 0; k < remainingTargets.size(); k++){
+                            if (remainingTargets.get(k).id.equals(targets.get(j).id)){
+                                containsTarget = true;
+                            }
+                        }
+                        if(!containsTarget) {
+                            remainingTargets.add(route.get(i-1));
+                        }
+                    }
+                }
+            }
+
             if(detailedOn){
                 returnDirection = detailedDirectionsHelper(i,direction,route);
             } else {
@@ -149,40 +179,7 @@ public class DirectionActivity extends AppCompatActivity {
                     this.currIndex -= briefDirectionPair.second;
                 }
             }
-
-            /*
-            If you're wondering why we didn't just use .contains, it seems like the rtId value
-            of the ZooData.Node does not play well with contains, and we have to do this to
-            iterate through the id's instead.
-             */
-            if(direction > 0) {
-                //System.out.println("route get i+1: " + route.get(i+1));
-                // 🤢🤢🤢🤢🤢🤢🤢🤢🤢🤢
-                for(int j = 0; j < remainingTargets.size(); j++) {
-                    if (remainingTargets.get(j).id.equals((route.get(i + 1)).id)){
-                        //System.out.println("YEA YEA YEA");
-                        remainingTargets.remove(j);
-                    }
-                }
-            } else {
-                for(int j = 0; j < targets.size(); j++) {
-                    if (targets.get(j).id.equals((route.get(i)).id)) {
-                        // I HATE IT HERE I HATE IT HERE
-                        boolean containsTarget = false;
-                        for(int k = 0; k < remainingTargets.size(); k++){
-                            if (remainingTargets.get(k).id.equals(targets.get(j).id)){
-                                containsTarget = true;
-                            }
-                        }
-                        if(!containsTarget) {
-                            remainingTargets.add(route.get(i));
-                        }
-                    }
-                }
-            }
         }
-
-        //System.out.println("direction remaining targets: " + remainingTargets);
 
         return returnDirection;
     }
@@ -222,8 +219,14 @@ public class DirectionActivity extends AppCompatActivity {
             // Updates the directions to the next on the list
             TextView directionsText = (TextView) findViewById(R.id.directionsText);
             directionsText.setText(generateDirections(currIndex,route,distanceList,1));
+
+            // Updates the TextView so the user knows they are not going backwards
             TextView goingPreviousText = (TextView) findViewById(R.id.goingPreviousText);
             goingPreviousText.setText("");
+
+            // Updates the next exhibit that the user is navigating to
+            updateDistToNextExhibit();
+
             currNode = RouteGenerator.staticroute.get(++currIndex);
         }
     }
@@ -238,52 +241,63 @@ public class DirectionActivity extends AppCompatActivity {
         // Only iterate to the next direction if one exists
 
         if (currIndex > 0) {
-            System.out.println("currindex " + currIndex);
-            // Updates the directions to the next on the list
+
+            // Updates the directions to navigate backwards
             TextView directionsText = (TextView) findViewById(R.id.directionsText);
-            TextView goingPreviousText = (TextView) findViewById(R.id.goingPreviousText);
             directionsText.setText(generateDirections(currIndex,
                     RouteGenerator.staticroute, distanceList, -1));
+
+            // Updates text to show that they are going backwards
+            TextView goingPreviousText = (TextView) findViewById(R.id.goingPreviousText);
             goingPreviousText.setText("Navigating Backwards!");
+
+            // Update the distance to the next exhibit
+            updateDistToNextExhibit();
+
             currNode = route.get(--currIndex);
         }
     }
 
     public void onSkipButtonClicked(View view) {
 
-        /*
+
         List<ZooData.Node> newSkippedRoute = new ArrayList<>();
         if(!remainingTargets.isEmpty()) {
-            System.out.println("SKIPPED");
-            System.out.println("Remaining Targets: " + remainingTargets);
-            System.out.println("currNode " + currNode);
-            System.out.println("-----------");
-            //System.out.println("Next Exhibit " + generator.nextExhibitInRoute(currNode));
+
             // Reset the targets so it can remove the next in list
             generator.setTargets(targets);
-            ZooData.Node nextExhibit = generator.nextExhibitInRoute(currNode);
+            currNextExhibit = generator.nextExhibitInRoute(currNode);
+
+            // Remove the next exhibit in the route
             for(int i = 0; i < targets.size(); i++){
-                if(targets.get(i).id.equals(nextExhibit.id)){
+                if(targets.get(i).id.equals(currNextExhibit.id)){
                     targets.remove(i);
                 }
             }
             for(int i = 0; i < remainingTargets.size(); i++){
-                if(remainingTargets.get(i).id.equals(nextExhibit.id)){
+                if(remainingTargets.get(i).id.equals(currNextExhibit.id)){
                     remainingTargets.remove(i);
                 }
             }
+
             // Set the remaining targets so you can perform the new route
             generator.setTargets(remainingTargets);
-            //Generate the new route and append it to the first half
+
+            // Generate the new route and append it to the first half
             newSkippedRoute = generator.pathGeneratorFromNode(currNode);
             route = generator.clearRouteFromIndex(route, currIndex);
             route.addAll(newSkippedRoute);
             RouteGenerator.staticroute = route;
+
+            // Update the new directions
+            distanceList = generator.generateDistances(RouteGenerator.staticroute);
+
             TextView directionsText = (TextView) findViewById(R.id.directionsText);
             directionsText.setText(generateDirections(currIndex-1,route,distanceList,1));
-        }
-        */
 
+            // Finally, update the new next exhibit
+            updateDistToNextExhibit();
+        }
     }
 
     private Pair<String, Integer> briefDirectionsHelper
@@ -294,11 +308,14 @@ public class DirectionActivity extends AppCompatActivity {
                 route.get(i + direction).id)).getId())).street;
         StringBuilder sb = new StringBuilder();
 
+        // Used to break out of while loop if user hits a target
+        boolean notAtTarget = true;
+
         sb.append("Walk ");
         // Grab the distanceList element depending on direction
         // If the user is going forward in the path
         if(direction > 0) {
-            while(i + dirLength + 2 < route.size()){
+            while(i + dirLength + 2 < route.size() && notAtTarget){
 
                 // If the current street name is the same as the next street name
                 if((street).equals((Objects.requireNonNull
@@ -308,11 +325,19 @@ public class DirectionActivity extends AppCompatActivity {
                     // Then you're travelling along a straight road
                     // Add to the total distance of the road
 
+
                     // TODO check if it's an exhibit and return early
+                    for(int j = 0; j < remainingTargets.size(); j++) {
+                        if (remainingTargets.get(j).id.equals((route.get(i + dirLength + 1)).id)){
+                            notAtTarget = false;
+                            break;
+                        }
+                    }
 
-                    pathDist += distanceList.get(i+dirLength);
-                    dirLength += 1;
-
+                    if(notAtTarget) {
+                        pathDist += distanceList.get(i + dirLength);
+                        dirLength += 1;
+                    }
                 } else {
                     break;
                 }
@@ -337,7 +362,7 @@ public class DirectionActivity extends AppCompatActivity {
 
         sb.append(pathDist); // distance to walk
 
-        sb.append(" meters along\n");
+        sb.append(" feet along\n");
         sb.append(street); // street name
         sb.append(" from\n");
         sb.append(route.get(i).name); // vertex 1 name
@@ -376,7 +401,7 @@ public class DirectionActivity extends AppCompatActivity {
         String toId = route.get(i + direction).id;
 
         if (distance > 0){
-            sb.append(distance + " meters along\n");
+            sb.append(distance + " feet along\n");
             sb.append(Objects.requireNonNull(edges.get((g.getEdge(fromId, toId)).getId())).street); // street name
             sb.append(" from\n");
             sb.append(route.get(i).name); // vertex 1 name
@@ -410,6 +435,19 @@ public class DirectionActivity extends AppCompatActivity {
         sb.append(".");
 
         return sb.toString();
+    }
+
+    private void updateDistToNextExhibit(){
+        double distToNext;
+
+        generator.setTargets(remainingTargets);
+        currNextExhibit = generator.nextExhibitInRoute(currNode);
+
+        distToNext = generator.distanceBetweenNodes(currNode, currNextExhibit);
+
+        TextView nextExhibitText = (TextView) findViewById(R.id.nextExhibit);
+        nextExhibitText.setText("Navigating To: " + currNextExhibit.name +
+                "\nDistance: " + distToNext + " ft");
     }
 
 
