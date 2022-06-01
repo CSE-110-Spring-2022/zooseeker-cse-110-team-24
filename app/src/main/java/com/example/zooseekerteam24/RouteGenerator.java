@@ -341,6 +341,13 @@ public class RouteGenerator {
         return getEntranceExitNode();
     }
 
+    /**
+     * Method: distanceBetweenNodes
+     * Desc  : Provides the distance (in feet) along the route of two nodes
+     * @param startNode The first node to be compared
+     * @param endNode   The second node to be compared
+     * @return          The distance between these nodes, as as double
+     */
     public double distanceBetweenNodes(ZooData.Node startNode, ZooData.Node endNode){
         int startIndex = -1; // index in route of startNode
         int endIndex = -1; // index in route of endNode
@@ -378,6 +385,14 @@ public class RouteGenerator {
 
     }
 
+    /**
+     * Method: clearRouteFromIndex
+     * Desc  : Clears all of the nodes of the route after a specific index, so a new route
+     *         can be appended to it
+     * @param route the route to be chopped
+     * @param index the index to clear the route after
+     * @return      A list of ZooData.Node's that contains the edited route
+     */
     public List<ZooData.Node> clearRouteFromIndex(List<ZooData.Node> route, int index){
         for(int i = index; i < route.size();){
             route.remove(i);

@@ -137,23 +137,26 @@ public class DirectionActivity extends AppCompatActivity {
         // Iterates through each node in the route
         if (i >= 0) {
 
-
-
             /*
             If you're wondering why we didn't just use .contains, it seems like the rtId value
             of the ZooData.Node does not play well with contains, and we have to do this to
             iterate through the id's instead.
              */
+
+            // If the user is moving forwards through the path
             if(direction > 0) {
                 for(int j = 0; j < remainingTargets.size(); j++) {
+                    // If they reach a target, remove it from the remaining targets
                     if (remainingTargets.get(j).id.equals((route.get(i)).id)){
                         remainingTargets.remove(j);
                     }
                 }
             } else {
+                // If they are instead moving backwards through the path...
                 for(int j = 0; j < targets.size(); j++) {
                     if (targets.get(j).id.equals((route.get(i-1)).id)) {
                         boolean containsTarget = false;
+                        // ... Then add targets back if they reach them
                         for(int k = 0; k < remainingTargets.size(); k++){
                             if (remainingTargets.get(k).id.equals(targets.get(j).id)){
                                 containsTarget = true;
@@ -166,12 +169,14 @@ public class DirectionActivity extends AppCompatActivity {
                 }
             }
 
+            // Generate the directions depending on if the user has brief or detailed selected
             if(detailedOn){
                 returnDirection = detailedDirectionsHelper(i,direction,route);
             } else {
                 Pair<String, Integer> briefDirectionPair = briefDirectionsHelper(i,direction,route);
                 returnDirection = briefDirectionPair.first;
                 if(direction > 0) {
+                    // Update i if they are skipping nodes with brief
                     i += briefDirectionPair.second;
                     this.currIndex += briefDirectionPair.second;
                 } else {
@@ -258,9 +263,15 @@ public class DirectionActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Method: onSkipButtonClicked
+     * Desc  : Handles the clicking of the "Skip" button
+     *         When clicked, skips the next exhibit in targets and appends a new
+     *         optimal route with the remaining target exhibits
+     * @param view   The button to be clicked
+     */
+
     public void onSkipButtonClicked(View view) {
-
-
         List<ZooData.Node> newSkippedRoute = new ArrayList<>();
         if(!remainingTargets.isEmpty()) {
 
@@ -300,6 +311,16 @@ public class DirectionActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Method: briefDirectionsHelper
+     * Desc  : Generates a brief direction for the user, skipping over nodes that
+     *         share the same edge name, unless they arrive at an exhibit
+     * @param i         The button to be clicked
+     * @param direction The direction the user is navigating
+     * @param route     The route the user is navigating with
+     * @return          A pair with a string of the direction, and an integer for how many nodes
+     *                  along the path were skipped
+     */
     private Pair<String, Integer> briefDirectionsHelper
             (int i, int direction, List<ZooData.Node> route){
         int dirLength = 0; // how many directions are being compressed
@@ -383,6 +404,14 @@ public class DirectionActivity extends AppCompatActivity {
 //        return exhibit.name;
 //    }
 
+    /**
+     * Method: detailedDirectionsHelper
+     * Desc  : Generates a detailed direction for the user
+     * @param i         The button to be clicked
+     * @param direction The direction the user is navigating
+     * @param route     The route the user is navigating with
+     * @return          A pair with a string of the direction
+     */
     private String detailedDirectionsHelper(int i, int direction, List<ZooData.Node> route){
 
         StringBuilder sb = new StringBuilder();
@@ -391,10 +420,8 @@ public class DirectionActivity extends AppCompatActivity {
         double distance = 0.0;
         if(direction > 0) {
             distance = distanceList.get(i);
-//            sb.append(distanceList.get(i)); // distance to walk
         } else {
             distance = distanceList.get(i-1);
-//            sb.append(distanceList.get(i-1));
         }
 
         String fromId = route.get(i).id;
@@ -437,6 +464,11 @@ public class DirectionActivity extends AppCompatActivity {
         return sb.toString();
     }
 
+    /**
+     * Method: updateDistToNextExhibit
+     * Desc  : Updates the distances to the next exhibit of the text view
+     *         Used to inform the user of how far they are from the next exhibit in the route
+     */
     private void updateDistToNextExhibit(){
         double distToNext;
 
