@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-    <component name="DesignSurface">
-        <option name="filePathToZoomLevelMap">
-            <map>
-                <entry key="app/src/main/res/layout/activity_direction.xml" value="0.19891881528108019" />
-                <entry key="app/src/main/res/layout/activity_planner.xml" value="0.2477355072463768" />
-                <entry key="app/src/main/res/layout/search_result_item.xml" value="0.22239583333333332" />
-            </map>
-        </option>
-    </component>
-    <component name="ExternalStorageConfigurationManager" enabled="true" />
-    <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/ItsGr/AndroidStudioProjects/ZooseekerTeam24/app/src/main/res/layout/activity_direction.xml" value="0.31614583333333335" />
+        <entry key="..\:/Users/ItsGr/AndroidStudioProjects/zooseeker-cse-110-team-24/app/src/main/res/layout/activity_direction.xml" value="0.1421875" />
+        <entry key="app/src/main/res/layout/activity_direction.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/activity_planner.xml" value="0.2477355072463768" />
+        <entry key="app/src/main/res/layout/activity_search.xml" value="0.1693840579710145" />
+        <entry key="app/src/main/res/layout/planner_item.xml" value="0.2803442028985507" />
+        <entry key="app/src/main/res/layout/search_result_item.xml" value="0.22239583333333332" />
+      </map>
+    </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

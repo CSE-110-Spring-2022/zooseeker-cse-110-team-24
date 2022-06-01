@@ -90,6 +90,10 @@ public class ZooData {
                     ", cumDistance=" + cumDistance +
                     '}';
         }
+
+        public String toStringName(){
+            return name;
+        }
     }
 
     public static class Edge {
