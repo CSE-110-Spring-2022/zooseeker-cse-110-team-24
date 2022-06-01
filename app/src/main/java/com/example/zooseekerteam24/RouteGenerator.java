@@ -125,7 +125,7 @@ public class RouteGenerator {
             if (currWeight == 0 && targets.get(i).group_id != null){
                 currMinPath.add(getGroupOrDefaultId(targets.get(i)));
             }
-        }
+        }86.0
 
         List<ZooData.Node> returnPath = new ArrayList<ZooData.Node>();
 
@@ -329,6 +329,7 @@ public class RouteGenerator {
 
         if(staticroute.contains(currNode)){
 
+
             for(int i = staticroute.indexOf(currNode); i < staticroute.size(); i++){
 
                 for(int j = 0; j < targets.size(); j++){
@@ -339,6 +340,7 @@ public class RouteGenerator {
                 }
             }
         }
+
 
         return getEntranceExitNode();
     }
@@ -387,6 +389,8 @@ public class RouteGenerator {
     }
 
     /**
+
+
      * Method: clearRouteFromIndex
      * Desc  : Clears all of the nodes of the route after a specific index, so a new route
      *         can be appended to it
@@ -400,4 +404,5 @@ public class RouteGenerator {
         }
         return route;
     }
+
 }

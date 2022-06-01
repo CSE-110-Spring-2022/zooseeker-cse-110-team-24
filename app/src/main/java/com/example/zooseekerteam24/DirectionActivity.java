@@ -605,6 +605,7 @@ public class DirectionActivity extends AppCompatActivity {
 
         if (distance > 0){
 
+
             sb.append(distance + " feet along\n");
             sb.append(Objects.requireNonNull(edges.get((g.getEdge(fromNode.id, toNode.id)).getId())).street); // street name
 
@@ -648,6 +649,7 @@ public class DirectionActivity extends AppCompatActivity {
      *         Used to inform the user of how far they are from the next exhibit in the route
      */
     private void updateDistToNextExhibit(){
+
         generator.setTargets(remainingTargets);
         currNextExhibit = generator.nextExhibitInRoute(currNode);
 
@@ -679,6 +681,7 @@ public class DirectionActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == 9090) {
             mockLoadedRoute(data.getStringExtra("loadjson"));
         }
+
     }
 
 

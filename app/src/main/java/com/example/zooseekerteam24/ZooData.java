@@ -93,6 +93,7 @@ public class ZooData {
                     '}';
         }
 
+
         public String getCoordString() {
             var coords = getCoords();
             return String.format(Locale.getDefault(), "%3.6f, %3.6f", coords.lat, coords.lng);
@@ -115,6 +116,10 @@ public class ZooData {
             var dLat = coords.lat - another.lat;
             var dLng = coords.lng - another.lng;
             return Math.sqrt(Math.pow(dLat, 2) + Math.pow(dLng, 2)) < delta;
+
+        public String toStringName(){
+            return name;
+
         }
     }
 

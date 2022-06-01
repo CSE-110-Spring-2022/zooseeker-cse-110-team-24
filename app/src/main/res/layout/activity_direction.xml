@@ -113,6 +113,7 @@
         android:text="Navigating to: "
         android:textSize="30sp" />
 
+
     <Button
         android:id="@+id/replanBtn"
         android:layout_width="wrap_content"
@@ -132,5 +133,6 @@
         android:onClick="onLoadClick"
         android:layout_below="@id/directionSwitch"
         android:layout_alignParentEnd="true"/>
+
 
 </RelativeLayout>
