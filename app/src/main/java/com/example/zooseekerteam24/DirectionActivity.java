@@ -8,14 +8,19 @@
 package com.example.zooseekerteam24;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.zooseekerteam24.location.LocationModel;
+import com.example.zooseekerteam24.location.LocationPermissionChecker;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.jgrapht.Graph;
@@ -36,6 +41,10 @@ public class DirectionActivity extends AppCompatActivity {
     private Map<String,ZooData.Node> nodes;
     private Map<String,ZooData.Edge> edges;
     private Graph<String,IdentifiedWeightedEdge> g;
+
+    private LocationModel model;
+    public static final String EXTRA_USE_LOCATION_SERVICE = "use_location_updated";
+    private boolean useLocationService;
 
     private List<ZooData.Node> targets = Collections.emptyList();
     private List<ZooData.Node> route = Collections.emptyList();
@@ -90,6 +99,23 @@ public class DirectionActivity extends AppCompatActivity {
 
         // Generates the directions using the distances between each node in the route
         distanceList = generator.generateDistances(RouteGenerator.staticroute);
+
+        useLocationService = getIntent().getBooleanExtra(EXTRA_USE_LOCATION_SERVICE, false);
+        // Set up the model.
+        model = new ViewModelProvider(this).get(LocationModel.class);
+
+        // If GPS is enabled, then update the model from the Location service.
+        if (useLocationService) {
+            var permissionChecker = new LocationPermissionChecker(this);
+            permissionChecker.ensurePermissions();
+
+            var locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            var provider = LocationManager.GPS_PROVIDER;
+            model.addLocationProviderSource(locationManager, provider);
+        }
+        // else, only mocked location updates will be shown, and location permissions will not be requested.
+        // This is appropriate for testing purposes.
+
 
         // Switches the activity the user is viewing if they click a button on the
         // bottom navigation bar
