@@ -399,4 +399,26 @@ public class RouteGenerator {
         }
         return route;
     }
+
+    public String listToString( List<ZooData.Node> myList){
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ ");
+        for(int i =0 ; i < myList.size() ; i++ ){
+            sb.append(myList.get(i).name + " ,");
+        }
+        sb.append(" ]");
+
+        return sb.toString();
+    }
+
+    public String listToStringId( List<ZooData.Node> myList){
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ ");
+        for(int i =0 ; i < myList.size() ; i++ ){
+            sb.append(myList.get(i).id + " ,");
+        }
+        sb.append(" ]");
+
+        return sb.toString();
+    }
 }

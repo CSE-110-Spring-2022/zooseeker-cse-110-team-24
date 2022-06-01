@@ -3,21 +3,14 @@ package com.example.zooseekerteam24;
 import static org.junit.Assert.*;
 
 import android.content.Context;
-import android.util.Log;
 
-import androidx.lifecycle.Lifecycle;
-import androidx.room.Room;
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.jgrapht.Graph;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,9 +23,13 @@ import java.util.Map;
 @RunWith(AndroidJUnit4.class)
 public class RouteGeneratorTest {
 
-    private String edgeFile = "sample_edge_info.json";
-    private String graphFile = "sample_zoo_graph.json";
-    private String nodeFile = "sample_exhibits.json";
+//    private String edgeFile = "sample_edge_info.json";
+//    private String graphFile = "sample_zoo_graph.json";
+//    private String nodeFile = "sample_exhibits.json";
+
+    private String edgeFile = "zoo_edge_info.json";
+    private String graphFile = "zoo_graph.json";
+    private String nodeFile = "zoo_node_info.json";
 
     List<ZooData.Node> targets;
     Map<String, ZooData.Node> nodes;
@@ -40,7 +37,7 @@ public class RouteGeneratorTest {
     Graph<String, IdentifiedWeightedEdge> g;
     private RouteGenerator generator;
 
-    private List<ZooData.Node> exhibits = Collections.emptyList();
+    private List<ZooData.Node> targetExhibits = Collections.emptyList();
     private List<ZooData.Node> route = Collections.emptyList();
 
 
@@ -52,27 +49,31 @@ public class RouteGeneratorTest {
         edges = ZooData.loadEdgesFromJSON(context, edgeFile);
         g = ZooData.loadZooGraphJSON(context, graphFile);
 
-        generator = new RouteGenerator(context, exhibits, nodes, edges ,g );
+        generator = new RouteGenerator(context, targetExhibits, nodes, edges ,g );
 
         //NodeDao nodeDao = NodeDatabase.getSingleton(context).nodeDao();
-        exhibits = new ArrayList<ZooData.Node>();
-        exhibits.add(nodes.get("arctic_foxes"));
-        exhibits.add(nodes.get("gorillas"));
-        generator.setTargets(exhibits);
+        targetExhibits = new ArrayList<ZooData.Node>();
+        targetExhibits.add(nodes.get("koi"));
+        targetExhibits.add(nodes.get("flamingo"));
+        generator.setTargets(targetExhibits);
 
     }
+
+
 
     @Test
     public void testEntranceExitNode(){
         assertEquals(nodes.get("entrance_exit_gate"), generator.getEntranceExitNode());
     }
 
+
     @Test
     public void testGetNearestNode(){
         List<ZooData.Node> path = new ArrayList<ZooData.Node>();
         path.add(nodes.get("entrance_exit_gate"));
-        path.add(nodes.get("entrance_plaza"));
-        path.add(nodes.get("gorillas"));
+        path.add(nodes.get("intxn_front_treetops"));
+        path.add(nodes.get("intxn_front_monkey"));
+        path.add(nodes.get("flamingo"));
         assertEquals(path, generator.nearestNode(nodes.get("entrance_exit_gate")));
     }
 
@@ -81,24 +82,56 @@ public class RouteGeneratorTest {
     public void testPathGenerator(){
         List<ZooData.Node> path = new ArrayList<ZooData.Node>();
         path.add(nodes.get("entrance_exit_gate"));
-        path.add(nodes.get("entrance_plaza"));
-        path.add(nodes.get("gorillas"));
-        path.add(nodes.get("entrance_plaza"));
-        path.add(nodes.get("arctic_foxes"));
-        path.add(nodes.get("entrance_plaza"));
+        path.add(nodes.get("intxn_front_treetops"));
+        path.add(nodes.get("intxn_front_monkey"));
+        path.add(nodes.get("flamingo"));
+        path.add(nodes.get("intxn_front_monkey"));
+        path.add(nodes.get("intxn_front_treetops"));
+        path.add(nodes.get("intxn_front_lagoon_1"));
+        path.add(nodes.get("koi"));
+        path.add(nodes.get("intxn_front_lagoon_1"));
+        path.add(nodes.get("intxn_front_treetops"));
         path.add(nodes.get("entrance_exit_gate"));
         assertEquals(path, generator.pathGenerator());
     }
 
     @Test
+    public void testOptimalpath(){
+
+        // we add more exhibits to the path
+        targetExhibits.add(nodes.get("hippo"));
+        targetExhibits.add(nodes.get("crocodile"));
+        generator.setTargets(targetExhibits);
+
+        List<ZooData.Node> path = generator.pathGenerator();
+        ZooData.Node currNode = nodes.get("entrance_exit_gate");
+
+        for( int i=0 ; i < path.size() ; i++){
+            ZooData.Node lastNode = currNode;
+            List<ZooData.Node> currPath = generator.nearestNode(currNode);
+            currNode = currPath.get(currPath.size()-1);//last item in list
+
+            //asserts that the nearest node from the curr exhibit is the next Exhibit in the route
+            //this is exactly how we build our approximately optimal path
+            assertEquals(currNode, generator.nextExhibitInRoute(lastNode));
+        }
+
+    }
+
+    @Test
     public void testCumDistances(){
         List<Double> distances = new ArrayList<>();
-        distances.add(10.0);
-        distances.add(210.0);
-        distances.add(410.0);
-        distances.add(710.0);
-        distances.add(1010.0);
-        distances.add(1020.0);
+        distances.add(1100.0);
+        distances.add(3800.0);
+        distances.add(5300.0);
+        distances.add(6800.0);
+        distances.add(9500.0);
+        distances.add(12700.0);
+        distances.add(14900.0);
+        distances.add(17100.0);
+        distances.add(20300.0);
+        distances.add(21400.0);
+
         assertEquals(distances,
                 generator.generateCumDistances(generator.pathGenerator()));
 
@@ -107,12 +140,17 @@ public class RouteGeneratorTest {
     @Test
     public void testDistances(){
         List<Double> distances = new ArrayList<>();
-        distances.add(10.0);
-        distances.add(200.0);
-        distances.add(200.0);
-        distances.add(300.0);
-        distances.add(300.0);
-        distances.add(10.0);
+        distances.add(1100.0);
+        distances.add(2700.0);
+        distances.add(1500.0);
+        distances.add(1500.0);
+        distances.add(2700.0);
+        distances.add(3200.0);
+        distances.add(2200.0);
+        distances.add(2200.0);
+        distances.add(3200.0);
+        distances.add(1100.0);
+
         assertEquals(distances,
                 generator.generateDistances(generator.pathGenerator()));
 
@@ -121,9 +159,9 @@ public class RouteGeneratorTest {
     @Test
     public void testExhibitDistances(){
         Map<String, Double> distanceMap = new HashMap<String, Double>();
-        distanceMap.put("gorillas" ,210.0 );
-        distanceMap.put("arctic_foxes" , 710.0);
-        assertEquals(distanceMap, generator.exhibitDistances(exhibits));
+        distanceMap.put("koi" ,14900.0 );
+        distanceMap.put("flamingo" , 5300.0);
+        assertEquals(distanceMap, generator.exhibitDistances(targetExhibits));
     }
 
 }
