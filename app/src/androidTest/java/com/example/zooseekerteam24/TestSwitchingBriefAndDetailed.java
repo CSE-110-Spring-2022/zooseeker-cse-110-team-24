@@ -4,6 +4,7 @@ package com.example.zooseekerteam24;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -20,9 +21,9 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -33,14 +34,13 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ToggleDetailedDirections {
+public class TestSwitchingBriefAndDetailed {
 
     @Rule
-    public ActivityScenarioRule<SearchActivity> mActivityScenarioRule =
-            new ActivityScenarioRule<>(SearchActivity.class);
+    public ActivityTestRule<SearchActivity> mActivityTestRule = new ActivityTestRule<>(SearchActivity.class);
 
     @Test
-    public void toggleDetailedDirections() {
+    public void testSwitchingBriefAndDetailed() {
         ViewInteraction appCompatImageView = onView(
                 allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Search"),
                         childAtPosition(
@@ -61,7 +61,18 @@ public class ToggleDetailedDirections {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete.perform(replaceText("fish"), closeSoftKeyboard());
+        searchAutoComplete.perform(replaceText("gorilla"), closeSoftKeyboard());
+
+        ViewInteraction searchAutoComplete2 = onView(
+                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("gorilla"),
+                        childAtPosition(
+                                allOf(withClassName(is("android.widget.LinearLayout")),
+                                        childAtPosition(
+                                                withClassName(is("android.widget.LinearLayout")),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete2.perform(pressImeActionButton());
 
         ViewInteraction materialTextView = onView(
                 allOf(withId(R.id.tvAdded), withText("Add"),
@@ -71,18 +82,17 @@ public class ToggleDetailedDirections {
                         isDisplayed()));
         materialTextView.perform(click());
 
-        ViewInteraction appCompatImageView2 = onView(
-                allOf(withClassName(is("androidx.appcompat.widget.AppCompatImageView")), withContentDescription("Clear query"),
+        ViewInteraction bottomNavigationItemView = onView(
+                allOf(withId(R.id.icPlanner), withContentDescription("Planner"),
                         childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
+                                childAtPosition(
+                                        withId(R.id.btmNavi),
+                                        0),
                                 1),
                         isDisplayed()));
-        appCompatImageView2.perform(click());
+        bottomNavigationItemView.perform(click());
 
-        ViewInteraction bottomNavigationItemView = onView(
+        ViewInteraction bottomNavigationItemView2 = onView(
                 allOf(withId(R.id.icDirection), withContentDescription("Direction"),
                         childAtPosition(
                                 childAtPosition(
@@ -90,7 +100,7 @@ public class ToggleDetailedDirections {
                                         0),
                                 2),
                         isDisplayed()));
-        bottomNavigationItemView.perform(click());
+        bottomNavigationItemView2.perform(click());
 
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.nextBtn), withText("Next"),
@@ -101,16 +111,6 @@ public class ToggleDetailedDirections {
                                 2),
                         isDisplayed()));
         materialButton.perform(click());
-
-        ViewInteraction switch_ = onView(
-                allOf(withId(R.id.directionSwitch), withText("Brief"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        switch_.perform(click());
 
         ViewInteraction materialButton2 = onView(
                 allOf(withId(R.id.nextBtn), withText("Next"),
@@ -131,6 +131,42 @@ public class ToggleDetailedDirections {
                                 2),
                         isDisplayed()));
         materialButton3.perform(click());
+
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.directionsText), withText("Walk 4500.0 meters along\nHippo Trail from\nTreetops Way / Hippo Trail\nto Monkey Trail / Hippo Trail."),
+                        withParent(withParent(withId(android.R.id.content))),
+                        isDisplayed()));
+        textView.check(matches(withText("Walk 4500.0 meters along\nHippo Trail from\nTreetops Way / Hippo Trail\nto Monkey Trail / Hippo Trail.")));
+
+        ViewInteraction bottomNavigationItemView3 = onView(
+                allOf(withId(R.id.icPlanner), withContentDescription("Planner"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.btmNavi),
+                                        0),
+                                1),
+                        isDisplayed()));
+        bottomNavigationItemView3.perform(click());
+
+        ViewInteraction bottomNavigationItemView4 = onView(
+                allOf(withId(R.id.icDirection), withContentDescription("Direction"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.btmNavi),
+                                        0),
+                                2),
+                        isDisplayed()));
+        bottomNavigationItemView4.perform(click());
+
+        ViewInteraction switch_ = onView(
+                allOf(withId(R.id.directionSwitch), withText("Brief"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                0),
+                        isDisplayed()));
+        switch_.perform(click());
 
         ViewInteraction materialButton4 = onView(
                 allOf(withId(R.id.nextBtn), withText("Next"),
@@ -162,13 +198,13 @@ public class ToggleDetailedDirections {
                         isDisplayed()));
         materialButton6.perform(click());
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.directionsText), withText("Walk 1100.0 feet along\nGate Path from\nFront Street / Treetops Way\nto Entrance and Exit Gate."),
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.directionsText), withText("Walk 1400.0 meters along\nTreetops Way from\nTreetops Way / Fern Canyon Trail\nto Treetops Way / Orangutan Trail."),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        textView.check(matches(withText("Walk 1100.0 feet along Gate Path from Front Street / Treetops Way to Entrance and Exit Gate.")));
+        textView2.check(matches(withText("Walk 1400.0 meters along\nTreetops Way from\nTreetops Way / Fern Canyon Trail\nto Treetops Way / Orangutan Trail.")));
 
-        ViewInteraction bottomNavigationItemView2 = onView(
+        ViewInteraction bottomNavigationItemView5 = onView(
                 allOf(withId(R.id.icPlanner), withContentDescription("Planner"),
                         childAtPosition(
                                 childAtPosition(
@@ -176,7 +212,7 @@ public class ToggleDetailedDirections {
                                         0),
                                 1),
                         isDisplayed()));
-        bottomNavigationItemView2.perform(click());
+        bottomNavigationItemView5.perform(click());
 
         ViewInteraction materialTextView2 = onView(
                 allOf(withId(R.id.tvDelete), withText("x"),
