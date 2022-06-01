@@ -41,6 +41,14 @@
         android:text="Brief"
         android:textSize="20sp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="load route"
+        android:onClick="onLoadClick"
+        android:layout_below="@id/directionSwitch"
+        android:layout_alignParentEnd="true"/>
+
     <TextView
         android:id="@+id/directionsText"
         android:layout_width="wrap_content"

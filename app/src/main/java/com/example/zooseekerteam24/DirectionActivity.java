@@ -8,6 +8,7 @@
 package com.example.zooseekerteam24;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
@@ -133,14 +134,14 @@ public class DirectionActivity extends AppCompatActivity {
         });
 
         // Test the above by mocking movement...
-        model.getLastKnownCoords().getValue();
-        var route = Coords
-                .interpolate(generator.getEntranceExitNode().getCoords(), targets.get(0).getCoords(), 12)
-                .collect(Collectors.toList());
-
-        if (!useLocationService) {
-            model.mockRoute(route, 500, TimeUnit.MILLISECONDS);
-        }
+//        model.getLastKnownCoords().getValue();
+//        var route = Coords
+//                .interpolate(generator.getEntranceExitNode().getCoords(), targets.get(0).getCoords(), 12)
+//                .collect(Collectors.toList());
+//
+//        if (!useLocationService) {
+//            model.mockRoute(route, 500, TimeUnit.MILLISECONDS);
+//        }
 
 
         // Switches the activity the user is viewing if they click a button on the
@@ -163,6 +164,29 @@ public class DirectionActivity extends AppCompatActivity {
                     return true;
             }
         });
+    }
+
+    public void onLoadClick(View view) {
+        Intent i = new Intent(this, LoadActivity.class);
+        startActivityForResult(i, 9090);
+    }
+
+    private void mockLoadedRoute(String content){
+        var list = Coords.loadListOfCoordsFromJSON(this, content);
+        list.stream().forEach(coord -> {
+            Log.d(TAG, "mockLoadedRoute: " + coord);
+        });
+        if (!useLocationService) {
+            model.mockRoute(list, 500, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 9090) {
+            mockLoadedRoute(data.getStringExtra("loadjson"));
+        }
     }
 
     /**
@@ -290,11 +314,12 @@ public class DirectionActivity extends AppCompatActivity {
     }
 
     private void checkCloseness(){
-        if (fromNode.isCloseTo(getUserCoord())){
-            Toast.makeText(this, "close to " + fromNode.name, Toast.LENGTH_SHORT).show();
-        }
-        if (toNode.isCloseTo(getUserCoord())){
-            Toast.makeText(this, "close to " + toNode.name, Toast.LENGTH_SHORT).show();
+        double curDistance = Coords.calculateDistance(getUserCoord(), toNode.getCoords());
+        for (int i = indexInRoute; i < RouteGenerator.staticroute.size(); i++){
+            if (RouteGenerator.staticroute.get(i).isExhibit()){
+                var newDistance = Coords.calculateDistance(getUserCoord(), RouteGenerator.staticroute.get(i).getCoords());
+//                if (newDistance < )
+            }
         }
     }
 
@@ -432,6 +457,7 @@ public class DirectionActivity extends AppCompatActivity {
     }
 
     ZooData.Node fromNode, toNode;
+    int indexInRoute;
 
     private String detailedDirectionsHelper(int i, int direction, List<ZooData.Node> route){
 
@@ -447,6 +473,7 @@ public class DirectionActivity extends AppCompatActivity {
 //            sb.append(distanceList.get(i-1));
         }
 
+        indexInRoute = i;
         fromNode = route.get(i);
         toNode = route.get(i + direction);
 

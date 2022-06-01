@@ -127,7 +127,7 @@ public class RouteGenerator {
             }
         }
 
-        List<ZooData.Node> returnPath = new ArrayList<ZooData.Node>();
+        List<ZooData.Node> returnPath = new ArrayList<>();
 
         // Turn the list of node names into the list of nodes
         for(int i = 0; i < currMinPath.size(); i++){

@@ -1,5 +1,18 @@
 package com.example.zooseekerteam24.location;
 
+import android.content.Context;
+
+import com.example.zooseekerteam24.ZooData;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,6 +29,22 @@ public class Coords {
      */
     public static Coord midpoint(Coord p1, Coord p2) {
         return Coord.of((p1.lat + p2.lat) / 2, (p1.lng + p2.lng) / 2);
+    }
+
+    public static double calculateDistance(Coord p1, Coord p2){
+        var dLat = p1.lat - p2.lat;
+        var dLng = p1.lng - p2.lng;
+        return Math.sqrt(Math.pow(dLat, 2) + Math.pow(dLng, 2));
+    }
+
+    public static List<Coord> loadListOfCoordsFromJSON(Context context, String content){
+        List<Coord> coords = Collections.emptyList();
+        InputStream inputStream = new ByteArrayInputStream(content.getBytes());
+        InputStreamReader reader = new InputStreamReader(inputStream);
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Coord>>(){}.getType();
+        coords = gson.fromJson(reader, listType);
+        return coords;
     }
 
     /**
