@@ -6,17 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".DirectionActivity">
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:hint="lat"
+            android:id="@+id/lat"/>
+        <EditText
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/lat"
+            android:hint="lng"
+            android:id="@+id/lng"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lng"
+            android:text="update user"
+            android:id="@+id/btnUpdateUser"
+            android:onClick="onUpdateUserClicked"/>
+    </RelativeLayout>
+
     <Switch
         android:id="@+id/directionSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:text="Brief"
-        android:textSize="20sp"
-        android:onClick="onSwitchClicked"
         android:layout_marginTop="10dp"
-        android:paddingHorizontal="10dp"/>
+        android:onClick="onSwitchClicked"
+        android:paddingHorizontal="10dp"
+        android:text="Brief"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/directionsText"

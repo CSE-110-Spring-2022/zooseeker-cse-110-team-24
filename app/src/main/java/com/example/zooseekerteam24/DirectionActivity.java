@@ -18,9 +18,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.zooseekerteam24.location.Coord;
 import com.example.zooseekerteam24.location.Coords;
 import com.example.zooseekerteam24.location.LocationModel;
 import com.example.zooseekerteam24.location.LocationPermissionChecker;
@@ -277,6 +279,15 @@ public class DirectionActivity extends AppCompatActivity {
         }
     }
 
+    public void onUpdateUserClicked(View view) {
+        EditText latInput = findViewById(R.id.lat);
+        EditText lngInput = findViewById(R.id.lng);
+        var lat = Double.parseDouble(latInput.getText().toString());
+        var lng = Double.parseDouble(lngInput.getText().toString());
+        model.setLastKnownCoords(Coord.of(lat, lng));
+        Log.d(TAG, "user location is " + model.getLastKnownCoords().getValue());
+    }
+
     /**
      * Method: onPrevButtonClicked
      * Desc  : Handles the clicking of the "Prev" button
@@ -424,6 +435,7 @@ public class DirectionActivity extends AppCompatActivity {
         String fromId = route.get(i).id;
         String toId = route.get(i + direction).id;
 
+
         if (distance > 0){
             sb.append(distance + " meters along\n");
             sb.append(Objects.requireNonNull(edges.get((g.getEdge(fromId, toId)).getId())).street); // street name
@@ -460,6 +472,7 @@ public class DirectionActivity extends AppCompatActivity {
 
         return sb.toString();
     }
+
 
 
 }
