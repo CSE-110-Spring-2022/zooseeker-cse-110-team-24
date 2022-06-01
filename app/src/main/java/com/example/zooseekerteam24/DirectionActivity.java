@@ -130,8 +130,9 @@ public class DirectionActivity extends AppCompatActivity {
         });
 
         // Test the above by mocking movement...
+        model.getLastKnownCoords().getValue();
         var route = Coords
-                .interpolate(generator.getEntranceExitNode().getCoords(), targets.get(0).getCoords(), 3)
+                .interpolate(generator.getEntranceExitNode().getCoords(), targets.get(0).getCoords(), 12)
                 .collect(Collectors.toList());
 
         if (!useLocationService) {

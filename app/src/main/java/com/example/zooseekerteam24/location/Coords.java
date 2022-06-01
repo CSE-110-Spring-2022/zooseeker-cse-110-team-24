@@ -30,7 +30,7 @@ public class Coords {
         // Linear interpolate between l1 and l2 using t:
         //      p(t) = p1 + (p2 - p1) * t
 
-        return IntStream.range(0, n)
+        return IntStream.range(0, n+1)
                 .mapToDouble(i -> (double) i / (double) n)
                 .mapToObj(t -> Coord.of(
                         p1.lat + (p2.lat - p1.lat) * t,

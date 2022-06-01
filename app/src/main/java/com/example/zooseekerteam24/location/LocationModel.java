@@ -87,6 +87,7 @@ public class LocationModel extends AndroidViewModel {
     public void mockLocation(Coord coords) {
         Log.i(TAG, String.format("Model mockLocation: %s", coords));
         mockSource.postValue(coords);
+        Log.d(TAG, "mockLocation: " + lastKnownCoords.getValue());
     }
 
     @VisibleForTesting

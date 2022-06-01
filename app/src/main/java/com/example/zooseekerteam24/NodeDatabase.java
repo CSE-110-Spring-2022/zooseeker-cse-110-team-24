@@ -50,7 +50,6 @@ public abstract class NodeDatabase extends RoomDatabase {
                     }
                 })
                 .build();
-
     }
 
 }
