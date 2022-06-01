@@ -8,14 +8,25 @@
 package com.example.zooseekerteam24;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.zooseekerteam24.location.Coord;
+import com.example.zooseekerteam24.location.Coords;
+import com.example.zooseekerteam24.location.LocationModel;
+import com.example.zooseekerteam24.location.LocationPermissionChecker;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.jgrapht.Graph;
@@ -25,10 +36,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class DirectionActivity extends AppCompatActivity {
 
+    private static final String TAG = "DirectionActivity";
     private BottomNavigationView btmNavi;
 
     private RouteGenerator generator;
@@ -36,6 +49,10 @@ public class DirectionActivity extends AppCompatActivity {
     private Map<String,ZooData.Node> nodes;
     private Map<String,ZooData.Edge> edges;
     private Graph<String,IdentifiedWeightedEdge> g;
+
+    private LocationModel model;
+    public static final String EXTRA_USE_LOCATION_SERVICE = "use_location_updated";
+    private boolean useLocationService;
 
     private List<ZooData.Node> targets = Collections.emptyList();
     private List<ZooData.Node> route = Collections.emptyList();
@@ -49,6 +66,8 @@ public class DirectionActivity extends AppCompatActivity {
     private List<ZooData.Node> exhibitsInGroup =  new ArrayList<>();
 
     private boolean detailedOn = false;
+    double distToNext;
+    private ZooData.Node currNearest;
 
     //private List<Pair<String, Boolean>> directionsList;
 
@@ -57,6 +76,7 @@ public class DirectionActivity extends AppCompatActivity {
      * Desc  : Handles everything that the DirectionActivity must do on creation
      * @param savedInstanceState the state used to check if any data is to be restored
      */
+    @SuppressLint("VisibleForTests")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +112,47 @@ public class DirectionActivity extends AppCompatActivity {
         // Generates the directions using the distances between each node in the route
         distanceList = generator.generateDistances(RouteGenerator.staticroute);
 
+        // TODO: location
+        useLocationService = getIntent().getBooleanExtra(EXTRA_USE_LOCATION_SERVICE, false);
+        // Set up the model.
+        model = new ViewModelProvider(this).get(LocationModel.class);
+
+        // If GPS is enabled, then update the model from the Location service.
+        if (useLocationService) {
+            var permissionChecker = new LocationPermissionChecker(this);
+            permissionChecker.ensurePermissions();
+
+            var locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            var provider = LocationManager.GPS_PROVIDER;
+            model.addLocationProviderSource(locationManager, provider);
+        }
+        // else, only mocked location updates will be shown, and location permissions will not be requested.
+        // This is appropriate for testing purposes.
+
+        // Flower powder
+        // Observe the model and place a blue pin whenever the location is updated.
+        model.getLastKnownCoords().observe(this, (coord) -> {
+            updateDistToNextExhibit();
+            findNearestTarget();
+            if( !currNearest.name.equals(generator.nextExhibitInRoute(currNode).name) ){
+                TextView myView = findViewById(R.id.replanBtn);
+                myView.setVisibility(View.VISIBLE);
+            }
+            updateDist();
+            Log.i(TAG, String.format("Observing lastKnownCoord update to %s", coord));
+        });
+
+        // Test the above by mocking movement...
+//        model.getLastKnownCoords().getValue();
+//        var route = Coords
+//                .interpolate(generator.getEntranceExitNode().getCoords(), targets.get(0).getCoords(), 12)
+//                .collect(Collectors.toList());
+//
+//        if (!useLocationService) {
+//            model.mockRoute(route, 500, TimeUnit.MILLISECONDS);
+//        }
+
+
         // Switches the activity the user is viewing if they click a button on the
         // bottom navigation bar
         btmNavi = findViewById(R.id.btmNavi);
@@ -112,6 +173,86 @@ public class DirectionActivity extends AppCompatActivity {
                     return true;
             }
         });
+    }
+
+    public void onReplanButtonClicked(View view){
+        TextView myView = findViewById(R.id.replanBtn);
+        myView.setVisibility(View.INVISIBLE);
+
+        List<ZooData.Node> newSkippedRoute = new ArrayList<>();
+        if(!remainingTargets.isEmpty()) {
+
+            // Reset the targets so it can remove the next in list
+//            generator.setTargets(targets);
+//            currNextExhibit = generator.nextExhibitInRoute(currNearest);
+
+            // Set the remaining targets so you can perform the new route
+            generator.setTargets(remainingTargets);
+
+            // Generate the new route and append it to the first half
+            ZooData.Node currNearestNode = generator.getEntranceExitNode();
+
+            Coord myCords = getUserCoord();
+            double currDist = 999999999;
+            int i = 0;
+            NodeDao nodeDao = NodeDatabase.getSingleton(this).nodeDao();
+            for(String key:nodes.keySet()){
+                if ( currDist > Coord.dist(myCords, nodes.get(key).getCoords())){
+                    currNearestNode = nodes.get(key);
+                }
+            }
+
+            newSkippedRoute = generator.pathGeneratorFromNode(currNearestNode);
+            route = generator.clearRouteFromIndex(route, 0);
+            route.addAll(newSkippedRoute);
+            RouteGenerator.staticroute = route;
+
+            // Update the new directions
+            distanceList = generator.generateDistances(RouteGenerator.staticroute);
+
+            TextView directionsText = (TextView) findViewById(R.id.directionsText);
+            directionsText.setText(generateDirections(currIndex-1,route,distanceList,1));
+
+            // Finally, update the new next exhibit
+            updateDistToNextExhibit();
+
+            System.out.println("REPLAN WORKED BRUH");
+        }
+
+    }
+
+    /**
+     * Method: updateDist
+     * Desc:   Updates the distance to the next exhibit in route textView
+     */
+    private void updateDist() {
+        if(getUserCoord()!= null && currNextExhibit != null ) {
+            Coord myCords = getUserCoord();
+            Coord nextCords = route.get(currIndex + 1).getCoords(); //next node in route coords
+            this.distToNext -= Coord.distFt(myCords, nextCords);
+            this.distToNext = Math.abs(this.distToNext);
+
+            TextView nextExhibitText = (TextView) findViewById(R.id.nextExhibit);
+            nextExhibitText.setText("Navigating To: " + currNextExhibit.name +
+                    "\nDistance: " + (int)this.distToNext + " ft");
+        }
+    }
+
+    private void findNearestTarget(){
+        Coord myCords = getUserCoord();
+
+        this.currNearest = generator.nextExhibitInRoute(currNode);
+        double currDist = Coord.dist(myCords , currNearest.getCoords());
+        int i = 0;
+
+        while(i < remainingTargets.size()){
+
+            if ( currDist > Coord.dist(myCords, remainingTargets.get(i).getCoords())){
+                this.currNearest = remainingTargets.get(i);
+            }
+            i++;
+        }
+
     }
 
     /**
@@ -220,6 +361,9 @@ public class DirectionActivity extends AppCompatActivity {
     public void onNextButtonClicked(View view) {
         // Only iterate to the next direction if one exists
 
+        TextView myView = findViewById(R.id.replanBtn);
+        myView.setVisibility(View.INVISIBLE);
+
         if(currIndex < RouteGenerator.staticroute.size()-1){
             // Updates the directions to the next on the list
             TextView directionsText = (TextView) findViewById(R.id.directionsText);
@@ -236,6 +380,24 @@ public class DirectionActivity extends AppCompatActivity {
         }
     }
 
+    public void onUpdateUserClicked(View view) {
+        EditText latInput = findViewById(R.id.lat);
+        EditText lngInput = findViewById(R.id.lng);
+        var lat = Double.parseDouble(latInput.getText().toString());
+        var lng = Double.parseDouble(lngInput.getText().toString());
+        model.setLastKnownCoords(Coord.of(lat, lng));
+        Log.d(TAG, "user location is " + model.getLastKnownCoords().getValue());
+    }
+
+    private void checkCloseness(){
+        if (fromNode.isCloseTo(getUserCoord())){
+            Toast.makeText(this, "close to " + fromNode.name, Toast.LENGTH_SHORT).show();
+        }
+        if (toNode.isCloseTo(getUserCoord())){
+            Toast.makeText(this, "close to " + toNode.name, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /**
      * Method: onPrevButtonClicked
      * Desc  : Handles the clicking of the "Prev" button
@@ -244,6 +406,9 @@ public class DirectionActivity extends AppCompatActivity {
      */
     public void onPrevButtonClicked(View view) {
         // Only iterate to the next direction if one exists
+
+        TextView myView = findViewById(R.id.replanBtn);
+        myView.setVisibility(View.INVISIBLE);
 
         if (currIndex > 0) {
 
@@ -322,7 +487,7 @@ public class DirectionActivity extends AppCompatActivity {
      *                  along the path were skipped
      */
     private Pair<String, Integer> briefDirectionsHelper
-            (int i, int direction, List<ZooData.Node> route){
+    (int i, int direction, List<ZooData.Node> route){
         int dirLength = 0; // how many directions are being compressed
         double pathDist = 0;
         String street = Objects.requireNonNull(edges.get((g.getEdge(route.get(i).id,
@@ -398,11 +563,17 @@ public class DirectionActivity extends AppCompatActivity {
         return new Pair<String, Integer>(sb.toString(), dirLength);
     }
 
-//    private String getExhibitFromGroupId(String groupId){
+    //    private String getExhibitFromGroupId(String groupId){
 //        ZooData.Node exhibit = exhibitsInGroup.stream().filter(n -> n.group_id.equals(groupId)).findFirst().get();
 //        exhibitsInGroup.remove(exhibit);
 //        return exhibit.name;
 //    }
+    private Coord getUserCoord(){
+        return model.getLastKnownCoords().getValue();
+    }
+
+    ZooData.Node fromNode, toNode;
+
 
     /**
      * Method: detailedDirectionsHelper
@@ -424,16 +595,24 @@ public class DirectionActivity extends AppCompatActivity {
             distance = distanceList.get(i-1);
         }
 
-        String fromId = route.get(i).id;
-        String toId = route.get(i + direction).id;
+        fromNode = route.get(i);
+        toNode = route.get(i + direction);
+
+        Log.d(TAG, "fromNode: " + fromNode);
+        Log.d(TAG, "toNode: " + toNode);
+        Log.d(TAG, "getUserCoord: " + getUserCoord());
+
 
         if (distance > 0){
+
+
             sb.append(distance + " feet along\n");
-            sb.append(Objects.requireNonNull(edges.get((g.getEdge(fromId, toId)).getId())).street); // street name
+            sb.append(Objects.requireNonNull(edges.get((g.getEdge(fromNode.id, toNode.id)).getId())).street); // street name
+
             sb.append(" from\n");
-            sb.append(route.get(i).name); // vertex 1 name
+            sb.append(fromNode.name); // vertex 1 name
             sb.append("\nto ");
-            sb.append(route.get(i + direction).name); // vertex 2 name
+            sb.append(toNode.name); // vertex 2 name
         } else{
             sb.append(" around " + route.get(i).name + "\n");
             sb.append(" from\n");
@@ -470,16 +649,39 @@ public class DirectionActivity extends AppCompatActivity {
      *         Used to inform the user of how far they are from the next exhibit in the route
      */
     private void updateDistToNextExhibit(){
-        double distToNext;
 
         generator.setTargets(remainingTargets);
         currNextExhibit = generator.nextExhibitInRoute(currNode);
 
-        distToNext = generator.distanceBetweenNodes(currNode, currNextExhibit);
+        this.distToNext = generator.distanceBetweenNodes
+                (currNode, currNextExhibit);
 
         TextView nextExhibitText = (TextView) findViewById(R.id.nextExhibit);
         nextExhibitText.setText("Navigating To: " + currNextExhibit.name +
-                "\nDistance: " + distToNext + " ft");
+                "\nDistance: " + this.distToNext + " ft");
+    }
+    public void onLoadClick(View view) {
+        Intent i = new Intent(this, LoadActivity.class);
+        startActivityForResult(i, 9090);
+    }
+
+    private void mockLoadedRoute(String content){
+        var list = Coords.loadListOfCoordsFromJSON(this, content);
+        list.stream().forEach(coord -> {
+            Log.d(TAG, "mockLoadedRoute: " + coord);
+        });
+        if (!useLocationService) {
+            model.mockRoute(list, 500, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 9090) {
+            mockLoadedRoute(data.getStringExtra("loadjson"));
+        }
+
     }
 
 

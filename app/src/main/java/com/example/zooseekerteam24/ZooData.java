@@ -7,6 +7,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import com.example.zooseekerteam24.location.Coord;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -17,6 +18,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -56,8 +58,8 @@ public class ZooData {
         @TypeConverters({Converters.class})
         public List<String> tags;
 
-        public float lat;
-        public float lng;
+        public double lat;
+        public double lng;
 
 
         public boolean added = false;
@@ -91,8 +93,33 @@ public class ZooData {
                     '}';
         }
 
+
+        public String getCoordString() {
+            var coords = getCoords();
+            return String.format(Locale.getDefault(), "%3.6f, %3.6f", coords.lat, coords.lng);
+        }
+
+        public Coord getCoords() {
+            return Coord.of(this);
+        }
+
+        public boolean isCloseTo(Coord another) {
+            return isCloseTo(another, 0.001);
+        }
+
+        public boolean isCloseTo(Coord another, double delta) {
+            var coords = getCoords();
+            if (coords == null
+                    || another == null
+                    || coords.lat == 0 || coords.lng == 0
+                    || another.lat == 0 || another.lng == 0) return false;
+            var dLat = coords.lat - another.lat;
+            var dLng = coords.lng - another.lng;
+            return Math.sqrt(Math.pow(dLat, 2) + Math.pow(dLng, 2)) < delta;
+
         public String toStringName(){
             return name;
+
         }
     }
 

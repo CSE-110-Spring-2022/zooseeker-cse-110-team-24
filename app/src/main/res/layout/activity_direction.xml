@@ -6,17 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".DirectionActivity">
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/lat"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:hint="lat" />
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/lat"
+            android:hint="lng"
+            android:id="@+id/lng"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lng"
+            android:text="update user"
+            android:id="@+id/btnUpdateUser"
+            android:onClick="onUpdateUserClicked"/>
+
+    </RelativeLayout>
+
     <Switch
         android:id="@+id/directionSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:text="Brief"
-        android:textSize="20sp"
-        android:onClick="onSwitchClicked"
         android:layout_marginTop="10dp"
-        android:paddingHorizontal="10dp"/>
+        android:onClick="onSwitchClicked"
+        android:paddingHorizontal="10dp"
+        android:text="Brief"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/directionsText"
@@ -87,5 +112,27 @@
         android:layout_marginTop="95dp"
         android:text="Navigating to: "
         android:textSize="30sp" />
+
+
+    <Button
+        android:id="@+id/replanBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btmNavi"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="159dp"
+        android:layout_marginBottom="74dp"
+        android:onClick="onReplanButtonClicked"
+        android:text="Replan?"
+        android:visibility="invisible" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="load route"
+        android:onClick="onLoadClick"
+        android:layout_below="@id/directionSwitch"
+        android:layout_alignParentEnd="true"/>
+
 
 </RelativeLayout>

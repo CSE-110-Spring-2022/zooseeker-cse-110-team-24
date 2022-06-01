@@ -52,6 +52,7 @@ public class SearchActivity extends AppCompatActivity {
         plannerViewModel.getAllExhibits().observe(this, adapter::populateSearch);
 
 
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             /**
              * onQueryTextSubmit
@@ -61,6 +62,7 @@ public class SearchActivity extends AppCompatActivity {
              */
             @Override
             public boolean onQueryTextSubmit(String query) {
+
                 searchView.clearFocus();
                 if (TextUtils.isEmpty(searchView.getQuery())){
                     lvResults.setVisibility(View.INVISIBLE);
@@ -80,6 +82,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d("onQueryTextChange", newText);
+                plannerViewModel.updateLocationOfExhibitsWithGroup();
 
                 // Blank when not searching
                 if (lvResults.getVisibility()== View.INVISIBLE){

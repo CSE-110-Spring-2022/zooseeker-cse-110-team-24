@@ -23,6 +23,7 @@ public class PlannerViewModel extends AndroidViewModel {
     private LiveData<List<ZooData.Node>> nodes;
     private final NodeDao nodeDao;
     private ObservableInt numOfExhibits;
+    private String TAG = "PlannerViewModel";
 
     public PlannerViewModel(@NonNull Application application) {
         super(application);
@@ -46,11 +47,30 @@ public class PlannerViewModel extends AndroidViewModel {
     public LiveData<List<ZooData.Node>> getAllExhibits() {
         if (nodes == null) {
             // TODO: Do an asynchronous operation to fetch nodes.
-            Log.d("getAllExhibits", "a");
+//            Log.d("getAllExhibits", "a");
             nodes = nodeDao.getAllExhibitsLive();
         }
-        Log.d("getAllExhibits", "b");
+//        Log.d("getAllExhibits", "b");
+
+//        updateLocationOfExhibitsWithGroup();
+
         return nodes;
+    }
+
+    public void updateLocationOfExhibitsWithGroup(){
+        List<ZooData.Node> rawList = nodeDao.getAllExhibits();
+        for (ZooData.Node exhibit: rawList) {
+            if (exhibit.hasGroup()){
+                ZooData.Node group = nodeDao.getById(exhibit.group_id);
+                if ((exhibit.lat != group.lat) || (exhibit.lng != group.lng)){
+                    exhibit.lat = group.lat;
+                    exhibit.lng = group.lng;
+                    nodeDao.update(exhibit);
+                    Log.d(TAG, "toggleExhibitAdded: " + exhibit.name + " " + exhibit.lat + " " + exhibit.lng);
+                }
+            }
+        }
+
     }
 
     /**
@@ -78,6 +98,7 @@ public class PlannerViewModel extends AndroidViewModel {
     public void toggleExhibitAdded(ZooData.Node exhibit){
         exhibit.added = !exhibit.added;
         nodeDao.update(exhibit);
+
     }
 
     /**

@@ -88,7 +88,7 @@ public class RouteGenerator {
                 return mapElement.getValue();
             }
         }
-        System.err.println("No Entrance/Exit gate found.");
+
         return null;
     }
 
@@ -118,14 +118,14 @@ public class RouteGenerator {
             if(currWeight < currMinWeight) {
                 currMinWeight = currWeight;
                 currMinPath = new ArrayList<>(ssPaths.getPath
-                        (getGroupOrDefaultId(targets.get(i)))
+                                (getGroupOrDefaultId(targets.get(i)))
                         .getVertexList());
             }
             // TODO: edge case when source and target in the same group
             if (currWeight == 0 && targets.get(i).group_id != null){
                 currMinPath.add(getGroupOrDefaultId(targets.get(i)));
             }
-        }
+        }86.0
 
         List<ZooData.Node> returnPath = new ArrayList<ZooData.Node>();
 
@@ -169,8 +169,8 @@ public class RouteGenerator {
                             targets.stream().filter(target -> route.stream().map(e -> e.id)
                                             .collect(Collectors.toList())
                                             .contains(getGroupOrDefaultId(target)))
-                            .findFirst()
-                            .get()
+                                    .findFirst()
+                                    .get()
                     );
 
 
@@ -271,6 +271,8 @@ public class RouteGenerator {
             String toId = route.get(i+1).id;
             double currentEdgeWeight = 0;
             if (fromId != toId){
+                System.out.println(fromId);
+                System.out.println(toId);
                 currentEdgeWeight = g.getEdge(fromId, toId).getWeight();
             }
             returnDists.add(currentEdgeWeight);
@@ -326,7 +328,8 @@ public class RouteGenerator {
     public ZooData.Node nextExhibitInRoute(ZooData.Node currNode){
 
         if(staticroute.contains(currNode)){
-            System.out.println("staticroute.contains: TRUE");
+
+
             for(int i = staticroute.indexOf(currNode); i < staticroute.size(); i++){
 
                 for(int j = 0; j < targets.size(); j++){
@@ -337,7 +340,8 @@ public class RouteGenerator {
                 }
             }
         }
-        System.out.println("ERROR: NO REMAINING EXHIBIT IN ROUTE");
+
+
         return getEntranceExitNode();
     }
 
@@ -372,7 +376,6 @@ public class RouteGenerator {
 
         // Return early for edge case if either start or end node aren't in route
         if(startIndex < 0 || endIndex < 0 ) {
-            System.out.println("ERROR: Start or End node does not exist");
             return -1;
         }
 
@@ -386,6 +389,8 @@ public class RouteGenerator {
     }
 
     /**
+
+
      * Method: clearRouteFromIndex
      * Desc  : Clears all of the nodes of the route after a specific index, so a new route
      *         can be appended to it
@@ -400,25 +405,4 @@ public class RouteGenerator {
         return route;
     }
 
-    public String listToString( List<ZooData.Node> myList){
-        StringBuilder sb = new StringBuilder();
-        sb.append("[ ");
-        for(int i =0 ; i < myList.size() ; i++ ){
-            sb.append(myList.get(i).name + " ,");
-        }
-        sb.append(" ]");
-
-        return sb.toString();
-    }
-
-    public String listToStringId( List<ZooData.Node> myList){
-        StringBuilder sb = new StringBuilder();
-        sb.append("[ ");
-        for(int i =0 ; i < myList.size() ; i++ ){
-            sb.append(myList.get(i).id + " ,");
-        }
-        sb.append(" ]");
-
-        return sb.toString();
-    }
 }
