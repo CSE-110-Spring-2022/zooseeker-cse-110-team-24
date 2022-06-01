@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.zooseekerteam24.location.Coord;
 import com.example.zooseekerteam24.location.Coords;
@@ -288,6 +289,15 @@ public class DirectionActivity extends AppCompatActivity {
         Log.d(TAG, "user location is " + model.getLastKnownCoords().getValue());
     }
 
+    private void checkCloseness(){
+        if (fromNode.isCloseTo(getUserCoord())){
+            Toast.makeText(this, "close to " + fromNode.name, Toast.LENGTH_SHORT).show();
+        }
+        if (toNode.isCloseTo(getUserCoord())){
+            Toast.makeText(this, "close to " + toNode.name, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /**
      * Method: onPrevButtonClicked
      * Desc  : Handles the clicking of the "Prev" button
@@ -417,6 +427,11 @@ public class DirectionActivity extends AppCompatActivity {
 //        exhibitsInGroup.remove(exhibit);
 //        return exhibit.name;
 //    }
+    private Coord getUserCoord(){
+        return model.getLastKnownCoords().getValue();
+    }
+
+    ZooData.Node fromNode, toNode;
 
     private String detailedDirectionsHelper(int i, int direction, List<ZooData.Node> route){
 
@@ -432,17 +447,21 @@ public class DirectionActivity extends AppCompatActivity {
 //            sb.append(distanceList.get(i-1));
         }
 
-        String fromId = route.get(i).id;
-        String toId = route.get(i + direction).id;
+        fromNode = route.get(i);
+        toNode = route.get(i + direction);
+
+        Log.d(TAG, "fromNode: " + fromNode);
+        Log.d(TAG, "toNode: " + toNode);
+        Log.d(TAG, "getUserCoord: " + getUserCoord());
 
 
         if (distance > 0){
             sb.append(distance + " meters along\n");
-            sb.append(Objects.requireNonNull(edges.get((g.getEdge(fromId, toId)).getId())).street); // street name
+            sb.append(Objects.requireNonNull(edges.get((g.getEdge(fromNode.id, toNode.id)).getId())).street); // street name
             sb.append(" from\n");
-            sb.append(route.get(i).name); // vertex 1 name
+            sb.append(fromNode.name); // vertex 1 name
             sb.append("\nto ");
-            sb.append(route.get(i + direction).name); // vertex 2 name
+            sb.append(toNode.name); // vertex 2 name
         } else{
             sb.append(" around " + route.get(i).name + "\n");
             sb.append(" from\n");
