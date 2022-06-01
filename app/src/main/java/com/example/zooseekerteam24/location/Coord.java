@@ -14,6 +14,8 @@ public class Coord {
 
     public final double lat;
     public final double lng;
+    public static final double latToFt = 363843.57;
+    public static final double lngToFt = 307515.50;
 
     public static Coord of(double lat, double lng) {
         return new Coord(lat, lng);
@@ -40,6 +42,18 @@ public class Coord {
     @Override
     public String toString() {
         return String.format("Coord{lat=%s, lng=%s}", lat, lng);
+    }
+
+    public static double distFt(Coord c1 , Coord c2){
+        var dLat = (c1.lat - c2.lat)* latToFt;
+        var dLng = (c1.lng - c2.lng)*lngToFt;
+        return Math.sqrt(Math.pow(dLat, 2) + Math.pow(dLng, 2));
+    }
+
+    public static double dist(Coord c1 , Coord c2){
+        var dLat = (c1.lat - c2.lat);
+        var dLng = (c1.lng - c2.lng);
+        return Math.sqrt(Math.pow(dLat, 2) + Math.pow(dLng, 2));
     }
 }
 

@@ -9,11 +9,12 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <EditText
+            android:id="@+id/lat"
             android:layout_width="200dp"
             android:layout_height="50dp"
-            android:hint="lat"
-            android:id="@+id/lat"/>
+            android:hint="lat" />
         <EditText
             android:layout_width="200dp"
             android:layout_height="50dp"
@@ -27,6 +28,7 @@
             android:text="update user"
             android:id="@+id/btnUpdateUser"
             android:onClick="onUpdateUserClicked"/>
+
     </RelativeLayout>
 
     <Switch
@@ -40,14 +42,6 @@
         android:paddingHorizontal="10dp"
         android:text="Brief"
         android:textSize="20sp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="load route"
-        android:onClick="onLoadClick"
-        android:layout_below="@id/directionSwitch"
-        android:layout_alignParentEnd="true"/>
 
     <TextView
         android:id="@+id/directionsText"
@@ -108,5 +102,27 @@
             android:onClick="onNextButtonClicked"
             android:text="Next" />
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/nextExhibit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/directionSwitch"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="95dp"
+        android:text="Navigating to: "
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/replanBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btmNavi"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="159dp"
+        android:layout_marginBottom="74dp"
+        android:onClick="onReplanButtonClicked"
+        android:text="Replan?"
+        android:visibility="invisible" />
 
 </RelativeLayout>
