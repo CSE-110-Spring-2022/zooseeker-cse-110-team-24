@@ -574,6 +574,7 @@ public class DirectionActivity extends AppCompatActivity {
 
     ZooData.Node fromNode, toNode;
 
+
     /**
      * Method: detailedDirectionsHelper
      * Desc  : Generates a detailed direction for the user
@@ -657,7 +658,28 @@ public class DirectionActivity extends AppCompatActivity {
         nextExhibitText.setText("Navigating To: " + currNextExhibit.name +
                 "\nDistance: " + this.distToNext + " ft");
     }
+    public void onLoadClick(View view) {
+        Intent i = new Intent(this, LoadActivity.class);
+        startActivityForResult(i, 9090);
+    }
 
+    private void mockLoadedRoute(String content){
+        var list = Coords.loadListOfCoordsFromJSON(this, content);
+        list.stream().forEach(coord -> {
+            Log.d(TAG, "mockLoadedRoute: " + coord);
+        });
+        if (!useLocationService) {
+            model.mockRoute(list, 500, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 9090) {
+            mockLoadedRoute(data.getStringExtra("loadjson"));
+        }
+    }
 
 
 }
