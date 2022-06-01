@@ -324,14 +324,10 @@ public class RouteGenerator {
      * @return         the ZooData.Node value of the next exhibit in the route
      */
     public ZooData.Node nextExhibitInRoute(ZooData.Node currNode){
-        //System.out.println("nextExhibit CurrNode: " + currNode);
-        //System.out.println("staticRoute " + staticroute);
-        if(staticroute.contains(currNode)){
-            //System.out.println("staticroute.contains: TRUE");
-            for(int i = staticroute.indexOf(currNode); i < staticroute.size(); i++){
 
-                //System.out.println("i: " + i);
-                //System.out.println("TARGS: " + targets);
+        if(staticroute.contains(currNode)){
+            System.out.println("staticroute.contains: TRUE");
+            for(int i = staticroute.indexOf(currNode); i < staticroute.size(); i++){
 
                 for(int j = 0; j < targets.size(); j++){
                     if(targets.get(j).id.equals(staticroute.get(i).id)){
@@ -339,22 +335,90 @@ public class RouteGenerator {
                         return staticroute.get(i);
                     }
                 }
-                //if(targets.contains(staticroute.get(i)) //&&
-                //!staticroute.get(i).id.equals((getEntranceExitNode()).id)
-                //){
-                    //System.out.println("FINAL THING: " + staticroute.get(i));
-                    //return staticroute.get(i);
-                //}
             }
         }
         System.out.println("ERROR: NO REMAINING EXHIBIT IN ROUTE");
-        return null;
+        return getEntranceExitNode();
     }
 
+    /**
+     * Method: distanceBetweenNodes
+     * Desc  : Provides the distance (in feet) along the route of two nodes
+     * @param startNode The first node to be compared
+     * @param endNode   The second node to be compared
+     * @return          The distance between these nodes, as as double
+     */
+    public double distanceBetweenNodes(ZooData.Node startNode, ZooData.Node endNode){
+        int startIndex = -1; // index in route of startNode
+        int endIndex = -1; // index in route of endNode
+        double returnDist = 0; // distance between the nodes
+        List<Double> distances = generateDistances(staticroute);
+
+        for(int i = 0; i < staticroute.size(); i++){
+            // Get the id of the startNode
+            if(staticroute.get(i).id.equals(startNode.id)) {
+                startIndex = i;
+            }
+
+            //Get the id of the endNode
+            if(staticroute.get(i).id.equals(endNode.id)){
+                // ensure that endIndex comes after startIndex
+                if(startIndex >= 0){
+                    endIndex = i;
+                    break;
+                }
+            }
+        }
+
+        // Return early for edge case if either start or end node aren't in route
+        if(startIndex < 0 || endIndex < 0 ) {
+            System.out.println("ERROR: Start or End node does not exist");
+            return -1;
+        }
+
+        // Now, iterate between the indices to get the total distance
+        for(int i = startIndex; i < endIndex; i++){
+            returnDist += distances.get(i);
+        }
+
+        return returnDist;
+
+    }
+
+    /**
+     * Method: clearRouteFromIndex
+     * Desc  : Clears all of the nodes of the route after a specific index, so a new route
+     *         can be appended to it
+     * @param route the route to be chopped
+     * @param index the index to clear the route after
+     * @return      A list of ZooData.Node's that contains the edited route
+     */
     public List<ZooData.Node> clearRouteFromIndex(List<ZooData.Node> route, int index){
         for(int i = index; i < route.size();){
             route.remove(i);
         }
         return route;
+    }
+
+    public String listToString( List<ZooData.Node> myList){
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ ");
+        for(int i =0 ; i < myList.size() ; i++ ){
+            sb.append(myList.get(i).name + " ,");
+        }
+        sb.append(" ]");
+
+        return sb.toString();
+    }
+
+    public String listToStringId( List<ZooData.Node> myList){
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ ");
+        for(int i =0 ; i < myList.size() ; i++ ){
+            sb.append(myList.get(i).id + " ,");
+        }
+        sb.append(" ]");
+
+        return sb.toString();
     }
 }

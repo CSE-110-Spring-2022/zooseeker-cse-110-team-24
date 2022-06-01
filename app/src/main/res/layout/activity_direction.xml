@@ -78,4 +78,14 @@
             android:text="Next" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/nextExhibit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/directionSwitch"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="95dp"
+        android:text="Navigating to: "
+        android:textSize="30sp" />
+
 </RelativeLayout>
