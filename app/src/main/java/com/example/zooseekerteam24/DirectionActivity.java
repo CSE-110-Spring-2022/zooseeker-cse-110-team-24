@@ -10,15 +10,18 @@ package com.example.zooseekerteam24;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.zooseekerteam24.location.Coords;
 import com.example.zooseekerteam24.location.LocationModel;
 import com.example.zooseekerteam24.location.LocationPermissionChecker;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -30,10 +33,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class DirectionActivity extends AppCompatActivity {
 
+    private static final String TAG = "DirectionActivity";
     private BottomNavigationView btmNavi;
 
     private RouteGenerator generator;
@@ -65,6 +70,7 @@ public class DirectionActivity extends AppCompatActivity {
      * Desc  : Handles everything that the DirectionActivity must do on creation
      * @param savedInstanceState the state used to check if any data is to be restored
      */
+    @SuppressLint("VisibleForTests")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +106,7 @@ public class DirectionActivity extends AppCompatActivity {
         // Generates the directions using the distances between each node in the route
         distanceList = generator.generateDistances(RouteGenerator.staticroute);
 
+        // TODO: location
         useLocationService = getIntent().getBooleanExtra(EXTRA_USE_LOCATION_SERVICE, false);
         // Set up the model.
         model = new ViewModelProvider(this).get(LocationModel.class);
@@ -115,6 +122,21 @@ public class DirectionActivity extends AppCompatActivity {
         }
         // else, only mocked location updates will be shown, and location permissions will not be requested.
         // This is appropriate for testing purposes.
+
+        // Flower powder
+        // Observe the model and place a blue pin whenever the location is updated.
+        model.getLastKnownCoords().observe(this, (coord) -> {
+            Log.i(TAG, String.format("Observing lastKnownCoord update to %s", coord));
+        });
+
+        // Test the above by mocking movement...
+        var route = Coords
+                .interpolate(generator.getEntranceExitNode().getCoords(), targets.get(0).getCoords(), 3)
+                .collect(Collectors.toList());
+
+        if (!useLocationService) {
+            model.mockRoute(route, 500, TimeUnit.MILLISECONDS);
+        }
 
 
         // Switches the activity the user is viewing if they click a button on the
