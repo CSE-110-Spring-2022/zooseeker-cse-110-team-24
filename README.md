@@ -1,4 +1,4 @@
-# Project 3 - *San Diego ZooSeeker*
+# *San Diego ZooSeeker*
 
 **San Diego ZooSeeker** is an Android app that allows users to plan a trip and navigate exhibits in shortest distances in San Diego Zoo. 
 
