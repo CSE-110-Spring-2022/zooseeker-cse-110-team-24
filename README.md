@@ -22,3 +22,13 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 - [Gson](https://github.com/google/gson) - Java library that can be used to convert between Java Objects and their JSON representation.
 - [JGraphT](https://jgrapht.org/) - Java library that provides mathematical graph-theory objects and algorithms. 
+
+## [MIT License](https://github.com/CSE-110-Spring-2022/zooseeker-cse-110-team-24/blob/main/LICENSE.md)
+
+    Copyright (c) 2022 CSE-110-Spring-2022-Team24
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+
