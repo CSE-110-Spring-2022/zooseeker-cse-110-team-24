@@ -3,30 +3,28 @@
 **San Diego ZooSeeker** is an Android app that allows users to plan a trip and navigate exhibits in shortest distances in San Diego Zoo. 
 
 ## User Stories
-The user stories are collected from our client who had unsatisfying experience with the [San Diego Zoo Wildlife Alliance app](https://play.google.com/store/apps/details?id=com.seamgen.sandiegozoo.zoo&hl=en_US&gl=US). 
-* **Search & Add**: Users are able to search for animal exhibits by tags, and add them to trip planner. 
-* **Shortest Route**: A shortest route through the user's chosen exhibits is computed
+This is a quarter-long class project of UCSD CSE110-Software Engineering. User stories are collected from our client who had unsatisfying experience with the [San Diego Zoo Wildlife Alliance app](https://play.google.com/store/apps/details?id=com.seamgen.sandiegozoo.zoo&hl=en_US&gl=US). 
+* **Search & Add**: Users can search for animal exhibits by tags, and add them to the trip planner. 
+* **Shortest Route Generator**: Users can view a shortest route through exhibits they choose.
+* **Navigation**: Users can get directions forward and backward from one exhibit to another. 
+* **Off-track reminder**: Users are reminded if they are off-track and given the option to replan by regenerating shortest route. 
 
-## Video Walkthrough
+## GIF Walkthrough
 
-Here's a walkthrough of implemented user stories:
-
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+![add to planner](https://media.giphy.com/media/rpOlSYGi1RyTPzlwxl/giphy.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
-## Notes
 
-Describe any challenges encountered while building the app.
 
 ## Open-source libraries used
 
-- [Android Async HTTP](https://github.com/codepath/CPAsyncHttpClient) - Simple asynchronous HTTP requests with JSON parsing
-- [Glide](https://github.com/bumptech/glide) - Image loading and caching library for Android
+- [Gson](https://github.com/google/gson) - Java library that can be used to convert between Java Objects and their JSON representation.
+- [JGraphT](https://jgrapht.org/) - Java library that provides mathematical graph-theory objects and algorithms. 
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [zooseeker-cse-110-team-24] [name of copyright owner]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
