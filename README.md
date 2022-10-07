@@ -7,7 +7,7 @@ This is a quarter-long class project of UCSD CSE110-Software Engineering. User s
 * **Search & Add**: Users can search for animal exhibits by tags, and add them to the trip planner. 
 * **Shortest Route Generator**: Users can view a shortest route through exhibits they choose.
 * **Navigation**: Users can get directions forward and backward from one exhibit to another. 
-* **Off-track reminder**: Users are reminded if they are off-track and given the option to replan by regenerating shortest route. 
+* **Off-track reminder**: Users are reminded if they are off-track and given the option to replan by regenerating shortest route. [WIP]
 
 ## GIF Walkthrough
 
